@@ -170,7 +170,7 @@ function generateLines(floorId: string, factoryId: string, floorIndex: number, l
       target: rng(400, 800),
       actual: 0,
       efficiency: eff,
-      status: eff >= 70 ? "normal" : eff >= 55 ? "warning" : "critical",
+      status: (eff >= 70 ? "normal" : eff >= 55 ? "warning" : "critical") as "normal" | "warning" | "critical",
       smv: +(Math.random() * 8 + 4).toFixed(2),
     };
   }).map(l => ({ ...l, actual: Math.round(l.target * l.efficiency / 100) }));
