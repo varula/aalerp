@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +16,7 @@ import {
 
 export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
+  const navigate = useNavigate();
   const factoryId = selectedFactory === "all" ? undefined : selectedFactory;
   const kpis = getFactoryKPIs(factoryId);
   const lines = factoryId ? allLines.filter(l => l.factoryId === factoryId) : allLines;
@@ -164,7 +165,7 @@ export default function Dashboard() {
               </TableHeader>
               <TableBody>
                 {lines.slice(0, 30).map(line => (
-                  <TableRow key={line.id}>
+                  <TableRow key={line.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/lines?line=${line.id}`)}>
                     <TableCell className="font-medium font-mono text-sm">{line.name}</TableCell>
                     <TableCell className="text-sm">{line.style}</TableCell>
                     <TableCell className="text-right font-mono text-sm">{line.target}</TableCell>
