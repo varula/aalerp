@@ -96,6 +96,7 @@ export function useRealtimeSimulation(intervalMs = 5000) {
     updatedLineIds: new Set(),
     updatedAlertIds: new Set(),
     isLive: true,
+    activityFeed: [],
   }));
 
   const tickRef = useRef(0);
