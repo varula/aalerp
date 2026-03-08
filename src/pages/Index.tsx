@@ -64,7 +64,8 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">{kpi.label}</p>
-                  <p className="text-2xl font-bold font-mono mt-1">{kpi.value}</p>
+                  <AnimatedValue value={kpi.value} className="text-2xl font-bold font-mono mt-1" />
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                 </div>
                 <kpi.icon className="h-8 w-8 text-primary/30" />
