@@ -101,16 +101,16 @@ export default function Dashboard() {
       {/* Quick stats — 4 columns */}
       <motion.div className="grid grid-cols-2 lg:grid-cols-4 gap-4" variants={stagger}>
         <motion.div variants={fadeUp}>
-          <StatCard label="Total Output" value={kpis.totalOutput.toLocaleString()} sub={`of ${kpis.totalTarget.toLocaleString()} target`} icon={TrendingUp} iconColor="text-status-success" />
+          <StatCard label="Total Output" value={kpis.totalOutput.toLocaleString()} sub={`of ${kpis.totalTarget.toLocaleString()} target`} icon={TrendingUp} iconColor="text-status-success" change={`${Math.round((kpis.totalOutput / kpis.totalTarget) * 100)}%`} changeType="positive" />
         </motion.div>
         <motion.div variants={fadeUp}>
-          <StatCard label="Active Lines" value={kpis.activeLines} sub="Currently running" icon={Factory} iconColor="text-primary" />
+          <StatCard label="Active Lines" value={kpis.activeLines} sub="Currently running" icon={Factory} iconColor="text-primary" change="Live" changeType="positive" />
         </motion.div>
         <motion.div variants={fadeUp}>
-          <StatCard label="Total Downtime" value={`${kpis.totalDowntime} min`} sub="Today" icon={Clock} iconColor="text-status-warning" />
+          <StatCard label="Total Downtime" value={`${kpis.totalDowntime} min`} sub="Today" icon={Clock} iconColor="text-status-warning" change="-12%" changeType="negative" />
         </motion.div>
         <motion.div variants={fadeUp}>
-          <StatCard label="Pending Alerts" value={kpis.pendingAlerts} sub="Unacknowledged" icon={AlertTriangle} iconColor="text-destructive" />
+          <StatCard label="Pending Alerts" value={kpis.pendingAlerts} sub="Unacknowledged" icon={AlertTriangle} iconColor="text-destructive" change={`${kpis.pendingAlerts > 0 ? "Action needed" : "Clear"}`} changeType={kpis.pendingAlerts > 0 ? "negative" : "positive"} />
         </motion.div>
       </motion.div>
 
