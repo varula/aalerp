@@ -290,19 +290,26 @@ export default function Dashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {lines.slice(0, 30).map(line => (
-                  <TableRow key={line.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/lines?line=${line.id}`)}>
+                {lines.slice(0, 30).map(line => {
+                  const isUpdated = updatedLineIds.has(line.id);
+                  return (
+                  <TableRow key={line.id} className={`cursor-pointer hover:bg-muted/50 transition-colors ${isUpdated ? "animate-value-flash" : ""}`} onClick={() => navigate(`/lines?line=${line.id}`)}>
                     <TableCell className="font-medium font-mono text-sm">{line.name}</TableCell>
                     <TableCell className="text-sm">{line.style}</TableCell>
                     <TableCell className="text-right font-mono text-sm">{line.target}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">{line.actual}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">{line.efficiency}%</TableCell>
+                    <TableCell className="text-right font-mono text-sm">
+                      <AnimatedValue value={line.actual} className="font-mono" />
+                    </TableCell>
+                    <TableCell className="text-right font-mono text-sm">
+                      <AnimatedValue value={`${line.efficiency}%`} className="font-mono" />
+                    </TableCell>
                     <TableCell className="text-right font-mono text-sm">{line.operatorCount}</TableCell>
                     <TableCell className="text-center">
-                      <div className={`h-3 w-3 rounded-full mx-auto ${statusColor(line.status)}`} />
+                      <div className={`h-3 w-3 rounded-full mx-auto transition-colors duration-500 ${statusColor(line.status)}`} />
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
