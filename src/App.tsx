@@ -18,6 +18,7 @@ import QualityDashboard from "@/pages/QualityDashboard";
 import Machines from "@/pages/Machines";
 import AIPredictions from "@/pages/AIPredictions";
 import DowntimeTracking from "@/pages/DowntimeTracking";
+import OvertimeModule from "@/pages/OvertimeModule";
 import MaterialTracking from "@/pages/MaterialTracking";
 import CVCounting from "@/pages/CVCounting";
 import NotFound from "@/pages/NotFound";
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="/cv-counting" element={<CVCounting />} />
               <Route path="/ai-defects" element={<StandaloneCrudPage moduleKey="ai-defects" />} />
               {/* Operations */}
+              <Route path="/overtime" element={<OvertimeModule />} />
               <Route path="/downtime" element={<DowntimeTracking />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/materials" element={<MaterialTracking />} />
