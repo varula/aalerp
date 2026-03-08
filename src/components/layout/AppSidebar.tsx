@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import { useAlertRules } from "@/hooks/use-alert-rules";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -42,6 +44,9 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const { triggeredAlerts } = useAlertRules();
+  const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
+  const totalTriggered = triggeredAlerts.length;
 
   return (
     <Sidebar collapsible="icon">
@@ -64,21 +69,33 @@ export function AppSidebar() {
           <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/"}
-                      className="hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {mainItems.map((item) => {
+                const isAlerts = item.url === "/alerts";
+                const badgeCount = isAlerts ? totalTriggered : 0;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === "/"}
+                        className="hover:bg-sidebar-accent"
+                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {!collapsed && <span className="flex-1">{item.title}</span>}
+                        {isAlerts && badgeCount > 0 && (
+                          <Badge
+                            variant={criticalCount > 0 ? "destructive" : "secondary"}
+                            className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center font-mono"
+                          >
+                            {badgeCount}
+                          </Badge>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
