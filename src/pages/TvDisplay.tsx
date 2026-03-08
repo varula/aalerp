@@ -8,7 +8,7 @@ import {
   Maximize, Minimize, RefreshCw, Factory, AlertTriangle, TrendingUp,
   Clock, Zap, XCircle,
 } from "lucide-react";
-import { allLines, alerts, getFactoryKPIs, type SewingLine } from "@/data/mock-data";
+import { allLines, alerts, getFactoryKPIs, getFactoryInfo, type SewingLine } from "@/data/mock-data";
 
 function StatusDot({ status }: { status: string }) {
   const cls = status === "normal" ? "bg-status-success" : status === "warning" ? "bg-status-warning animate-pulse" : "bg-status-critical animate-pulse";
@@ -25,13 +25,11 @@ export default function TvDisplay() {
   const [clock, setClock] = useState(formatTime());
   const [refreshCount, setRefreshCount] = useState(0);
 
-  // Clock tick every second
   useEffect(() => {
     const t = setInterval(() => setClock(formatTime()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  // Auto-refresh every 60s
   useEffect(() => {
     const t = setInterval(() => setRefreshCount(c => c + 1), 60000);
     return () => clearInterval(t);
@@ -45,6 +43,7 @@ export default function TvDisplay() {
     }
   };
 
+  const factoryInfo = getFactoryInfo(selectedFactory);
   const lines = allLines.filter(l => selectedFactory === "all" || l.factoryId === selectedFactory);
   const kpis = getFactoryKPIs(selectedFactory === "all" ? undefined : selectedFactory);
   const activeAlerts = alerts
@@ -64,19 +63,22 @@ export default function TvDisplay() {
       {/* TV Header Bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            AF
+          <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${factoryInfo.user.color} text-white font-bold`}>
+            {factoryInfo.user.initials}
           </div>
-          <div>
-            <h1 className="text-xl font-bold">Armana Fashions — Factory Display</h1>
-            <p className="text-xs text-muted-foreground">
-              {selectedFactory === "all" ? "All Factories" : lines[0]?.factoryId || ""}
-              {" · "}Auto-refresh every 60s
-            </p>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold" style={{ letterSpacing: "-0.03em" }}>{factoryInfo.name} — Factory Display</h1>
+            <p className="text-[10px] text-muted-foreground">{factoryInfo.location}</p>
+            <p className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">Integrated Production Management System</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-muted-foreground">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Live</span>
             <Clock className="h-4 w-4" />
             <span className="font-mono text-lg font-semibold text-foreground">{clock}</span>
           </div>
@@ -113,7 +115,6 @@ export default function TvDisplay() {
 
       {/* Main Grid: Lines + Alerts */}
       <div className="grid lg:grid-cols-3 gap-4">
-        {/* Andon Status Grid — 2 cols */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -130,7 +131,6 @@ export default function TvDisplay() {
           </CardContent>
         </Card>
 
-        {/* Active Alerts */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
@@ -185,10 +185,7 @@ export default function TvDisplay() {
                         {line.efficiency}%
                       </span>
                     </div>
-                    <Progress
-                      value={line.efficiency}
-                      className="h-1.5"
-                    />
+                    <Progress value={line.efficiency} className="h-1.5" />
                     <div className="flex justify-between mt-1">
                       <span className="text-[10px] text-muted-foreground">{line.style}</span>
                       <span className="text-[10px] text-muted-foreground font-mono">{line.actual}/{line.target}</span>
@@ -202,7 +199,7 @@ export default function TvDisplay() {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2">
-        <span>Armana Fashions v1.0 · Production Management</span>
+        <span>Armana Group v1.0 · Denim Production Management</span>
         <span className="font-mono">Last refresh: {clock} · Cycle #{refreshCount}</span>
       </div>
     </div>

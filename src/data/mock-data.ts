@@ -1,12 +1,20 @@
 // ============================================================
-// GarmentIQ – Comprehensive Mock Data
+// Armana Group – Denim Pant Production Mock Data
 // ============================================================
 
 // ---------- Types ----------
+export interface FactoryUser {
+  name: string;
+  initials: string;
+  color: string; // tailwind bg class
+}
+
 export interface Factory {
   id: string;
   name: string;
   location: string;
+  address: string;
+  user: FactoryUser;
   floors: Floor[];
 }
 
@@ -42,7 +50,7 @@ export interface Operator {
   attendance: number;
   avgEfficiency: number;
   piecesProduced: number;
-  idleTime: number; // minutes
+  idleTime: number;
 }
 
 export interface OperatorSkill {
@@ -56,6 +64,7 @@ export interface ProductionOrder {
   poNumber: string;
   buyer: string;
   style: string;
+  fabric: string;
   orderQty: number;
   completedQty: number;
   smv: number;
@@ -108,45 +117,59 @@ export interface WipEntry {
   isBottleneck: boolean;
 }
 
+export interface DenimDefect {
+  defect: string;
+  count: number;
+  percentage: number;
+}
+
 // ---------- Helpers ----------
 const rng = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-const STYLES = [
-  "Slim Fit Denim Jeans", "Polo Shirt Classic", "Bomber Jacket", "Cargo Pants",
-  "Oxford Button Down", "Chino Shorts", "Hoodie Pullover", "Track Pants",
-  "Denim Jacket", "Henley T-Shirt", "Work Shirt", "Jogger Pants",
-  "Flannel Shirt", "Windbreaker", "Board Shorts"
+// ---------- Denim-Specific Data ----------
+const DENIM_STYLES = [
+  "Slim Fit Jeans", "Skinny Stretch Jeans", "Cargo Denim Pant", "Jogger Denim",
+  "Straight Leg Jeans", "Cargo Short", "Bootcut Jeans", "Relaxed Fit Jeans",
+  "Tapered Fit Jeans", "Wide Leg Jeans", "Regular Fit Jeans", "Super Skinny Jeans",
+  "Loose Fit Jeans", "Denim Bermuda", "Slim Cargo Jeans",
 ];
 
-const BUYERS = ["H&M", "Zara", "Primark", "Gap", "Uniqlo", "Next", "C&A", "Target", "Walmart", "Mango"];
-
-const OPERATIONS = [
-  "Attach Pocket", "Waistband Join", "Hem Bottom", "Side Seam", "Inseam",
-  "Attach Zipper", "Collar Attach", "Sleeve Attach", "Cuff Hem", "Button Hole",
-  "Back Yoke", "Front Placket", "Belt Loop", "Label Attach", "Bar Tack",
-  "Top Stitch", "Overlock Edge", "Fusing", "Pressing", "Final Trim"
+const DENIM_FABRICS = [
+  "11.5oz Rigid Denim", "10oz Stretch Denim", "9oz Stretch Twill", "Bull Denim 12oz",
+  "8oz Lightweight Denim", "13.5oz Heavy Denim", "10.5oz Crosshatch Denim",
+  "9.5oz Power Stretch Denim", "11oz Selvedge Denim", "7.5oz Chambray Denim",
 ];
 
-const MACHINE_TYPES = ["SNLS", "DNLS", "Overlock", "Flatlock", "Bartack", "Buttonhole", "Iron", "Fusing"];
+const BUYERS = ["Levi's", "Wrangler", "H&M", "Zara", "Gap", "Uniqlo", "Primark", "Target", "G-Star RAW", "Diesel"];
+
+const DENIM_OPERATIONS = [
+  "Back Pocket Attach", "Waistband Join", "Inseam Stitch", "Side Seam",
+  "Zipper Fly Attach", "Belt Loop Attach", "Hem Bottom", "Bar Tack",
+  "Coin Pocket Stitch", "Yoke Join", "Rivet Attach", "Label Stitch",
+  "Top Stitch Seam", "Overlock Edge", "Pressing", "Final Trim",
+  "Waistband Top Stitch", "Front Rise Seam", "Back Rise Seam", "Patch Attach",
+];
+
+const MACHINE_TYPES = ["SNLS", "DNLS", "Overlock", "Flatlock", "Bartack", "Buttonhole", "Iron", "Fusing", "Rivet Machine"];
 
 const FIRST_NAMES = [
   "Rahim", "Karim", "Fatima", "Ayesha", "Jamal", "Nasreen", "Tariq", "Salma",
   "Hassan", "Ruma", "Shakil", "Mina", "Faruk", "Bilkis", "Hanif", "Reshma",
   "Kabir", "Nusrat", "Imran", "Parveen", "Rafiq", "Shirin", "Masud", "Amina",
-  "Zahir", "Taslima", "Habib", "Rokeya", "Shahid", "Kulsum"
+  "Zahir", "Taslima", "Habib", "Rokeya", "Shahid", "Kulsum",
 ];
 
 const LAST_NAMES = [
   "Ahmed", "Hossain", "Islam", "Rahman", "Khan", "Begum", "Akter", "Chowdhury",
-  "Ali", "Uddin", "Miah", "Das", "Khatun", "Sarkar", "Mondal", "Sheikh"
+  "Ali", "Uddin", "Miah", "Das", "Khatun", "Sarkar", "Mondal", "Sheikh",
 ];
 
 const DOWNTIME_REASONS: DowntimeReason[] = [
   { reason: "Machine Breakdown", minutes: 245, occurrences: 18 },
   { reason: "Thread Breakage", minutes: 180, occurrences: 42 },
   { reason: "Needle Change", minutes: 120, occurrences: 35 },
-  { reason: "Fabric Shortage", minutes: 195, occurrences: 8 },
+  { reason: "Denim Fabric Shortage", minutes: 195, occurrences: 8 },
   { reason: "Power Outage", minutes: 90, occurrences: 3 },
   { reason: "Operator Absent", minutes: 160, occurrences: 12 },
   { reason: "Quality Rework", minutes: 140, occurrences: 22 },
@@ -155,16 +178,36 @@ const DOWNTIME_REASONS: DowntimeReason[] = [
   { reason: "Style Changeover", minutes: 200, occurrences: 5 },
 ];
 
+export const DENIM_DEFECTS: DenimDefect[] = [
+  { defect: "Open Seam", count: 42, percentage: 28 },
+  { defect: "Skip Stitch", count: 31, percentage: 21 },
+  { defect: "Shade Variation", count: 24, percentage: 16 },
+  { defect: "Inseam Deviation", count: 18, percentage: 12 },
+  { defect: "Waistband Issue", count: 14, percentage: 9 },
+  { defect: "Broken Stitch", count: 11, percentage: 7 },
+  { defect: "Puckering", count: 10, percentage: 7 },
+];
+
+// ---------- Factory-User Mapping ----------
+export const FACTORY_USERS: Record<string, FactoryUser> = {
+  all: { name: "Armana Group", initials: "AG", color: "bg-primary" },
+  F1: { name: "Dhanaperumal", initials: "DP", color: "bg-emerald-600" },
+  F2: { name: "Abhiram", initials: "AB", color: "bg-blue-600" },
+  F3: { name: "Mallikarjun", initials: "MK", color: "bg-purple-600" },
+  F4: { name: "Vishwa", initials: "VS", color: "bg-amber-600" },
+};
+
 // ---------- Generate Factories ----------
-function generateLines(floorId: string, factoryId: string, floorIndex: number, lineCount: number): SewingLine[] {
+function generateLines(floorId: string, factoryId: string, linePrefix: string, lineCount: number): SewingLine[] {
   return Array.from({ length: lineCount }, (_, i) => {
     const eff = rng(45, 98);
+    const name = `${linePrefix}${i + 1}`;
     return {
-      id: `${factoryId}-${floorId}-L${String(i + 1).padStart(2, "0")}`,
-      name: `L${floorIndex * 100 + i + 1}`,
+      id: `${factoryId}-${floorId}-${name}`,
+      name,
       floorId,
       factoryId,
-      style: pick(STYLES),
+      style: pick(DENIM_STYLES),
       operatorCount: rng(22, 35),
       workstations: rng(20, 30),
       target: rng(400, 800),
@@ -178,23 +221,60 @@ function generateLines(floorId: string, factoryId: string, floorIndex: number, l
 
 function generateFactories(): Factory[] {
   const factoryDefs = [
-    { name: "Dhaka Denim Plant", location: "Gazipur, Dhaka", floors: 2, linesPerFloor: 16 },
-    { name: "Chittagong Knit Works", location: "Chittagong EPZ", floors: 2, linesPerFloor: 14 },
-    { name: "Narayanganj Apparel Hub", location: "Narayanganj", floors: 2, linesPerFloor: 12 },
+    {
+      name: "Armana Apparels",
+      location: "Hyderabad, India",
+      address: "Plot 42, IDA Bollaram, Hyderabad",
+      user: FACTORY_USERS["F1"],
+      lines: [
+        { prefix: "L", count: 12, floor: "Production Floor" },
+        { prefix: "F", count: 4, floor: "Finishing Floor" },
+      ],
+    },
+    {
+      name: "Zyta Apparels",
+      location: "Mirpur, Dhaka",
+      address: "House 12, Road 3, Mirpur DOHS, Dhaka",
+      user: FACTORY_USERS["F2"],
+      lines: [
+        { prefix: "L", count: 12, floor: "Production Floor" },
+        { prefix: "F", count: 4, floor: "Finishing Floor" },
+      ],
+    },
+    {
+      name: "Denimach Ltd.",
+      location: "Gazipur, Bangladesh",
+      address: "Konabari, Gazipur, Dhaka Division",
+      user: FACTORY_USERS["F3"],
+      lines: [
+        { prefix: "L", count: 12, floor: "Production Floor" },
+        { prefix: "F", count: 4, floor: "Finishing Floor" },
+      ],
+    },
+    {
+      name: "Denitex Ltd.",
+      location: "Savar, Dhaka",
+      address: "Hemayetpur, Savar, Dhaka-1340",
+      user: FACTORY_USERS["F4"],
+      lines: [
+        { prefix: "L", count: 12, floor: "Production Floor" },
+        { prefix: "F", count: 4, floor: "Finishing Floor" },
+      ],
+    },
   ];
 
   return factoryDefs.map((fd, fi) => {
     const factoryId = `F${fi + 1}`;
-    const floors: Floor[] = Array.from({ length: fd.floors }, (_, fli) => {
+    const floors: Floor[] = fd.lines.map((floorDef, fli) => {
       const floorId = `${factoryId}-FL${fli + 1}`;
       return {
         id: floorId,
-        name: `Floor ${fli + 1}`,
+        name: floorDef.floor,
         factoryId,
-        lines: generateLines(floorId, factoryId, fli + 1, fd.linesPerFloor),
+        lines: generateLines(floorId, factoryId, floorDef.prefix, floorDef.count),
       };
     });
-    return { id: factoryId, name: fd.name, location: fd.location, floors };
+    return { id: factoryId, name: fd.name, location: fd.location, address: fd.address, user: fd.user, floors };
   });
 }
 
@@ -214,7 +294,7 @@ function generateOperators(factories: Factory[]): Operator[] {
           const usedOps = new Set<string>();
           for (let j = 0; j < numOps; j++) {
             let op: string;
-            do { op = pick(OPERATIONS); } while (usedOps.has(op));
+            do { op = pick(DENIM_OPERATIONS); } while (usedOps.has(op));
             usedOps.add(op);
             const eff = skillLevel === "Expert" ? rng(85, 100) : skillLevel === "Intermediate" ? rng(60, 85) : rng(40, 65);
             ops.push({ operation: op, efficiency: eff, skillLevel });
@@ -249,8 +329,8 @@ function generateOrders(factories: Factory[]): ProductionOrder[] {
       for (const line of floor.lines) {
         const qty = rng(5000, 50000);
         const smv = line.smv;
-        const dailyTarget = Math.round((8 * 60 * line.operatorCount * (line.efficiency / 100)) / smv);
-        const hourlyTarget = Math.round(dailyTarget / 8);
+        const dailyTarget = Math.round((10 * 60 * line.operatorCount * (line.efficiency / 100)) / smv);
+        const hourlyTarget = Math.round(dailyTarget / 10);
         const daysNeeded = Math.ceil(qty / dailyTarget);
         const start = new Date(2026, 2, rng(1, 10));
         const plannedFinish = new Date(start);
@@ -266,7 +346,7 @@ function generateOrders(factories: Factory[]): ProductionOrder[] {
         const usedOps = new Set<string>();
         for (let i = 0; i < numOps; i++) {
           let op: string;
-          do { op = pick(OPERATIONS); } while (usedOps.has(op));
+          do { op = pick(DENIM_OPERATIONS); } while (usedOps.has(op));
           usedOps.add(op);
           bulletinOps.push({ operation: op, smv: +(Math.random() * 1.5 + 0.2).toFixed(2), machineType: pick(MACHINE_TYPES) });
         }
@@ -276,6 +356,7 @@ function generateOrders(factories: Factory[]): ProductionOrder[] {
           poNumber: `PO-2026-${String(orderNum).padStart(4, "0")}`,
           buyer: pick(BUYERS),
           style: line.style,
+          fabric: pick(DENIM_FABRICS),
           orderQty: qty,
           completedQty: Math.round(qty * completedPct),
           smv,
@@ -307,8 +388,9 @@ function generateAlerts(factories: Factory[]): Alert[] {
     ],
     Quality: [
       "DHU exceeded 8% on Line {line}",
-      "Consecutive defects detected on Line {line}",
-      "Quality audit failure on Line {line}",
+      "Open seam defect spike on Line {line}",
+      "Shade variation detected on Line {line}",
+      "Skip stitch rate high on Line {line}",
     ],
     Machine: [
       "Machine breakdown on Line {line} – Workstation {ws}",
@@ -316,7 +398,7 @@ function generateAlerts(factories: Factory[]): Alert[] {
       "Needle breakage spike on Line {line}",
     ],
     Material: [
-      "Fabric shortage alert for Line {line}",
+      "Denim fabric shortage alert for Line {line}",
       "Bundle supply delay on Line {line}",
       "Thread stock running low for Line {line}",
     ],
@@ -342,7 +424,7 @@ function generateAlerts(factories: Factory[]): Alert[] {
             message: msg,
             lineId: line.id,
             factoryId: factory.id,
-            timestamp: new Date(2026, 2, 6, rng(6, 17), rng(0, 59)).toISOString(),
+            timestamp: new Date(2026, 2, 8, rng(8, 18), rng(0, 59)).toISOString(),
             acknowledged: Math.random() < 0.3,
           });
         }
@@ -352,9 +434,9 @@ function generateAlerts(factories: Factory[]): Alert[] {
   return alerts;
 }
 
-// ---------- Generate Hourly Production ----------
+// ---------- Generate Hourly Production (8AM–7PM, 10 hrs) ----------
 function generateHourlyProduction(): HourlyProduction[] {
-  const hours = ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
+  const hours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
   let cumActual = 0;
   let cumPredicted = 0;
   let cumTarget = 0;
@@ -373,7 +455,7 @@ function generateHourlyProduction(): HourlyProduction[] {
 
 // ---------- Generate WIP ----------
 function generateWip(): WipEntry[] {
-  return OPERATIONS.slice(0, 10).map(op => {
+  return DENIM_OPERATIONS.slice(0, 10).map(op => {
     const wip = rng(2, 25);
     const avg = 8;
     return {
@@ -408,5 +490,21 @@ export function getFactoryKPIs(factoryId?: string) {
   const totalDowntime = downtimeReasons.reduce((s, d) => s + d.minutes, 0);
   const pendingAlerts = factoryAlerts.filter(a => !a.acknowledged).length;
 
-  return { totalOutput, totalTarget, avgEfficiency, activeLines, totalDowntime, pendingAlerts };
+  // DHU calculation
+  const totalDefects = DENIM_DEFECTS.reduce((s, d) => s + d.count, 0);
+  const totalInspected = Math.round(totalDefects / 0.022); // ~2.2 DHU
+  const dhu = +(totalDefects / totalInspected * 100).toFixed(1);
+  const rft = +(100 - dhu).toFixed(1);
+
+  return { totalOutput, totalTarget, avgEfficiency, activeLines, totalDowntime, pendingAlerts, dhu, rft };
+}
+
+// Helper to get factory info
+export function getFactoryInfo(factoryId: string) {
+  if (factoryId === "all") {
+    return { name: "Armana Group", location: "All Locations", address: "Headquarters", user: FACTORY_USERS["all"] };
+  }
+  const factory = factories.find(f => f.id === factoryId);
+  if (!factory) return { name: "Armana Group", location: "", address: "", user: FACTORY_USERS["all"] };
+  return { name: factory.name, location: factory.location, address: factory.address, user: factory.user };
 }
