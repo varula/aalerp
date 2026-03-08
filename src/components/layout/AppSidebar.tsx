@@ -30,6 +30,7 @@ const mainItems = [
   { title: "Sewing Lines", url: "/lines", icon: Factory },
   { title: "Operators", url: "/operators", icon: Users },
   { title: "Alerts & Andon", url: "/alerts", icon: AlertTriangle },
+  { title: "WIP Tracking", url: "/wip", icon: Package },
 ];
 
 const secondaryItems = [
