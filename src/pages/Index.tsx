@@ -195,13 +195,13 @@ export default function Dashboard() {
                 <Table>
                   <TableHeader>
                     <TableRow className="border-b border-border/40">
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider w-[70px]">Line</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Style</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Target</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Actual</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Eff %</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[60px]">OT</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-center w-[50px]">Status</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[70px]">Line</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Style</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Target</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Actual</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Eff %</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[60px]">OT</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-center w-[50px]">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
