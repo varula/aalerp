@@ -44,9 +44,11 @@ function LiveClock() {
 
 export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const { profile, role, signOut } = useAuth();
   const pendingAlerts = alerts.filter(a => !a.acknowledged).length;
   const factoryInfo = getFactoryInfo(selectedFactory);
-  const user = factoryInfo.user;
+  const displayName = profile?.full_name || factoryInfo.user.name;
+  const initials = displayName ? displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "U";
 
   return (
     <motion.header
