@@ -10,6 +10,7 @@ import {
   AlertTriangle, BarChart3, Layers
 } from "lucide-react";
 import { format, parseISO, differenceInDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval, addMonths, subMonths } from "date-fns";
+import { EfficiencyByLineChart, EfficiencyTrendChart } from "@/components/EfficiencyCharts";
 
 // ── Types ──────────────────────────────────
 type Department = "cutting" | "sewing" | "finishing";
@@ -508,6 +509,12 @@ export default function PlanningOverview() {
           </button>
         </div>
         <GanttChart monthOffset={monthOffset} />
+      </div>
+
+      {/* Efficiency Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <EfficiencyByLineChart />
+        <EfficiencyTrendChart />
       </div>
 
       {/* Cross-Department Comparison */}
