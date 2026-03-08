@@ -50,15 +50,15 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground font-bold text-sm">
+      <SidebarHeader className="p-5 pb-6">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
             AF
           </div>
           {!collapsed && (
             <div>
-              <h2 className="text-sm font-bold text-sidebar-foreground">Armana Fashions</h2>
-              <p className="text-[10px] text-sidebar-foreground/60">Production Management</p>
+              <h2 className="text-[13px] font-semibold text-foreground tracking-tight">Armana Fashions</h2>
+              <p className="text-[10px] text-muted-foreground">Production Management</p>
             </div>
           )}
         </div>
@@ -66,7 +66,6 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => {
@@ -78,11 +77,11 @@ export function AppSidebar() {
                       <NavLink
                         to={item.url}
                         end={item.url === "/"}
-                        className="hover:bg-sidebar-accent"
-                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                        className="rounded-lg hover:bg-accent transition-colors"
+                        activeClassName="bg-accent text-accent-foreground font-medium"
                       >
-                        <item.icon className="mr-2 h-4 w-4" />
-                        {!collapsed && <span className="flex-1">{item.title}</span>}
+                        <item.icon className="mr-2.5 h-[18px] w-[18px] opacity-70" />
+                        {!collapsed && <span className="flex-1 text-[13px]">{item.title}</span>}
                         {isAlerts && badgeCount > 0 && (
                           <Badge
                             variant={criticalCount > 0 ? "destructive" : "secondary"}
@@ -101,7 +100,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Views</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3">Views</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {secondaryItems.map((item) => (
@@ -109,11 +108,11 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
-                      className="hover:bg-sidebar-accent"
-                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      className="rounded-lg hover:bg-accent transition-colors"
+                      activeClassName="bg-accent text-accent-foreground font-medium"
                     >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="mr-2.5 h-[18px] w-[18px] opacity-70" />
+                      {!collapsed && <span className="text-[13px]">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -123,9 +122,9 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-3">
+      <SidebarFooter className="p-4">
         {!collapsed && (
-          <p className="text-[10px] text-sidebar-foreground/40 text-center">v1.0 · Armana Fashions</p>
+          <p className="text-[10px] text-muted-foreground/40 text-center">v1.0 · Armana Fashions</p>
         )}
       </SidebarFooter>
     </Sidebar>
