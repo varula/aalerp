@@ -152,11 +152,24 @@ function PlanTable({ tab }: { tab: PlanTab }) {
       toast({ title: "Required fields missing", description: missing.map(f => f.label).join(", "), variant: "destructive" });
       return;
     }
+    // Auto-compute capacity fields for sewing
+    const saveData = { ...formData };
+    if (tab === "sewing") {
+      const mp = Number(saveData.manpower) || 0;
+      const smv = Number(saveData.smv) || 0;
+      const hours = Number(saveData.workingHours) || 10;
+      if (mp > 0 && smv > 0) {
+        saveData.targetPerHour = Math.floor((mp * 60) / smv);
+        const availMin = mp * hours * 60;
+        const actual = Number(saveData.actualQty) || 0;
+        saveData.efficiency = availMin > 0 ? Math.round(((actual * smv) / availMin) * 100) : 0;
+      }
+    }
     if (editing) {
-      update(cfg.storageKey, editing.id, formData);
+      update(cfg.storageKey, editing.id, saveData);
       toast({ title: "Plan updated" });
     } else {
-      create(cfg.storageKey, formData);
+      create(cfg.storageKey, saveData);
       toast({ title: "Plan created" });
     }
     setDialogOpen(false);
