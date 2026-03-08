@@ -226,6 +226,11 @@ function PlanTable({ tab }: { tab: PlanTab }) {
           <Input placeholder="Search plans..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
         <div className="flex gap-2">
+          {isSewing && (
+            <Button variant="outline" size="sm" onClick={() => setSimulatorOpen(true)} className="gap-1.5">
+              <FlaskConical className="h-4 w-4" /> What-If
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={handleExport} disabled={records.length === 0}>
             <Download className="h-4 w-4 mr-1" /> Export
           </Button>
