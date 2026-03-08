@@ -117,6 +117,24 @@ export interface WipEntry {
   isBottleneck: boolean;
 }
 
+export interface FactoryLevelKPI {
+  factoryId: string;
+  factoryName: string;
+  factoryEfficiency: number;
+  overallLaborProductivity: number; // pieces per operator per hour
+  costPerStandardMinute: number; // USD
+  manToMachineRatio: number;
+  cutToShipRatio: number; // percentage
+  orderToShipRatio: number; // percentage
+  onTimeDeliveryRate: number; // percentage
+  rftQuality: number; // percentage
+  dhuPercent: number;
+  qualityPerformance: number; // percentage
+  lostTimePercent: number;
+  workerAbsenteeismRate: number; // percentage
+  employeeTurnoverRate: number; // percentage
+}
+
 export interface DenimDefect {
   defect: string;
   count: number;
