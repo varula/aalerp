@@ -11,9 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle } from "lucide-react";
+import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle, FlaskConical } from "lucide-react";
 import { getAll, create, update, remove, exportToCsv, generateId, CrudRecord } from "@/lib/crud-storage";
 import { CapacityPanel, SewingCapacityKPIs } from "@/components/CapacityCalculator";
+import { WhatIfSimulator } from "@/components/WhatIfSimulator";
 
 // ── Plan Field Definitions ──────────────────────
 interface PlanField {
@@ -126,6 +127,7 @@ function PlanTable({ tab }: { tab: PlanTab }) {
   const [editing, setEditing] = useState<CrudRecord | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [simulatorOpen, setSimulatorOpen] = useState(false);
 
   const refresh = () => setRecords(getAll(cfg.storageKey));
   const displayFields = cfg.fields.filter(f => cfg.displayCols.includes(f.key));
@@ -224,6 +226,11 @@ function PlanTable({ tab }: { tab: PlanTab }) {
           <Input placeholder="Search plans..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
         <div className="flex gap-2">
+          {isSewing && (
+            <Button variant="outline" size="sm" onClick={() => setSimulatorOpen(true)} className="gap-1.5">
+              <FlaskConical className="h-4 w-4" /> What-If
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={handleExport} disabled={records.length === 0}>
             <Download className="h-4 w-4 mr-1" /> Export
           </Button>
@@ -335,6 +342,24 @@ function PlanTable({ tab }: { tab: PlanTab }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* What-If Simulator (Sewing only) */}
+      {isSewing && (
+        <WhatIfSimulator
+          open={simulatorOpen}
+          onOpenChange={setSimulatorOpen}
+          onApply={(values) => {
+            setFormData(p => ({
+              ...p,
+              manpower: values.manpower,
+              smv: values.smv,
+              workingHours: values.workingHours,
+            }));
+            setEditing(null);
+            setDialogOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }
