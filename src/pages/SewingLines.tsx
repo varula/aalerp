@@ -55,11 +55,13 @@ function getLineWip(lineId: string) {
   });
 }
 
+const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
+
 const cardHover = {
   whileHover: { y: -3, scale: 1.012 },
   whileTap: { scale: 0.985 },
-  transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] },
-};
+  transition: { duration: 0.25, ease: appleEase },
+} as const;
 
 const stagger = {
   hidden: {},
@@ -68,8 +70,8 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: appleEase } },
+} as const;
 
 export default function SewingLinesPage() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
