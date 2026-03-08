@@ -11,10 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle, FlaskConical } from "lucide-react";
+import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle, FlaskConical, ArrowUpDown } from "lucide-react";
 import { getAll, create, update, remove, exportToCsv, generateId, CrudRecord } from "@/lib/crud-storage";
 import { CapacityPanel, SewingCapacityKPIs } from "@/components/CapacityCalculator";
 import { WhatIfSimulator } from "@/components/WhatIfSimulator";
+import { LineBalancingTool } from "@/components/LineBalancing";
 
 // ── Plan Field Definitions ──────────────────────
 interface PlanField {
