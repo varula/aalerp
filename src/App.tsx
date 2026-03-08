@@ -13,6 +13,7 @@ import Alerts from "@/pages/Alerts";
 import Reports from "@/pages/Reports";
 import WipTracking from "@/pages/WipTracking";
 import TvDisplay from "@/pages/TvDisplay";
+import FactoryKPIs from "@/pages/FactoryKPIs";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/wip" element={<WipTracking />} />
+              <Route path="/kpis" element={<FactoryKPIs />} />
               <Route path="/tv" element={<TvDisplay />} />
             </Route>
             <Route path="*" element={<NotFound />} />

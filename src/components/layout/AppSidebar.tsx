@@ -7,6 +7,7 @@ import {
   BarChart3,
   Monitor,
   Package,
+  Gauge,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -28,6 +29,7 @@ import {
 
 const mainItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Factory KPIs", url: "/kpis", icon: Gauge },
   { title: "Production Orders", url: "/orders", icon: ClipboardList },
   { title: "Sewing Lines", url: "/lines", icon: Factory },
   { title: "Operators", url: "/operators", icon: Users },
