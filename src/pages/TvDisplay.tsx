@@ -65,10 +65,10 @@ export default function TvDisplay() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            GQ
+            AF
           </div>
           <div>
-            <h1 className="text-xl font-bold">GarmentIQ — Factory Display</h1>
+            <h1 className="text-xl font-bold">Armana Fashions — Factory Display</h1>
             <p className="text-xs text-muted-foreground">
               {selectedFactory === "all" ? "All Factories" : lines[0]?.factoryId || ""}
               {" · "}Auto-refresh every 60s
@@ -202,7 +202,7 @@ export default function TvDisplay() {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2">
-        <span>GarmentIQ v1.0 · Smart Factory MES</span>
+        <span>Armana Fashions v1.0 · Production Management</span>
         <span className="font-mono">Last refresh: {clock} · Cycle #{refreshCount}</span>
       </div>
     </div>
