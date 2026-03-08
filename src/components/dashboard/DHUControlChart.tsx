@@ -1,16 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { getFactoryChartData, dhuTrend } from "@/data/mock-data";
 import { Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { APPLE_TOOLTIP, APPLE_AXIS, APPLE_GRID } from "@/lib/chart-styles";
 
 interface Props { factoryId?: string; }
 
