@@ -1,127 +1,183 @@
+import { useState } from "react";
 import {
-  LayoutDashboard,
-  ClipboardList,
-  Users,
-  AlertTriangle,
-  Factory,
-  BarChart3,
-  Monitor,
-  Package,
-  Gauge,
+  LayoutDashboard, ClipboardList, Users, AlertTriangle, Factory, BarChart3,
+  Monitor, Package, Gauge, Shield, Wrench, Eye, Brain, Boxes, Clock,
+  Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
+  Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import { useAlertRules } from "@/hooks/use-alert-rules";
 import { Badge } from "@/components/ui/badge";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 
-const mainItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Factory KPIs", url: "/kpis", icon: Gauge },
-  { title: "Production Orders", url: "/orders", icon: ClipboardList },
-  { title: "Sewing Lines", url: "/lines", icon: Factory },
-  { title: "Operators", url: "/operators", icon: Users },
-  { title: "Alerts & Andon", url: "/alerts", icon: AlertTriangle },
-  { title: "WIP Tracking", url: "/wip", icon: Package },
-];
+interface NavSection {
+  label: string;
+  items: { title: string; url: string; icon: React.ElementType; badge?: number }[];
+}
 
-const secondaryItems = [
-  { title: "Reports", url: "/reports", icon: BarChart3 },
-  { title: "TV Display", url: "/tv", icon: Monitor },
+const sections: NavSection[] = [
+  {
+    label: "Overview",
+    items: [
+      { title: "Dashboard", url: "/", icon: LayoutDashboard },
+      { title: "Factory KPIs", url: "/kpis", icon: Gauge },
+    ],
+  },
+  {
+    label: "Production",
+    items: [
+      { title: "Production Orders", url: "/orders", icon: ClipboardList },
+      { title: "Sewing Lines", url: "/lines", icon: Factory },
+      { title: "WIP Tracking", url: "/wip", icon: Package },
+      { title: "Cut to Pack", url: "/cut-to-pack", icon: Scissors },
+    ],
+  },
+  {
+    label: "Quality",
+    items: [
+      { title: "Quality Dashboard", url: "/quality", icon: Shield },
+      { title: "Inspections", url: "/inspections", icon: Eye },
+      { title: "Defect Analysis", url: "/defects", icon: AlertTriangle },
+    ],
+  },
+  {
+    label: "Resources",
+    items: [
+      { title: "Operators", url: "/operators", icon: Users },
+      { title: "Machines & IoT", url: "/machines", icon: Wrench },
+      { title: "Skill Matrix", url: "/skills", icon: UserCog },
+      { title: "Attendance", url: "/attendance", icon: CalendarCheck },
+    ],
+  },
+  {
+    label: "AI & Automation",
+    items: [
+      { title: "AI Predictions", url: "/ai-predictions", icon: Brain },
+      { title: "CV Counting", url: "/cv-counting", icon: Camera },
+      { title: "Defect Detection", url: "/ai-defects", icon: Sparkles },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      { title: "Downtime Tracking", url: "/downtime", icon: Clock },
+      { title: "Alerts & Andon", url: "/alerts", icon: AlertTriangle },
+      { title: "Material Tracking", url: "/materials", icon: Boxes },
+    ],
+  },
+  {
+    label: "Analytics",
+    items: [
+      { title: "Reports", url: "/reports", icon: BarChart3 },
+      { title: "Buyer Analytics", url: "/buyer-analytics", icon: Truck },
+    ],
+  },
+  {
+    label: "Advanced",
+    items: [
+      { title: "Digital Twin", url: "/digital-twin", icon: FlaskConical },
+      { title: "Benchmarking", url: "/benchmarking", icon: MapPin },
+    ],
+  },
+  {
+    label: "Administration",
+    items: [
+      { title: "Master Data", url: "/master-data", icon: Database },
+      { title: "Settings", url: "/settings", icon: Settings },
+      { title: "TV Display", url: "/tv", icon: Monitor },
+    ],
+  },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
   const { triggeredAlerts } = useAlertRules();
   const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
   const totalTriggered = triggeredAlerts.length;
 
+  // Collapsible section state — Overview and Production open by default
+  const [openSections, setOpenSections] = useState<Set<string>>(
+    new Set(["Overview", "Production", "Quality", "Resources", "Operations"])
+  );
+
+  const toggleSection = (label: string) => {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label); else next.add(label);
+      return next;
+    });
+  };
+
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="p-5 pb-6">
+      <SidebarHeader className="p-5 pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm shrink-0">
             AG
           </div>
           {!collapsed && (
-            <div className="flex flex-col">
-              <h2 className="text-[15.5px] font-semibold text-foreground" style={{ letterSpacing: "-0.03em" }}>Armana Group</h2>
+            <div className="flex flex-col min-w-0">
+              <h2 className="text-[15.5px] font-semibold text-foreground truncate" style={{ letterSpacing: "-0.03em" }}>Armana Group</h2>
               <p className="text-[10px] text-muted-foreground">Denim Production</p>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainItems.map((item) => {
-                const isAlerts = item.url === "/alerts";
-                const badgeCount = isAlerts ? totalTriggered : 0;
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to={item.url}
-                        end={item.url === "/"}
-                        className="rounded-lg hover:bg-accent transition-colors"
-                        activeClassName="bg-accent text-accent-foreground font-medium"
-                      >
-                        <item.icon className="mr-2.5 h-[18px] w-[18px] opacity-70" />
-                        {!collapsed && <span className="flex-1 text-[13px]">{item.title}</span>}
-                        {isAlerts && badgeCount > 0 && (
-                          <Badge
-                            variant={criticalCount > 0 ? "destructive" : "secondary"}
-                            className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center font-mono"
-                          >
-                            {badgeCount}
-                          </Badge>
-                        )}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-3">Views</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {secondaryItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      className="rounded-lg hover:bg-accent transition-colors"
-                      activeClassName="bg-accent text-accent-foreground font-medium"
-                    >
-                      <item.icon className="mr-2.5 h-[18px] w-[18px] opacity-70" />
-                      {!collapsed && <span className="text-[13px]">{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarContent className="px-2">
+        {sections.map(section => {
+          const isOpen = openSections.has(section.label);
+          return (
+            <SidebarGroup key={section.label} className="py-0">
+              {!collapsed && (
+                <button
+                  onClick={() => toggleSection(section.label)}
+                  className="flex items-center w-full px-2 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                >
+                  {isOpen ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
+                  {section.label}
+                </button>
+              )}
+              {(collapsed || isOpen) && (
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {section.items.map(item => {
+                      const isAlerts = item.url === "/alerts";
+                      const badgeCount = isAlerts ? totalTriggered : (item.badge || 0);
+                      return (
+                        <SidebarMenuItem key={item.url}>
+                          <SidebarMenuButton asChild>
+                            <NavLink
+                              to={item.url}
+                              end={item.url === "/"}
+                              className="rounded-lg hover:bg-accent transition-colors"
+                              activeClassName="bg-accent text-accent-foreground font-medium"
+                            >
+                              <item.icon className="mr-2.5 h-[16px] w-[16px] opacity-70 shrink-0" />
+                              {!collapsed && <span className="flex-1 text-[12.5px] truncate">{item.title}</span>}
+                              {isAlerts && badgeCount > 0 && (
+                                <Badge
+                                  variant={criticalCount > 0 ? "destructive" : "secondary"}
+                                  className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center font-mono"
+                                >
+                                  {badgeCount}
+                                </Badge>
+                              )}
+                            </NavLink>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              )}
+            </SidebarGroup>
+          );
+        })}
       </SidebarContent>
 
       <SidebarFooter className="p-4">
