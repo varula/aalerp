@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/table";
 import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield,
-  Users, Timer, ArrowUpRight,
+  Users, Timer, ArrowUpRight, Scissors,
 } from "lucide-react";
 import {
   wipData, getFactoryInfo, factoryLevelKPIs, getFactoryChartData,
@@ -45,7 +45,7 @@ export default function Dashboard() {
   const { lines: allSimLines, alerts: simAlerts, lastUpdate, updatedLineIds } = useSimulation();
   const lines = factoryId ? allSimLines.filter(l => l.factoryId === factoryId) : allSimLines;
   const factoryAlerts = factoryId ? simAlerts.filter(a => a.factoryId === factoryId) : simAlerts;
-  const kpis = computeKPIs(lines, factoryAlerts);
+  const kpis = computeKPIs(lines, factoryAlerts, factoryId);
   const factoryInfo = getFactoryInfo(selectedFactory);
 
   const fKPIs = factoryId ? factoryLevelKPIs.find(k => k.factoryId === factoryId) : undefined;
@@ -111,7 +111,7 @@ export default function Dashboard() {
           <StatCard label="Total Downtime" value={`${kpis.totalDowntime} min`} sub="Today" icon={Clock} iconColor="text-status-warning" change="-12%" changeType="negative" />
         </motion.div>
         <motion.div variants={fadeUp}>
-          <StatCard label="Pending Alerts" value={kpis.pendingAlerts} sub="Unacknowledged" icon={AlertTriangle} iconColor="text-destructive" change={`${kpis.pendingAlerts > 0 ? "Action needed" : "Clear"}`} changeType={kpis.pendingAlerts > 0 ? "negative" : "positive"} />
+          <StatCard label="Cut to Ship" value={`${kpis.cutToShipRatio}%`} sub="Production yield" icon={Scissors} iconColor="text-chart-4" change={kpis.cutToShipRatio >= 95 ? "On target" : "Below target"} changeType={kpis.cutToShipRatio >= 95 ? "positive" : "negative"} />
         </motion.div>
       </motion.div>
 
