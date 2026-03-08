@@ -25,6 +25,9 @@ const sections: NavSection[] = [
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Factory KPIs", url: "/kpis", icon: Gauge },
+      { title: "Cutting Dept", url: "/dept/cutting", icon: Scissors },
+      { title: "Sewing Dept", url: "/dept/sewing", icon: Factory },
+      { title: "Finishing Dept", url: "/dept/finishing", icon: Package },
     ],
   },
   {
