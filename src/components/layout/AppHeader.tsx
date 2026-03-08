@@ -47,23 +47,23 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
   const user = factoryInfo.user;
 
   return (
-    <header className="h-16 border-b bg-card/80 glass flex items-center justify-between px-5 shrink-0">
-      <div className="flex items-center gap-3">
+    <header className="h-20 border-b border-border/40 bg-card/60 backdrop-blur-xl flex items-center justify-between px-6 shrink-0 shadow-sm">
+      <div className="flex items-center gap-4">
         <SidebarTrigger />
 
         {/* Brand Column */}
         <div className="hidden sm:flex flex-col justify-center min-w-0">
-          <h1 className="text-[15.5px] font-semibold text-foreground leading-tight" style={{ letterSpacing: "-0.03em" }}>
+          <h1 className="text-lg font-bold text-foreground leading-tight tracking-tight">
             {factoryInfo.name}
           </h1>
-          <p className="text-[10px] text-muted-foreground leading-tight truncate">{factoryInfo.location}</p>
-          <p className="text-[10px] font-semibold leading-tight text-blue-600 dark:text-blue-400">Integrated Production Management System</p>
+          <p className="text-[11px] text-muted-foreground leading-tight truncate mt-0.5">{factoryInfo.location}</p>
+          <p className="text-[10px] font-semibold leading-tight text-primary mt-0.5 tracking-wide uppercase">Integrated Production Management</p>
         </div>
 
-        <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
+        <div className="h-10 w-px bg-border/50 mx-1 hidden sm:block" />
 
         <Select value={selectedFactory} onValueChange={onFactoryChange}>
-          <SelectTrigger className="w-[180px] h-9 text-sm border-border/60">
+          <SelectTrigger className="w-[200px] h-10 text-sm border-border/40 rounded-xl bg-background/60 backdrop-blur-sm">
             <SelectValue placeholder="Select Factory" />
           </SelectTrigger>
           <SelectContent>
@@ -77,32 +77,32 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
         </Select>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         <LiveClock />
 
-        <div className="h-6 w-px bg-border mx-1 hidden md:block" />
+        <div className="h-7 w-px bg-border/40 mx-1.5 hidden md:block" />
 
-        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 rounded-lg">
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-10 w-10 rounded-xl hover:bg-accent/80 transition-all">
+          {theme === "dark" ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
         </Button>
-        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg">
-          <Settings className="h-4 w-4" />
+        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-accent/80 transition-all">
+          <Settings className="h-[18px] w-[18px]" />
         </Button>
-        <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
-          <Bell className="h-4 w-4" />
+        <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-accent/80 transition-all">
+          <Bell className="h-[18px] w-[18px]" />
           {pendingAlerts > 0 && (
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
+            <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-destructive ring-2 ring-card" />
           )}
         </Button>
 
-        {/* User Avatar — changes per factory */}
-        <div className="ml-2 flex items-center gap-2.5">
-          <div className={`h-8 w-8 rounded-full ${user.color} flex items-center justify-center text-white text-xs font-bold`}>
+        {/* User Avatar */}
+        <div className="ml-3 flex items-center gap-3">
+          <div className={`h-10 w-10 rounded-xl ${user.color} flex items-center justify-center text-white text-sm font-bold shadow-sm`}>
             {user.initials}
           </div>
           <div className="hidden lg:block">
-            <p className="text-xs font-medium text-foreground leading-tight">{user.name}</p>
-            
+            <p className="text-sm font-semibold text-foreground leading-tight">{user.name}</p>
+            <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">Production Manager</p>
           </div>
         </div>
       </div>
