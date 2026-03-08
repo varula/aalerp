@@ -45,7 +45,7 @@ export default function Dashboard() {
   const { lines: allSimLines, alerts: simAlerts, lastUpdate, updatedLineIds } = useSimulation();
   const lines = factoryId ? allSimLines.filter(l => l.factoryId === factoryId) : allSimLines;
   const factoryAlerts = factoryId ? simAlerts.filter(a => a.factoryId === factoryId) : simAlerts;
-  const kpis = computeKPIs(lines, factoryAlerts);
+  const kpis = computeKPIs(lines, factoryAlerts, factoryId);
   const factoryInfo = getFactoryInfo(selectedFactory);
 
   const fKPIs = factoryId ? factoryLevelKPIs.find(k => k.factoryId === factoryId) : undefined;
