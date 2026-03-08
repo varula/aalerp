@@ -357,10 +357,10 @@ function generateLines(floorId: string, factoryId: string, linePrefix: string, l
 
 function generateFactories(): Factory[] {
   const factoryDefs = [
-    { name: "Armana Apparels", location: "Tejgaon Industrial Area, Dhaka", address: "Tejgaon Industrial Area, Dhaka", user: FACTORY_USERS["F1"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
-    { name: "Zyta Apparels", location: "Mirpur, Dhaka", address: "House 12, Road 3, Mirpur DOHS, Dhaka", user: FACTORY_USERS["F2"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
-    { name: "Denimach Ltd.", location: "Gazipur, Bangladesh", address: "Konabari, Gazipur, Dhaka Division", user: FACTORY_USERS["F3"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
-    { name: "Denitex Ltd.", location: "Savar, Dhaka", address: "Hemayetpur, Savar, Dhaka-1340", user: FACTORY_USERS["F4"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
+    { name: "Armana Apparels Limited", location: "Tejgaon Industrial Area, Dhaka", address: "Tejgaon Industrial Area, Dhaka", user: FACTORY_USERS["F1"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
+    { name: "Zyta Apparels Limited", location: "Mirpur, Dhaka", address: "House 12, Road 3, Mirpur DOHS, Dhaka", user: FACTORY_USERS["F2"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
+    { name: "Denimach Limited", location: "Gazipur, Bangladesh", address: "Konabari, Gazipur, Dhaka Division", user: FACTORY_USERS["F3"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
+    { name: "Denitex Limited", location: "Savar, Dhaka", address: "Hemayetpur, Savar, Dhaka-1340", user: FACTORY_USERS["F4"], lines: [{ prefix: "L", count: 12, floor: "Production Floor" }, { prefix: "F", count: 4, floor: "Finishing Floor" }] },
   ];
   return factoryDefs.map((fd, fi) => {
     const factoryId = `F${fi + 1}`;
