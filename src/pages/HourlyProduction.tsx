@@ -93,7 +93,7 @@ export default function HourlyProduction() {
     });
     toast({ title: "Hourly production saved" });
     setDialogOpen(false);
-    setFormData({ date: new Date().toISOString().split("T")[0], shift: "Morning" });
+    setFormData({ date: new Date().toISOString().split("T")[0], shift: DEFAULT_SHIFT });
     refresh();
   };
 
