@@ -10,6 +10,7 @@ import {
   AlertTriangle, BarChart3, Layers
 } from "lucide-react";
 import { format, parseISO, differenceInDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval, addMonths, subMonths } from "date-fns";
+import { EfficiencyByLineChart, EfficiencyTrendChart } from "@/components/EfficiencyCharts";
 
 // ── Types ──────────────────────────────────
 type Department = "cutting" | "sewing" | "finishing";
