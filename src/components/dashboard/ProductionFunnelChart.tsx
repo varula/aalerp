@@ -1,19 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
 import { getFactoryChartData, productionFunnel } from "@/data/mock-data";
 import { ArrowDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { APPLE_TOOLTIP, APPLE_AXIS, APPLE_COLORS } from "@/lib/chart-styles";
 
 const FUNNEL_COLORS = [
-  "hsl(82, 55%, 42%)", "hsl(142, 60%, 45%)", "hsl(200, 70%, 50%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)",
+  APPLE_COLORS.green, APPLE_COLORS.teal, APPLE_COLORS.blue, APPLE_COLORS.orange, APPLE_COLORS.purple,
 ];
 
 interface Props { factoryId?: string; }
