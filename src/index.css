@@ -117,7 +117,7 @@
 
 @layer utilities {
   .font-mono {
-    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+    font-family: 'Inter', sans-serif;
   }
 
   .glass {
