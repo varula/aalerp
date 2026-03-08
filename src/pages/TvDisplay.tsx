@@ -202,7 +202,7 @@ export default function TvDisplay() {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2">
-        <span>GarmentIQ v1.0 · Smart Factory MES</span>
+        <span>Armana Fashions v1.0 · Production Management</span>
         <span className="font-mono">Last refresh: {clock} · Cycle #{refreshCount}</span>
       </div>
     </div>
