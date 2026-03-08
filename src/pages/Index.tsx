@@ -270,6 +270,9 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
+      {/* Module Activity Widgets */}
+      <ModuleActivityWidgets />
+
       {/* Line Performance Table */}
       <Card>
         <CardHeader className="pb-2">
