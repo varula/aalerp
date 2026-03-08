@@ -72,6 +72,8 @@ const App = () => (
               <Route path="/settings" element={<ComingSoon title="Settings" description="System configuration and preferences" />} />
               <Route path="/tv" element={<TvDisplay />} />
 
+              {/* Planning */}
+              <Route path="/planning" element={<PlanningModules />} />
               {/* CRUD Module Routes */}
               <Route path="/modules/:sectionSlug" element={<SectionModulesPage />} />
               <Route path="/modules/:sectionSlug/:moduleSlug" element={<CrudModulePage />} />
