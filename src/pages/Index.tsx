@@ -141,7 +141,7 @@ export default function Dashboard() {
                   return (
                     <TableRow
                       key={line.id}
-                      className={`cursor-pointer hover:bg-accent/50 transition-colors border-border/20 ${isUpdated ? "animate-value-flash" : ""} ${className={`cursor-pointer hover:bg-accent/50 transition-colors border-border/20 ${isUpdated ? "animate-value-flash" : ""} ${idx % 2 === 0 ? "bg-muted/40" : ""}`}}`}
+                      className={`cursor-pointer hover:bg-accent/50 transition-colors border-border/20 ${isUpdated ? "animate-value-flash" : ""} ${idx % 2 === 0 ? "bg-muted/40" : ""}`}
                       onClick={() => navigate(`/lines?line=${line.id}`)}
                     >
                       <TableCell className="font-semibold font-mono text-xs py-2">{line.name}</TableCell>
