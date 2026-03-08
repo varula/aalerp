@@ -823,6 +823,74 @@ export const absenteeismHeatmap = generateAbsenteeismHeatmap();
 export const qualityPerformance = generateQualityPerformance();
 export const turnoverTrend = generateTurnoverTrend();
 
+// ---------- Per-Factory Chart Data ----------
+export interface FactoryChartData {
+  efficiencyTrend: ReturnType<typeof generateEfficiencyTrend>;
+  dhuTrend: ReturnType<typeof generateDHUTrend>;
+  productionFunnel: ReturnType<typeof generateProductionFunnel>;
+  laborProductivity: ReturnType<typeof generateLaborProductivity>;
+  lostTimeBreakdown: ReturnType<typeof generateLostTimeBreakdown>;
+  absenteeismHeatmap: ReturnType<typeof generateAbsenteeismHeatmap>;
+  qualityPerformance: ReturnType<typeof generateQualityPerformance>;
+  turnoverTrend: ReturnType<typeof generateTurnoverTrend>;
+  hourlyProduction: ReturnType<typeof generateHourlyProduction>;
+}
+
+const _chartCache: Record<string, FactoryChartData> = {};
+
+export function getFactoryChartData(factoryId?: string): FactoryChartData {
+  const key = factoryId || "all";
+  if (_chartCache[key]) return _chartCache[key];
+  const data: FactoryChartData = {
+    efficiencyTrend: generateEfficiencyTrend(),
+    dhuTrend: generateDHUTrend(),
+    productionFunnel: generateProductionFunnel(),
+    laborProductivity: generateLaborProductivity(),
+    lostTimeBreakdown: generateLostTimeBreakdown(),
+    absenteeismHeatmap: generateAbsenteeismHeatmap(),
+    qualityPerformance: generateQualityPerformance(),
+    turnoverTrend: generateTurnoverTrend(),
+    hourlyProduction: generateHourlyProduction(),
+  };
+  _chartCache[key] = data;
+  return data;
+}
+
+// ---------- Department KPIs ----------
+export interface DeptKPIs {
+  efficiency: number;
+  laborProductivity: number;
+  rft: number;
+  dhu: number;
+  lostTime: number;
+  absenteeism: number;
+  activeLines: number;
+  totalOutput: number;
+  totalTarget: number;
+}
+
+export function getDeptKPIs(dept: "Cutting" | "Sewing" | "Finishing", factoryId?: string): DeptKPIs {
+  const lines = factoryId ? allLines.filter(l => l.factoryId === factoryId) : allLines;
+  const deptLines = dept === "Cutting"
+    ? lines.filter(l => l.name.startsWith("F"))
+    : dept === "Sewing"
+    ? lines.filter(l => l.name.startsWith("L") && parseInt(l.name.slice(1)) <= 8)
+    : lines.filter(l => l.name.startsWith("L") && parseInt(l.name.slice(1)) > 8);
+  const avgEff = deptLines.length ? Math.round(deptLines.reduce((s, l) => s + l.efficiency, 0) / deptLines.length) : 0;
+  const dhu = +(Math.random() * 3 + 1.5).toFixed(1);
+  return {
+    efficiency: avgEff,
+    laborProductivity: +(Math.random() * 15 + 25).toFixed(1),
+    rft: +(100 - dhu).toFixed(1),
+    dhu,
+    lostTime: +(Math.random() * 5 + 3).toFixed(1),
+    absenteeism: +(Math.random() * 6 + 3).toFixed(1),
+    activeLines: deptLines.length,
+    totalOutput: deptLines.reduce((s, l) => s + l.actual, 0),
+    totalTarget: deptLines.reduce((s, l) => s + l.target, 0),
+  };
+}
+
 // ---------- Aggregate KPIs ----------
 export function getFactoryKPIs(factoryId?: string) {
   const lines = factoryId ? allLines.filter(l => l.factoryId === factoryId) : allLines;
