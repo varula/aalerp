@@ -177,16 +177,16 @@ export default function Dashboard() {
         <motion.div variants={fadeUp} className="xl:col-span-3">
           <Card className="h-full">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+              <CardTitle className="text-base font-semibold flex items-center gap-2.5">
                 <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Factory className="h-4 w-4 text-primary" />
                 </div>
                 Line Performance
                 <button
                   onClick={() => navigate("/lines")}
-                  className="ml-auto text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+                  className="ml-auto text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
                 >
-                  View all <ArrowUpRight className="h-3 w-3" />
+                  View all <ArrowUpRight className="h-3.5 w-3.5" />
                 </button>
               </CardTitle>
             </CardHeader>
