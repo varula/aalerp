@@ -35,6 +35,7 @@ const sections: NavSection[] = [
       { title: "WIP Tracking", url: "/wip", icon: Package },
       { title: "Cut to Pack", url: "/cut-to-pack", icon: Scissors },
       { title: "Planning", url: "/planning", icon: CalendarRange },
+      { title: "Planning Overview", url: "/planning-overview", icon: BarChart3 },
     ],
   },
   {
