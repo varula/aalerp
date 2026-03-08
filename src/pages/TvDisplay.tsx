@@ -8,7 +8,10 @@ import {
   Maximize, Minimize, RefreshCw, Factory, AlertTriangle, TrendingUp,
   Clock, Zap, XCircle,
 } from "lucide-react";
-import { allLines, alerts, getFactoryKPIs, getFactoryInfo, type SewingLine } from "@/data/mock-data";
+import { allLines, getFactoryInfo, type SewingLine } from "@/data/mock-data";
+import { useRealtimeSimulation } from "@/hooks/use-realtime-simulation";
+import { AnimatedValue } from "@/components/AnimatedValue";
+import { computeKPIs } from "@/lib/compute-kpis";
 
 function StatusDot({ status }: { status: string }) {
   const cls = status === "normal" ? "bg-status-success" : status === "warning" ? "bg-status-warning animate-pulse" : "bg-status-critical animate-pulse";
@@ -23,15 +26,11 @@ export default function TvDisplay() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [clock, setClock] = useState(formatTime());
-  const [refreshCount, setRefreshCount] = useState(0);
+
+  const { lines: allSimLines, alerts: simAlerts, updatedLineIds, lastUpdate, tick } = useRealtimeSimulation(4000);
 
   useEffect(() => {
     const t = setInterval(() => setClock(formatTime()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const t = setInterval(() => setRefreshCount(c => c + 1), 60000);
     return () => clearInterval(t);
   }, []);
 
@@ -44,10 +43,11 @@ export default function TvDisplay() {
   };
 
   const factoryInfo = getFactoryInfo(selectedFactory);
-  const lines = allLines.filter(l => selectedFactory === "all" || l.factoryId === selectedFactory);
-  const kpis = getFactoryKPIs(selectedFactory === "all" ? undefined : selectedFactory);
-  const activeAlerts = alerts
-    .filter(a => !a.acknowledged && (selectedFactory === "all" || a.factoryId === selectedFactory))
+  const lines = allSimLines.filter(l => selectedFactory === "all" || l.factoryId === selectedFactory);
+  const factoryAlerts = simAlerts.filter(a => selectedFactory === "all" || a.factoryId === selectedFactory);
+  const kpis = computeKPIs(lines, factoryAlerts);
+  const activeAlerts = factoryAlerts
+    .filter(a => !a.acknowledged)
     .sort((a, b) => {
       const sev = { critical: 0, warning: 1, normal: 2 };
       return sev[a.severity] - sev[b.severity];
@@ -82,7 +82,7 @@ export default function TvDisplay() {
             <Clock className="h-4 w-4" />
             <span className="font-mono text-lg font-semibold text-foreground">{clock}</span>
           </div>
-          <Button variant="outline" size="sm" onClick={() => setRefreshCount(c => c + 1)}>
+          <Button variant="outline" size="sm" onClick={() => tick()}>
             <RefreshCw className="h-4 w-4 mr-1.5" /> Refresh
           </Button>
           <Button variant="outline" size="icon" onClick={toggleFullscreen}>
@@ -106,7 +106,7 @@ export default function TvDisplay() {
               <kpi.icon className={`h-5 w-5 shrink-0 ${kpi.color}`} />
               <div className="min-w-0">
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
-                <p className={`text-xl font-bold font-mono ${kpi.color}`}>{kpi.value}</p>
+                <AnimatedValue value={kpi.value} className={`text-xl font-bold font-mono ${kpi.color}`} />
               </div>
             </CardContent>
           </Card>
@@ -200,7 +200,7 @@ export default function TvDisplay() {
       {/* Footer */}
       <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2">
         <span>Armana Group v1.0 · Denim Production Management</span>
-        <span className="font-mono">Last refresh: {clock} · Cycle #{refreshCount}</span>
+        <span className="font-mono">Last refresh: {lastUpdate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>
       </div>
     </div>
   );

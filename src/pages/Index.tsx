@@ -12,9 +12,12 @@ import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
 } from "lucide-react";
 import {
-  getFactoryKPIs, allLines, hourlyProduction, downtimeReasons, wipData,
+  hourlyProduction, downtimeReasons, wipData,
   DENIM_DEFECTS, getFactoryInfo,
 } from "@/data/mock-data";
+import { useRealtimeSimulation } from "@/hooks/use-realtime-simulation";
+import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
+import { computeKPIs } from "@/lib/compute-kpis";
 
 const DEFECT_COLORS = [
   "hsl(0, 72%, 51%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)",
@@ -25,8 +28,10 @@ export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
   const navigate = useNavigate();
   const factoryId = selectedFactory === "all" ? undefined : selectedFactory;
-  const kpis = getFactoryKPIs(factoryId);
-  const lines = factoryId ? allLines.filter(l => l.factoryId === factoryId) : allLines;
+  const { lines: allSimLines, alerts: simAlerts, lastUpdate, updatedLineIds } = useRealtimeSimulation(5000);
+  const lines = factoryId ? allSimLines.filter(l => l.factoryId === factoryId) : allSimLines;
+  const factoryAlerts = factoryId ? simAlerts.filter(a => a.factoryId === factoryId) : simAlerts;
+  const kpis = computeKPIs(lines, factoryAlerts);
   const factoryInfo = getFactoryInfo(selectedFactory);
 
   const kpiCards = [
@@ -43,9 +48,12 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Real-time denim pant production overview · 8:00 AM – 7:00 PM</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Real-time denim pant production overview · 8:00 AM – 7:00 PM</p>
+        </div>
+        <LiveIndicator lastUpdate={lastUpdate} />
       </div>
 
       {/* KPI Cards */}
@@ -56,7 +64,8 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">{kpi.label}</p>
-                  <p className="text-2xl font-bold font-mono mt-1">{kpi.value}</p>
+                  <AnimatedValue value={kpi.value} className="text-2xl font-bold font-mono mt-1" />
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
                 </div>
                 <kpi.icon className="h-8 w-8 text-primary/30" />
@@ -79,13 +88,14 @@ export default function Dashboard() {
           <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-16 gap-2">
             {lines.slice(0, 16).map(line => {
               const barColor = line.efficiency >= 70 ? "bg-status-success" : line.efficiency >= 55 ? "bg-status-warning" : "bg-status-critical";
+              const isUpdated = updatedLineIds.has(line.id);
               return (
-                <div key={line.id} className="text-center p-2 rounded-lg border border-border/60 hover:border-primary/40 transition-colors cursor-pointer" onClick={() => navigate(`/lines?line=${line.id}`)}>
+                <div key={line.id} className={`text-center p-2 rounded-lg border border-border/60 hover:border-primary/40 transition-all cursor-pointer ${isUpdated ? "animate-value-flash" : ""}`} onClick={() => navigate(`/lines?line=${line.id}`)}>
                   <p className="text-[11px] font-bold font-mono">{line.name}</p>
                   <div className="h-12 w-full flex items-end justify-center mt-1">
-                    <div className={`w-5 rounded-t-sm ${barColor} transition-all`} style={{ height: `${Math.max(line.efficiency, 10)}%` }} />
+                    <div className={`w-5 rounded-t-sm ${barColor} transition-all duration-500`} style={{ height: `${Math.max(line.efficiency, 10)}%` }} />
                   </div>
-                  <p className="text-[11px] font-bold font-mono mt-1">{line.efficiency}%</p>
+                  <AnimatedValue value={`${line.efficiency}%`} className="text-[11px] font-bold font-mono mt-1" />
                 </div>
               );
             })}
@@ -280,19 +290,26 @@ export default function Dashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {lines.slice(0, 30).map(line => (
-                  <TableRow key={line.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/lines?line=${line.id}`)}>
+                {lines.slice(0, 30).map(line => {
+                  const isUpdated = updatedLineIds.has(line.id);
+                  return (
+                  <TableRow key={line.id} className={`cursor-pointer hover:bg-muted/50 transition-colors ${isUpdated ? "animate-value-flash" : ""}`} onClick={() => navigate(`/lines?line=${line.id}`)}>
                     <TableCell className="font-medium font-mono text-sm">{line.name}</TableCell>
                     <TableCell className="text-sm">{line.style}</TableCell>
                     <TableCell className="text-right font-mono text-sm">{line.target}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">{line.actual}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">{line.efficiency}%</TableCell>
+                    <TableCell className="text-right font-mono text-sm">
+                      <AnimatedValue value={line.actual} className="font-mono" />
+                    </TableCell>
+                    <TableCell className="text-right font-mono text-sm">
+                      <AnimatedValue value={`${line.efficiency}%`} className="font-mono" />
+                    </TableCell>
                     <TableCell className="text-right font-mono text-sm">{line.operatorCount}</TableCell>
                     <TableCell className="text-center">
-                      <div className={`h-3 w-3 rounded-full mx-auto ${statusColor(line.status)}`} />
+                      <div className={`h-3 w-3 rounded-full mx-auto transition-colors duration-500 ${statusColor(line.status)}`} />
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
