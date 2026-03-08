@@ -6,8 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { Search, Wrench, Activity, AlertTriangle, Thermometer } from "lucide-react";
+import { Search, Wrench, Activity, AlertTriangle } from "lucide-react";
 import { machines, getFactoryInfo } from "@/data/mock-data";
+import { motion } from "framer-motion";
+
+const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
+const stagger = { animate: { transition: { staggerChildren: 0.07 } } };
+const fadeUp = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: appleEase } },
+};
 
 export default function Machines() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
@@ -28,34 +36,46 @@ export default function Machines() {
   const statusColor = (s: string) => s === "Running" ? "default" : s === "Idle" ? "secondary" : s === "Maintenance" ? "outline" : "destructive";
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Machines & IoT</h1>
-        <p className="text-sm text-muted-foreground">Machine status, telemetry, and maintenance tracking</p>
-      </div>
+    <motion.div className="space-y-6 pb-8" variants={stagger} initial="initial" animate="animate">
+      {/* Header */}
+      <motion.div variants={fadeUp} className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-xl bg-muted/60 flex items-center justify-center">
+          <Wrench className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{factoryInfo.name} — Machines & IoT</h1>
+          <p className="text-sm text-muted-foreground">Machine status, telemetry, and maintenance tracking</p>
+        </div>
+      </motion.div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats */}
+      <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-3" variants={stagger}>
         {[
           { label: "Running", value: running, icon: Activity, color: "text-status-success" },
           { label: "Idle", value: idle, icon: Wrench, color: "text-muted-foreground" },
           { label: "Maintenance", value: maintenance, icon: Wrench, color: "text-status-warning" },
           { label: "Breakdown", value: breakdown, icon: AlertTriangle, color: "text-status-critical" },
         ].map(kpi => (
-          <Card key={kpi.label}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">{kpi.label}</p>
-                  <p className={`text-2xl font-bold font-mono mt-1 ${kpi.color}`}>{kpi.value}</p>
+          <motion.div key={kpi.label} variants={fadeUp} whileHover={{ y: -2, transition: { duration: 0.2 } }}>
+            <Card className="border-border/40">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+                    <p className={`text-2xl font-bold font-mono mt-1 ${kpi.color}`}>{kpi.value}</p>
+                  </div>
+                  <div className="h-9 w-9 rounded-lg bg-muted/60 flex items-center justify-center">
+                    <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
+                  </div>
                 </div>
-                <kpi.icon className={`h-8 w-8 ${kpi.color} opacity-30`} />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="flex flex-wrap gap-3">
+      {/* Filters */}
+      <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search machines..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -70,61 +90,67 @@ export default function Machines() {
             <SelectItem value="Breakdown">Breakdown</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </motion.div>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Wrench className="h-4 w-4" /> Machine Registry
-            <Badge variant="secondary" className="ml-auto text-[10px] font-mono">{filtered.length} machines</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-auto max-h-[500px]">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-xs">Machine</TableHead>
-                  <TableHead className="text-xs">Type</TableHead>
-                  <TableHead className="text-xs">Brand / Model</TableHead>
-                  <TableHead className="text-xs text-center">Status</TableHead>
-                  <TableHead className="text-xs text-right">RPM</TableHead>
-                  <TableHead className="text-xs text-right">Temp °C</TableHead>
-                  <TableHead className="text-xs text-right">Vibration</TableHead>
-                  <TableHead className="text-xs">Oil Level</TableHead>
-                  <TableHead className="text-xs text-right">Hours Run</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.slice(0, 50).map(m => (
-                  <TableRow key={m.id}>
-                    <TableCell className="font-mono text-sm font-medium">{m.name}</TableCell>
-                    <TableCell className="text-sm">{m.type}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{m.brand} {m.model}</TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant={statusColor(m.status) as any} className="text-[10px]">{m.status}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-sm">{m.rpm}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">
-                      <span className={m.temperature > 45 ? "text-status-critical" : ""}>{m.temperature}°</span>
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-sm">
-                      <span className={m.vibration > 4 ? "text-status-warning" : ""}>{m.vibration}</span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 w-[80px]">
-                        <Progress value={m.oilLevel} className="h-1.5" />
-                        <span className="text-[10px] font-mono">{m.oilLevel}%</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-mono text-sm">{m.hoursRun.toLocaleString()}</TableCell>
+      {/* Table */}
+      <motion.div variants={fadeUp}>
+        <Card className="border-border/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-muted/60 flex items-center justify-center">
+                <Wrench className="h-3.5 w-3.5 text-primary" />
+              </div>
+              Machine Registry
+              <Badge variant="secondary" className="ml-auto text-[10px] font-mono">{filtered.length} machines</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-auto max-h-[500px]">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Machine</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Type</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Brand / Model</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-center">Status</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">RPM</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Temp °C</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Vibration</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Oil Level</TableHead>
+                    <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Hours Run</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+                </TableHeader>
+                <TableBody>
+                  {filtered.slice(0, 50).map((m, i) => (
+                    <TableRow key={m.id} className={`hover:bg-accent/40 transition-colors ${i % 2 === 1 ? "bg-muted/20" : ""}`}>
+                      <TableCell className="font-mono text-xs font-medium text-foreground">{m.name}</TableCell>
+                      <TableCell className="text-xs">{m.type}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{m.brand} {m.model}</TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant={statusColor(m.status) as any} className="text-[10px]">{m.status}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-mono text-xs">{m.rpm}</TableCell>
+                      <TableCell className="text-right font-mono text-xs">
+                        <span className={m.temperature > 45 ? "text-status-critical" : ""}>{m.temperature}°</span>
+                      </TableCell>
+                      <TableCell className="text-right font-mono text-xs">
+                        <span className={m.vibration > 4 ? "text-status-warning" : ""}>{m.vibration}</span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2 w-[80px]">
+                          <Progress value={m.oilLevel} className="h-1.5" />
+                          <span className="text-[10px] font-mono">{m.oilLevel}%</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-mono text-xs">{m.hoursRun.toLocaleString()}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 }
