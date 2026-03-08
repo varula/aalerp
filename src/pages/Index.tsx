@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/table";
 import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield,
-  Users, Timer, ArrowUpRight,
+  Users, Timer, ArrowUpRight, Scissors,
 } from "lucide-react";
 import {
   wipData, getFactoryInfo, factoryLevelKPIs, getFactoryChartData,
