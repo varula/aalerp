@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
-import { productionFunnel } from "@/data/mock-data";
+import { getFactoryChartData, productionFunnel } from "@/data/mock-data";
 import { ArrowDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -16,8 +16,10 @@ const FUNNEL_COLORS = [
   "hsl(82, 55%, 42%)", "hsl(142, 60%, 45%)", "hsl(200, 70%, 50%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)",
 ];
 
-export function ProductionFunnelChart() {
-  const data = productionFunnel;
+interface Props { factoryId?: string; }
+
+export function ProductionFunnelChart({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).productionFunnel : productionFunnel;
   const lossTotal = data[0].qty - data[data.length - 1].qty;
   const lossPercent = ((lossTotal / data[0].qty) * 100).toFixed(1);
 
@@ -49,7 +51,6 @@ export function ProductionFunnelChart() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        {/* Flow indicators */}
         <div className="flex items-center justify-center gap-1 mt-2">
           {data.map((d, i) => (
             <div key={d.stage} className="flex items-center gap-1">

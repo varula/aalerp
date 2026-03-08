@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { lostTimeBreakdown } from "@/data/mock-data";
+import { getFactoryChartData, lostTimeBreakdown } from "@/data/mock-data";
 import { Clock } from "lucide-react";
 
 const TOOLTIP_STYLE = {
@@ -11,9 +11,11 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
 };
 
-export function LostTimeDonut() {
-  const total = lostTimeBreakdown.reduce((s, d) => s + d.value, 0);
-  const largest = lostTimeBreakdown.reduce((a, b) => a.value > b.value ? a : b);
+interface Props { factoryId?: string; }
+
+export function LostTimeDonut({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).lostTimeBreakdown : lostTimeBreakdown;
+  const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
     <Card className="border-border/40">
@@ -30,22 +32,21 @@ export function LostTimeDonut() {
           <div className="relative h-[200px] w-[200px] shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={lostTimeBreakdown} cx="50%" cy="50%" innerRadius={58} outerRadius={85} paddingAngle={4} dataKey="value" nameKey="category" cornerRadius={4}>
-                  {lostTimeBreakdown.map((entry, i) => (
+                <Pie data={data} cx="50%" cy="50%" innerRadius={58} outerRadius={85} paddingAngle={4} dataKey="value" nameKey="category" cornerRadius={4}>
+                  {data.map((entry, i) => (
                     <Cell key={i} fill={entry.fill} />
                   ))}
                 </Pie>
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
               </PieChart>
             </ResponsiveContainer>
-            {/* Center label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-2xl font-bold font-mono text-foreground">{total}</span>
               <span className="text-[9px] text-muted-foreground font-semibold uppercase">Total Min</span>
             </div>
           </div>
           <div className="flex-1 space-y-2.5">
-            {lostTimeBreakdown.map((d) => {
+            {data.map((d) => {
               const pct = Math.round((d.value / total) * 100);
               return (
                 <div key={d.category} className="space-y-1">
@@ -56,7 +57,6 @@ export function LostTimeDonut() {
                     </div>
                     <span className="text-xs font-mono font-bold">{pct}%</span>
                   </div>
-                  {/* Mini progress bar */}
                   <div className="h-1 bg-muted rounded-full overflow-hidden ml-[18px]">
                     <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: d.fill }} />
                   </div>

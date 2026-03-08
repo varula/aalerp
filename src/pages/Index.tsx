@@ -5,15 +5,15 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
   DollarSign, Users, Truck, BarChart3, Layers,
 } from "lucide-react";
 import {
-  hourlyProduction, downtimeReasons, wipData,
-  DENIM_DEFECTS, getFactoryInfo, factoryLevelKPIs, efficiencyTrend,
+  downtimeReasons, wipData,
+  DENIM_DEFECTS, getFactoryInfo, factoryLevelKPIs, getFactoryChartData,
 } from "@/data/mock-data";
 import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
@@ -29,14 +29,9 @@ import { LostTimeDonut } from "@/components/dashboard/LostTimeDonut";
 import { QualityStackedChart } from "@/components/dashboard/QualityStackedChart";
 import { AbsenteeismHeatmap } from "@/components/dashboard/AbsenteeismHeatmap";
 import { TurnoverChart } from "@/components/dashboard/TurnoverChart";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { ManMachineGauge } from "@/components/dashboard/ManMachineGauge";
+import { HourlyOutputChart } from "@/components/dashboard/HourlyOutputChart";
+import { DowntimeParetoChart } from "@/components/dashboard/DowntimeParetoChart";
 
 export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
@@ -48,7 +43,6 @@ export default function Dashboard() {
   const kpis = computeKPIs(lines, factoryAlerts);
   const factoryInfo = getFactoryInfo(selectedFactory);
 
-  // Factory-level KPIs
   const fKPIs = factoryId ? factoryLevelKPIs.find(k => k.factoryId === factoryId) : undefined;
   const avg = (key: keyof typeof factoryLevelKPIs[0]) =>
     +(factoryLevelKPIs.reduce((s, k) => s + Number(k[key]), 0) / factoryLevelKPIs.length).toFixed(1);
@@ -61,15 +55,15 @@ export default function Dashboard() {
     costSmv: fKPIs ? fKPIs.costPerStandardMinute : avg("costPerStandardMinute"),
   };
 
-  // Sparkline data from efficiency trend
-  const sparkEff = efficiencyTrend.map(d => d.efficiency);
+  const chartData = getFactoryChartData(factoryId);
+  const sparkEff = chartData.efficiencyTrend.map(d => d.efficiency);
 
   const statusColor = (s: string) =>
     s === "normal" ? "bg-status-success" : s === "warning" ? "bg-status-warning" : "bg-status-critical";
 
   return (
     <div className="space-y-8 pb-8">
-      {/* ━━━ HEADER ━━━ */}
+      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground tracking-tight">{factoryInfo.name}</h1>
@@ -78,7 +72,7 @@ export default function Dashboard() {
         <LiveIndicator lastUpdate={lastUpdate} />
       </div>
 
-      {/* ━━━━━━━━━━━━ TOP: EXECUTIVE KPI GAUGES ━━━━━━━━━━━━ */}
+      {/* TOP: EXECUTIVE KPI GAUGES */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         <GaugeCard label="Factory Efficiency" value={Number(fk.efficiency)} unit="%" target={75} icon={Activity} trend="up" trendValue="+2.1%" sparkData={sparkEff} />
         <GaugeCard label="Labor Productivity" value={Number(fk.laborProd)} unit=" pcs/op" icon={Users} trend="up" trendValue="+0.8" />
@@ -96,59 +90,28 @@ export default function Dashboard() {
         <StatCard label="Pending Alerts" value={kpis.pendingAlerts} sub="Unacknowledged" icon={AlertTriangle} iconColor="text-chart-5" />
       </div>
 
-      {/* ━━━━━━━━━━━━ PANEL 1: PRODUCTIVITY ━━━━━━━━━━━━ */}
+      {/* PANEL 1: PRODUCTIVITY */}
       <PanelSection title="Productivity" subtitle="Factory efficiency trends and labor performance" accentColor="bg-chart-2" icon={<BarChart3 className="h-4 w-4 text-chart-2" />}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <EfficiencyTrendChart />
-          <LaborProductivityChart />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <EfficiencyTrendChart factoryId={factoryId} />
+          </div>
+          <ManMachineGauge factoryId={factoryId} />
+        </div>
+        <div className="grid grid-cols-1">
+          <LaborProductivityChart factoryId={factoryId} />
         </div>
       </PanelSection>
 
-      {/* ━━━━━━━━━━━━ PANEL 2: PRODUCTION FLOW ━━━━━━━━━━━━ */}
+      {/* PANEL 2: PRODUCTION FLOW */}
       <PanelSection title="Production Flow" subtitle="Cut to ship pipeline and hourly output tracking" accentColor="bg-chart-4" icon={<Layers className="h-4 w-4 text-chart-4" />}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <ProductionFunnelChart />
-          {/* Hourly Production */}
-          <Card className="border-border/40">
-            <CardHeader className="pb-1">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-chart-1/10 flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-chart-1" />
-                </div>
-                Hourly Output — Predicted vs Actual
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="h-[240px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={hourlyProduction}>
-                    <defs>
-                      <linearGradient id="actualGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.25} />
-                        <stop offset="100%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="predGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(82, 55%, 42%)" stopOpacity={0.15} />
-                        <stop offset="100%" stopColor="hsl(82, 55%, 42%)" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-                    <XAxis dataKey="hour" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={TOOLTIP_STYLE} />
-                    <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "10px" }} />
-                    <Area type="monotone" dataKey="target" stroke="hsl(var(--muted-foreground))" fill="none" strokeDasharray="5 5" strokeWidth={1.5} name="Target" />
-                    <Area type="monotone" dataKey="predicted" stroke="hsl(82, 55%, 42%)" fill="url(#predGrad)" strokeWidth={2} name="Predicted" />
-                    <Area type="monotone" dataKey="actual" stroke="hsl(142, 60%, 45%)" fill="url(#actualGrad)" strokeWidth={2.5} name="Actual" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+          <ProductionFunnelChart factoryId={factoryId} />
+          <HourlyOutputChart factoryId={factoryId} />
         </div>
       </PanelSection>
 
-      {/* ━━━ LINE STATUS ━━━ */}
+      {/* LINE STATUS */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -180,50 +143,27 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* ━━━━━━━━━━━━ PANEL 3: QUALITY ━━━━━━━━━━━━ */}
+      {/* PANEL 3: QUALITY */}
       <PanelSection title="Quality" subtitle="DHU control, defect analysis, and quality performance" accentColor="bg-chart-5" icon={<Shield className="h-4 w-4 text-chart-5" />}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <DHUControlChart />
-          <QualityStackedChart />
+          <DHUControlChart factoryId={factoryId} />
+          <QualityStackedChart factoryId={factoryId} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Downtime Pareto */}
-          <Card className="border-border/40">
-            <CardHeader className="pb-1">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-chart-5/10 flex items-center justify-center">
-                  <AlertTriangle className="h-4 w-4 text-chart-5" />
-                </div>
-                Downtime Pareto
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-2">
-              <div className="h-[240px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={downtimeReasons.sort((a, b) => b.minutes - a.minutes).slice(0, 6)} layout="vertical" barSize={16}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} horizontal={false} />
-                    <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <YAxis dataKey="reason" type="category" width={120} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={TOOLTIP_STYLE} />
-                    <Bar dataKey="minutes" fill="hsl(0, 72%, 51%)" radius={[0, 6, 6, 0]} name="Minutes" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-          <LostTimeDonut />
+          <DowntimeParetoChart />
+          <LostTimeDonut factoryId={factoryId} />
         </div>
       </PanelSection>
 
-      {/* ━━━━━━━━━━━━ PANEL 4: WORKFORCE ━━━━━━━━━━━━ */}
+      {/* PANEL 4: WORKFORCE */}
       <PanelSection title="Workforce" subtitle="Attendance patterns and employee retention" accentColor="bg-chart-3" icon={<Users className="h-4 w-4 text-chart-3" />}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <AbsenteeismHeatmap />
-          <TurnoverChart />
+          <AbsenteeismHeatmap factoryId={factoryId} />
+          <TurnoverChart factoryId={factoryId} />
         </div>
       </PanelSection>
 
-      {/* ━━━ AI BOTTLENECK ━━━ */}
+      {/* AI BOTTLENECK */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -250,7 +190,7 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* ━━━ LINE PERFORMANCE TABLE ━━━ */}
+      {/* LINE PERFORMANCE TABLE */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">

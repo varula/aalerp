@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { qualityPerformance } from "@/data/mock-data";
+import { getFactoryChartData, qualityPerformance } from "@/data/mock-data";
 import { CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -12,8 +12,11 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
 };
 
-export function QualityStackedChart() {
-  const avgPass = Math.round(qualityPerformance.reduce((s, d) => s + d.pass, 0) / qualityPerformance.length);
+interface Props { factoryId?: string; }
+
+export function QualityStackedChart({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).qualityPerformance : qualityPerformance;
+  const avgPass = Math.round(data.reduce((s, d) => s + d.pass, 0) / data.length);
 
   return (
     <Card className="border-border/40">
@@ -29,13 +32,13 @@ export function QualityStackedChart() {
       <CardContent className="pt-2">
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={qualityPerformance} barSize={28}>
+            <BarChart data={data} barSize={28}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
               <XAxis dataKey="day" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} domain={[0, 100]} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
               <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "10px" }} />
-              <Bar dataKey="pass" stackId="a" fill="hsl(142, 60%, 45%)" name="Pass %" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="pass" stackId="a" fill="hsl(142, 60%, 45%)" name="Pass %" />
               <Bar dataKey="rework" stackId="a" fill="hsl(38, 92%, 50%)" name="Rework %" />
               <Bar dataKey="reject" stackId="a" fill="hsl(0, 72%, 51%)" name="Reject %" radius={[6, 6, 0, 0]} />
             </BarChart>

@@ -25,6 +25,7 @@ import { SectionModulesPage, CrudModulePage } from "@/components/CrudModule";
 import PlanningModules from "@/pages/PlanningModules";
 import PlanningOverview from "@/pages/PlanningOverview";
 import { StandaloneCrudPage } from "@/components/StandaloneCrudPage";
+import DepartmentDashboard from "@/pages/DepartmentDashboard";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,10 @@ const App = () => (
               {/* Overview */}
               <Route path="/" element={<Dashboard />} />
               <Route path="/kpis" element={<FactoryKPIs />} />
+              {/* Department Dashboards */}
+              <Route path="/dept/cutting" element={<DepartmentDashboard department="Cutting" />} />
+              <Route path="/dept/sewing" element={<DepartmentDashboard department="Sewing" />} />
+              <Route path="/dept/finishing" element={<DepartmentDashboard department="Finishing" />} />
               {/* Production */}
               <Route path="/orders" element={<ProductionOrders />} />
               <Route path="/lines" element={<SewingLines />} />
@@ -72,7 +77,6 @@ const App = () => (
               <Route path="/master-data" element={<StandaloneCrudPage moduleKey="master-data" />} />
               <Route path="/settings" element={<StandaloneCrudPage moduleKey="settings" />} />
               <Route path="/tv" element={<TvDisplay />} />
-
               {/* Planning */}
               <Route path="/planning" element={<PlanningModules />} />
               <Route path="/planning-overview" element={<PlanningOverview />} />

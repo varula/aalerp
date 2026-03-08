@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, ReferenceLine } from "recharts";
-import { turnoverTrend } from "@/data/mock-data";
+import { getFactoryChartData, turnoverTrend } from "@/data/mock-data";
 import { UserMinus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -12,8 +12,11 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
 };
 
-export function TurnoverChart() {
-  const avg = +(turnoverTrend.reduce((s, d) => s + d.rate, 0) / turnoverTrend.length).toFixed(1);
+interface Props { factoryId?: string; }
+
+export function TurnoverChart({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).turnoverTrend : turnoverTrend;
+  const avg = +(data.reduce((s, d) => s + d.rate, 0) / data.length).toFixed(1);
 
   return (
     <Card className="border-border/40">
@@ -29,7 +32,7 @@ export function TurnoverChart() {
       <CardContent className="pt-2">
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={turnoverTrend} barSize={32}>
+            <BarChart data={data} barSize={32}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
               <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} domain={[0, 10]} axisLine={false} tickLine={false} />
