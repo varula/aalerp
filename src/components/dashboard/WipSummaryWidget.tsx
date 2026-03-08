@@ -23,6 +23,7 @@ const stages: StageData[] = [
 ];
 
 export function WipSummaryWidget() {
+  const navigate = useNavigate();
   const totalBundles = stages.reduce((s, st) => s + st.bundles, 0);
 
   return (
