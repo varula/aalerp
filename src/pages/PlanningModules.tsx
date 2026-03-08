@@ -276,7 +276,7 @@ function PlanTable({ tab }: { tab: PlanTab }) {
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editing ? "Edit Plan" : "Add New Plan"}</DialogTitle></DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-            {cfg.fields.map(f => (
+            {cfg.fields.filter(f => !(isSewing && (f.key === "targetPerHour" || f.key === "efficiency"))).map(f => (
               <div key={f.key} className={f.type === "textarea" ? "md:col-span-2" : ""}>
                 <Label className="text-xs mb-1.5 block">{f.label} {f.required && <span className="text-destructive">*</span>}</Label>
                 {f.type === "textarea" ? (
@@ -291,6 +291,18 @@ function PlanTable({ tab }: { tab: PlanTab }) {
                 )}
               </div>
             ))}
+            {/* Capacity Calculator for Sewing */}
+            {isSewing && (
+              <CapacityPanel
+                inputs={{
+                  manpower: Number(formData.manpower) || 0,
+                  smv: Number(formData.smv) || 0,
+                  workingHours: Number(formData.workingHours) || 10,
+                  actualOutput: Number(formData.actualQty) || 0,
+                  plannedQty: Number(formData.plannedQty) || 0,
+                }}
+              />
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
