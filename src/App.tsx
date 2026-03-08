@@ -7,6 +7,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Index";
 import ProductionOrders from "@/pages/ProductionOrders";
 import Operators from "@/pages/Operators";
+import SewingLines from "@/pages/SewingLines";
 import Alerts from "@/pages/Alerts";
 import NotFound from "@/pages/NotFound";
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/orders" element={<ProductionOrders />} />
+            <Route path="/lines" element={<SewingLines />} />
             <Route path="/operators" element={<Operators />} />
             <Route path="/alerts" element={<Alerts />} />
           </Route>
