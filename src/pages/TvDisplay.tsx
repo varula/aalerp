@@ -106,7 +106,7 @@ export default function TvDisplay() {
               <kpi.icon className={`h-5 w-5 shrink-0 ${kpi.color}`} />
               <div className="min-w-0">
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
-                <p className={`text-xl font-bold font-mono ${kpi.color}`}>{kpi.value}</p>
+                <AnimatedValue value={kpi.value} className={`text-xl font-bold font-mono ${kpi.color}`} />
               </div>
             </CardContent>
           </Card>
