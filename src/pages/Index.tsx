@@ -16,7 +16,7 @@ import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
 import { computeKPIs } from "@/lib/compute-kpis";
 import { GaugeCard } from "@/components/dashboard/GaugeCard";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { EfficiencyTrendChart } from "@/components/dashboard/EfficiencyTrendChart";
+import { PerformanceOverview } from "@/components/dashboard/PerformanceOverview";
 import { OvertimeSectionChart } from "@/components/dashboard/OvertimeSectionChart";
 import { motion } from "framer-motion";
 
