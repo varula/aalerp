@@ -38,6 +38,7 @@ export interface SewingLine {
   efficiency: number;
   status: "normal" | "warning" | "critical";
   smv: number;
+  overtimeHours: number;
 }
 
 export interface Operator {
