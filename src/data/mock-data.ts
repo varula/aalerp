@@ -486,6 +486,32 @@ function generateWip(): WipEntry[] {
   });
 }
 
+// ---------- Generate Factory-Level KPIs ----------
+function generateFactoryLevelKPIs(factories: Factory[]): FactoryLevelKPI[] {
+  return factories.map(f => {
+    const lines = f.floors.flatMap(fl => fl.lines);
+    const avgEff = lines.length ? Math.round(lines.reduce((s, l) => s + l.efficiency, 0) / lines.length) : 0;
+    const dhu = +(Math.random() * 3 + 1.2).toFixed(1);
+    return {
+      factoryId: f.id,
+      factoryName: f.name,
+      factoryEfficiency: avgEff,
+      overallLaborProductivity: +(Math.random() * 8 + 12).toFixed(1), // 12-20 pcs/op/hr
+      costPerStandardMinute: +(Math.random() * 0.03 + 0.04).toFixed(3), // $0.04-0.07
+      manToMachineRatio: +(Math.random() * 0.3 + 1.1).toFixed(2), // 1.1-1.4
+      cutToShipRatio: +(Math.random() * 5 + 92).toFixed(1), // 92-97%
+      orderToShipRatio: +(Math.random() * 4 + 94).toFixed(1), // 94-98%
+      onTimeDeliveryRate: +(Math.random() * 8 + 88).toFixed(1), // 88-96%
+      rftQuality: +(100 - dhu).toFixed(1),
+      dhuPercent: dhu,
+      qualityPerformance: +(Math.random() * 5 + 93).toFixed(1), // 93-98%
+      lostTimePercent: +(Math.random() * 6 + 3).toFixed(1), // 3-9%
+      workerAbsenteeismRate: +(Math.random() * 8 + 4).toFixed(1), // 4-12%
+      employeeTurnoverRate: +(Math.random() * 5 + 2).toFixed(1), // 2-7%
+    };
+  });
+}
+
 // ---------- Export All ----------
 export const factories = generateFactories();
 export const allLines = factories.flatMap(f => f.floors.flatMap(fl => fl.lines));
@@ -495,6 +521,7 @@ export const alerts = generateAlerts(factories);
 export const hourlyProduction = generateHourlyProduction();
 export const downtimeReasons = DOWNTIME_REASONS;
 export const wipData = generateWip();
+export const factoryLevelKPIs = generateFactoryLevelKPIs(factories);
 
 // ---------- Aggregate KPIs ----------
 export function getFactoryKPIs(factoryId?: string) {
