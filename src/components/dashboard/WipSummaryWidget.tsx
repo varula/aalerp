@@ -81,7 +81,10 @@ export function WipSummaryWidget() {
         <div className="flex items-center justify-center gap-2 pt-2 border-t border-border/40">
           {stages.map((stage, i) => (
             <div key={stage.label} className="flex items-center gap-2">
-              <div className="text-center">
+              <div
+                className="text-center cursor-pointer hover:opacity-70 transition-opacity"
+                onClick={() => navigate(`/wip?stage=${stage.label.toLowerCase()}`)}
+              >
                 <p className="text-lg font-bold tabular-nums text-foreground">{stage.bundles}</p>
                 <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{stage.label}</p>
               </div>
