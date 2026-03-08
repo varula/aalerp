@@ -29,6 +29,7 @@ import PlanningModules from "@/pages/PlanningModules";
 import PlanningOverview from "@/pages/PlanningOverview";
 import { StandaloneCrudPage } from "@/components/StandaloneCrudPage";
 import DepartmentDashboard from "@/pages/DepartmentDashboard";
+import HourlyProduction from "@/pages/HourlyProduction";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import ForgotPassword from "@/pages/ForgotPassword";
