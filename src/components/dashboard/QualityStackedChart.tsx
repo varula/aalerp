@@ -26,10 +26,9 @@ export function QualityStackedChart({ factoryId }: Props) {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
-              <XAxis dataKey="day" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} domain={[0, 100]} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis dataKey="day" {...APPLE_AXIS} />
+              <YAxis {...APPLE_AXIS} domain={[0, 100]} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: "10px" }} />
               <Bar dataKey="pass" stackId="a" fill="hsl(142, 60%, 45%)" name="Pass %" />
               <Bar dataKey="rework" stackId="a" fill="hsl(38, 92%, 50%)" name="Rework %" />

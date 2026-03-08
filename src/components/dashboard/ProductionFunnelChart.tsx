@@ -31,10 +31,9 @@ export function ProductionFunnelChart({ factoryId }: Props) {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barSize={48}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
-              <XAxis dataKey="stage" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis dataKey="stage" {...APPLE_AXIS} tick={{ ...APPLE_AXIS.tick, fontSize: 11 }} />
+              <YAxis {...APPLE_AXIS} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <Bar dataKey="qty" radius={[8, 8, 0, 0]} name="Quantity">
                 {data.map((_, i) => (
                   <Cell key={i} fill={FUNNEL_COLORS[i]} />

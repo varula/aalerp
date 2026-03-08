@@ -32,10 +32,9 @@ export function DHUControlChart({ factoryId }: Props) {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-              <XAxis dataKey="day" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis domain={[0, 7]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis dataKey="day" {...APPLE_AXIS} />
+              <YAxis domain={[0, 7]} {...APPLE_AXIS} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <ReferenceLine y={5} stroke="hsl(0, 72%, 51%)" strokeDasharray="6 4" strokeWidth={1.5} label={{ value: "UCL 5%", fill: "hsl(0, 72%, 51%)", fontSize: 9, position: "insideTopRight" }} />
               <ReferenceLine y={2.5} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" strokeWidth={1} label={{ value: "CL", fill: "hsl(var(--muted-foreground))", fontSize: 9, position: "insideTopRight" }} />
               <ReferenceLine y={0.5} stroke="hsl(142, 60%, 45%)" strokeDasharray="6 4" strokeWidth={1} label={{ value: "LCL", fill: "hsl(142, 60%, 45%)", fontSize: 9, position: "insideBottomRight" }} />

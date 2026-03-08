@@ -27,10 +27,9 @@ export function LaborProductivityChart({ factoryId }: Props) {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barSize={36}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
-              <XAxis dataKey="dept" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: "pcs/operator", angle: -90, position: "insideLeft", style: { fill: "hsl(var(--muted-foreground))", fontSize: 9 } }} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis dataKey="dept" {...APPLE_AXIS} tick={{ ...APPLE_AXIS.tick, fontSize: 11 }} />
+              <YAxis {...APPLE_AXIS} label={{ value: "pcs/operator", angle: -90, position: "insideLeft", style: { fill: "hsl(var(--muted-foreground))", fontSize: 9 } }} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <Bar dataKey="productivity" radius={[8, 8, 0, 0]} name="Pcs/Operator">
                 {data.map((_, i) => (
                   <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />

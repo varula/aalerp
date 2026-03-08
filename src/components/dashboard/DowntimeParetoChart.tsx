@@ -21,10 +21,9 @@ export function DowntimeParetoChart() {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" barSize={16}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} horizontal={false} />
-              <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis dataKey="reason" type="category" width={120} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis type="number" {...APPLE_AXIS} />
+              <YAxis dataKey="reason" type="category" width={120} {...APPLE_AXIS} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <Bar dataKey="minutes" fill="hsl(0, 72%, 51%)" radius={[0, 6, 6, 0]} name="Minutes" />
             </BarChart>
           </ResponsiveContainer>

@@ -30,7 +30,7 @@ export function LostTimeDonut({ factoryId }: Props) {
                     <Cell key={i} fill={entry.fill} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Tooltip contentStyle={APPLE_TOOLTIP} />
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
