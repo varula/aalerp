@@ -1,5 +1,13 @@
 export type FieldType = "text" | "number" | "date" | "select" | "textarea" | "email";
 
+export interface FieldValidation {
+  min?: number;
+  max?: number;
+  maxDate?: "today"; // prevents future dates
+  minLength?: number;
+  maxLength?: number;
+}
+
 export interface FieldDef {
   key: string;
   label: string;
@@ -7,6 +15,7 @@ export interface FieldDef {
   required?: boolean;
   options?: string[]; // for select type
   placeholder?: string;
+  validation?: FieldValidation;
 }
 
 export interface ModuleDef {
@@ -24,11 +33,11 @@ const RESULT_OPTIONS = ["Pass", "Fail", "Conditional"];
 const DEPT_OPTIONS = ["Cutting", "Sewing", "Finishing", "Quality", "Stores", "Admin"];
 
 // Helper to create common fields
-const dateField = (key = "date", label = "Date"): FieldDef => ({ key, label, type: "date", required: true });
+const dateField = (key = "date", label = "Date"): FieldDef => ({ key, label, type: "date", required: true, validation: { maxDate: "today" } });
 const styleField: FieldDef = { key: "styleNo", label: "Style No", type: "text", required: true };
 const orderField: FieldDef = { key: "orderNo", label: "Order No", type: "text", required: true };
 const buyerField: FieldDef = { key: "buyer", label: "Buyer", type: "text" };
-const qtyField = (label = "Quantity"): FieldDef => ({ key: "quantity", label, type: "number" });
+const qtyField = (label = "Quantity"): FieldDef => ({ key: "quantity", label, type: "number", validation: { min: 0 } });
 const remarksField: FieldDef = { key: "remarks", label: "Remarks", type: "textarea" };
 const statusField: FieldDef = { key: "status", label: "Status", type: "select", options: STATUS_OPTIONS, required: true };
 const shiftField: FieldDef = { key: "shift", label: "Shift", type: "select", options: SHIFT_OPTIONS };
