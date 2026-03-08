@@ -82,7 +82,7 @@ export default function TvDisplay() {
             <Clock className="h-4 w-4" />
             <span className="font-mono text-lg font-semibold text-foreground">{clock}</span>
           </div>
-          <Button variant="outline" size="sm" onClick={() => setRefreshCount(c => c + 1)}>
+          <Button variant="outline" size="sm" onClick={() => tick()}>
             <RefreshCw className="h-4 w-4 mr-1.5" /> Refresh
           </Button>
           <Button variant="outline" size="icon" onClick={toggleFullscreen}>
