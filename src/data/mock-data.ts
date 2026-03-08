@@ -722,6 +722,8 @@ function generateFactoryLevelKPIs(factories: Factory[]): FactoryLevelKPI[] {
       lostTimePercent: +(Math.random() * 6 + 3).toFixed(1),
       workerAbsenteeismRate: +(Math.random() * 8 + 4).toFixed(1),
       employeeTurnoverRate: +(Math.random() * 5 + 2).toFixed(1),
+      overtimePercent: +(Math.random() * 12 + 5).toFixed(1),
+      totalOvertimeHours: Math.round(lines.reduce((s, l) => s + (l.overtimeHours || 0), 0)),
     };
   });
 }
