@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getModuleBySlug, getModulesBySection, FieldDef, ModuleDef } from "@/lib/module-registry";
+import { getModuleBySlug, getModulesBySection, FieldDef, ModuleDef, FieldValidation } from "@/lib/module-registry";
 import { getAll, create, update, remove, exportToCsv, CrudRecord } from "@/lib/crud-storage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
