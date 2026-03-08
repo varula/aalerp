@@ -103,15 +103,29 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
           )}
         </Button>
 
-        <div className="ml-2 flex items-center gap-2.5">
-          <div className={`h-9 w-9 rounded-full ${user.color} flex items-center justify-center text-white text-xs font-semibold`}>
-            {user.initials}
-          </div>
-          <div className="hidden lg:block">
-            <p className="text-[12px] font-medium text-foreground leading-tight">{user.name}</p>
-            <p className="text-[10px] text-muted-foreground leading-tight">Production Manager</p>
-          </div>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="ml-2 flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-semibold">
+                {initials}
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-[12px] font-medium text-foreground leading-tight">{displayName}</p>
+                <p className="text-[10px] text-muted-foreground leading-tight capitalize">{role || "User"}</p>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{displayName}</p>
+              <p className="text-xs text-muted-foreground capitalize">{role || "User"}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
+              <LogOut className="h-4 w-4 mr-2" /> Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </motion.header>
   );
