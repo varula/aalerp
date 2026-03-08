@@ -23,6 +23,7 @@ import CVCounting from "@/pages/CVCounting";
 import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
 import { SectionModulesPage, CrudModulePage } from "@/components/CrudModule";
+import PlanningModules from "@/pages/PlanningModules";
 
 const queryClient = new QueryClient();
 
