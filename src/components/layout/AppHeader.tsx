@@ -52,7 +52,7 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
 
   return (
     <motion.header
-      className="h-16 border-b border-border bg-card flex items-center justify-between px-5 shrink-0"
+      className="h-20 border-b border-border bg-card/80 backdrop-blur-xl flex items-center justify-between px-5 shrink-0"
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
