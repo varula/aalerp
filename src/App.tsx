@@ -11,6 +11,7 @@ import SewingLines from "@/pages/SewingLines";
 import Alerts from "@/pages/Alerts";
 import Reports from "@/pages/Reports";
 import WipTracking from "@/pages/WipTracking";
+import TvDisplay from "@/pages/TvDisplay";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
