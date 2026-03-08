@@ -52,7 +52,7 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
 
   return (
     <motion.header
-      className="h-16 border-b border-border bg-card flex items-center justify-between px-5 shrink-0"
+      className="h-20 border-b border-border bg-card/80 backdrop-blur-xl flex items-center justify-between px-5 shrink-0"
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -61,13 +61,13 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
         <SidebarTrigger />
 
         <div className="hidden sm:flex flex-col justify-center min-w-0">
-          <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{factoryInfo.location}</p>
+          <p className="text-sm text-muted-foreground leading-tight">{factoryInfo.location}</p>
         </div>
 
         <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
 
         <Select value={selectedFactory} onValueChange={onFactoryChange}>
-          <SelectTrigger className="w-[200px] h-9 text-[12px] border-border rounded-lg bg-background">
+          <SelectTrigger className="w-[220px] h-10 text-sm border-border rounded-lg bg-background">
             <SelectValue placeholder="Select Factory" />
           </SelectTrigger>
           <SelectContent>
