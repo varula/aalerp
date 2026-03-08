@@ -13,7 +13,7 @@ import { Plus, Download, Trash2, Clock, TrendingUp, Target, Users, Search, Chevr
 
 const STORAGE_KEY = "hourly-production";
 const HOURS = ["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10"];
-const SHIFTS = ["Morning", "Afternoon", "Night"];
+const DEFAULT_SHIFT = "8:00 AM – 7:00 PM";
 const PAGE_SIZE = 12;
 
 interface HourlyEntry {
@@ -43,7 +43,7 @@ export default function HourlyProduction() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({
     date: new Date().toISOString().split("T")[0],
-    shift: "Morning",
+    shift: DEFAULT_SHIFT,
   });
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -93,7 +93,7 @@ export default function HourlyProduction() {
     });
     toast({ title: "Hourly production saved" });
     setDialogOpen(false);
-    setFormData({ date: new Date().toISOString().split("T")[0], shift: "Morning" });
+    setFormData({ date: new Date().toISOString().split("T")[0], shift: DEFAULT_SHIFT });
     refresh();
   };
 
@@ -284,12 +284,7 @@ export default function HourlyProduction() {
               </div>
               <div>
                 <Label className="text-xs">Shift</Label>
-                <Select value={formData.shift || ""} onValueChange={v => setField("shift", v)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {SHIFTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Input value={DEFAULT_SHIFT} disabled className="bg-muted" />
               </div>
               <div>
                 <Label className="text-xs">Line No <span className="text-destructive">*</span></Label>
