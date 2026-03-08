@@ -18,6 +18,7 @@ import { GaugeCard } from "@/components/dashboard/GaugeCard";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { PerformanceOverview } from "@/components/dashboard/PerformanceOverview";
 import { OvertimeSectionChart } from "@/components/dashboard/OvertimeSectionChart";
+import { TargetCompletionDonut } from "@/components/dashboard/TargetCompletionDonut";
 import { motion } from "framer-motion";
 
 const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
@@ -114,12 +115,15 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
-      {/* CHARTS ROW — Performance Overview (wider) + Overtime */}
-      <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-4" variants={stagger}>
-        <motion.div variants={fadeUp} className="lg:col-span-2">
+      {/* CHARTS ROW — Performance Overview + Target Donut + Overtime */}
+      <motion.div className="grid grid-cols-1 lg:grid-cols-12 gap-4" variants={stagger}>
+        <motion.div variants={fadeUp} className="lg:col-span-5">
           <PerformanceOverview factoryId={factoryId} totalOutput={kpis.totalOutput} totalTarget={kpis.totalTarget} />
         </motion.div>
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUp} className="lg:col-span-3">
+          <TargetCompletionDonut totalOutput={kpis.totalOutput} totalTarget={kpis.totalTarget} efficiency={kpis.avgEfficiency} />
+        </motion.div>
+        <motion.div variants={fadeUp} className="lg:col-span-4">
           <OvertimeSectionChart factoryId={factoryId} />
         </motion.div>
       </motion.div>
