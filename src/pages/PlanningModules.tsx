@@ -175,6 +175,8 @@ function PlanTable({ tab }: { tab: PlanTab }) {
     toast({ title: "CSV exported" });
   };
 
+  const isSewing = tab === "sewing";
+
   return (
     <div className="space-y-4">
       {/* KPI Row */}
@@ -185,6 +187,9 @@ function PlanTable({ tab }: { tab: PlanTab }) {
         <KpiCard icon={Clock} label="In Progress" value={inProgress} color="bg-amber-500/10 text-amber-600" />
         <KpiCard icon={AlertTriangle} label="Delayed" value={delayed} color="bg-destructive/10 text-destructive" />
       </div>
+
+      {/* Capacity Planning Summary (Sewing only) */}
+      {isSewing && <SewingCapacityKPIs records={records} />}
 
       {/* Achievement Bar */}
       {totalPlanned > 0 && (
