@@ -8,23 +8,42 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
+import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 
+type AppRole = "admin" | "manager" | "supervisor" | "operator";
+
+interface NavItem {
+  title: string;
+  url: string;
+  icon: React.ElementType;
+  badge?: number;
+  minRole?: AppRole; // minimum role required to see this item
+}
+
 interface NavSection {
   label: string;
-  items: { title: string; url: string; icon: React.ElementType; badge?: number }[];
+  minRole?: AppRole; // minimum role required to see entire section
+  items: NavItem[];
 }
+
+const ROLE_LEVEL: Record<AppRole, number> = {
+  admin: 4,
+  manager: 3,
+  supervisor: 2,
+  operator: 1,
+};
 
 const sections: NavSection[] = [
   {
     label: "MAIN",
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
-      { title: "Factory KPIs", url: "/kpis", icon: Gauge },
+      { title: "Factory KPIs", url: "/kpis", icon: Gauge, minRole: "supervisor" },
       { title: "Cutting Dept", url: "/dept/cutting", icon: Scissors },
       { title: "Sewing Dept", url: "/dept/sewing", icon: Factory },
       { title: "Finishing Dept", url: "/dept/finishing", icon: Package },
@@ -36,9 +55,9 @@ const sections: NavSection[] = [
       { title: "Production Orders", url: "/orders", icon: ClipboardList },
       { title: "Sewing Lines", url: "/lines", icon: Factory },
       { title: "WIP Tracking", url: "/wip", icon: Package },
-      { title: "Cut to Pack", url: "/cut-to-pack", icon: Scissors },
-      { title: "Planning", url: "/planning", icon: CalendarRange },
-      { title: "Planning Overview", url: "/planning-overview", icon: BarChart3 },
+      { title: "Cut to Pack", url: "/cut-to-pack", icon: Scissors, minRole: "supervisor" },
+      { title: "Planning", url: "/planning", icon: CalendarRange, minRole: "manager" },
+      { title: "Planning Overview", url: "/planning-overview", icon: BarChart3, minRole: "manager" },
     ],
   },
   {
@@ -46,20 +65,22 @@ const sections: NavSection[] = [
     items: [
       { title: "Quality Dashboard", url: "/quality", icon: Shield },
       { title: "Inspections", url: "/inspections", icon: Eye },
-      { title: "Defect Analysis", url: "/defects", icon: AlertTriangle },
+      { title: "Defect Analysis", url: "/defects", icon: AlertTriangle, minRole: "supervisor" },
     ],
   },
   {
     label: "RESOURCES",
+    minRole: "supervisor",
     items: [
       { title: "Operators", url: "/operators", icon: Users },
       { title: "Machines & IoT", url: "/machines", icon: Wrench },
-      { title: "Skill Matrix", url: "/skills", icon: UserCog },
-      { title: "Attendance", url: "/attendance", icon: CalendarCheck },
+      { title: "Skill Matrix", url: "/skills", icon: UserCog, minRole: "manager" },
+      { title: "Attendance", url: "/attendance", icon: CalendarCheck, minRole: "manager" },
     ],
   },
   {
     label: "MIS MODULES",
+    minRole: "supervisor",
     items: [
       { title: "Pre Production", url: "/modules/pre-production", icon: ClipboardCheck },
       { title: "Cutting Production", url: "/modules/cutting-production", icon: Scissors },
@@ -74,6 +95,7 @@ const sections: NavSection[] = [
   },
   {
     label: "AI & AUTOMATION",
+    minRole: "manager",
     items: [
       { title: "AI Predictions", url: "/ai-predictions", icon: Brain },
       { title: "CV Counting", url: "/cv-counting", icon: Camera },
@@ -83,14 +105,15 @@ const sections: NavSection[] = [
   {
     label: "OPERATIONS",
     items: [
-      { title: "Overtime", url: "/overtime", icon: Timer },
+      { title: "Overtime", url: "/overtime", icon: Timer, minRole: "supervisor" },
       { title: "Downtime Tracking", url: "/downtime", icon: Clock },
       { title: "Alerts & Andon", url: "/alerts", icon: AlertTriangle },
-      { title: "Material Tracking", url: "/materials", icon: Boxes },
+      { title: "Material Tracking", url: "/materials", icon: Boxes, minRole: "supervisor" },
     ],
   },
   {
     label: "ANALYTICS",
+    minRole: "manager",
     items: [
       { title: "Reports", url: "/reports", icon: BarChart3 },
       { title: "Buyer Analytics", url: "/buyer-analytics", icon: Truck },
@@ -98,6 +121,7 @@ const sections: NavSection[] = [
   },
   {
     label: "ADVANCED",
+    minRole: "admin",
     items: [
       { title: "Digital Twin", url: "/digital-twin", icon: FlaskConical },
       { title: "Benchmarking", url: "/benchmarking", icon: MapPin },
@@ -106,8 +130,8 @@ const sections: NavSection[] = [
   {
     label: "OTHERS",
     items: [
-      { title: "Master Data", url: "/master-data", icon: Database },
-      { title: "Settings", url: "/settings", icon: Settings },
+      { title: "Master Data", url: "/master-data", icon: Database, minRole: "admin" },
+      { title: "Settings", url: "/settings", icon: Settings, minRole: "admin" },
       { title: "TV Display", url: "/tv", icon: Monitor },
     ],
   },
@@ -117,8 +141,12 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { triggeredAlerts } = useAlertRules();
+  const { role } = useAuth();
   const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
   const totalTriggered = triggeredAlerts.length;
+
+  const userLevel = role ? ROLE_LEVEL[role] : 1;
+  const canSee = (minRole?: AppRole) => !minRole || userLevel >= ROLE_LEVEL[minRole];
 
   const [openSections, setOpenSections] = useState<Set<string>>(
     new Set(["MAIN", "PRODUCTION", "QUALITY", "RESOURCES", "OPERATIONS", "MIS MODULES"])
@@ -149,7 +177,9 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="px-3 pt-2">
-        {sections.map(section => {
+        {sections.filter(s => canSee(s.minRole)).map(section => {
+          const visibleItems = section.items.filter(i => canSee(i.minRole));
+          if (visibleItems.length === 0) return null;
           const isOpen = openSections.has(section.label);
           return (
             <SidebarGroup key={section.label} className="py-0">
@@ -165,7 +195,7 @@ export function AppSidebar() {
               {(collapsed || isOpen) && (
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {section.items.map(item => {
+                    {visibleItems.map(item => {
                       const isAlerts = item.url === "/alerts";
                       const badgeCount = isAlerts ? totalTriggered : (item.badge || 0);
                       return (
