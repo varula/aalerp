@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
-  DollarSign, Users, Truck, BarChart3, Layers,
+  Users, Truck, BarChart3, Layers,
 } from "lucide-react";
 import {
   downtimeReasons, wipData,
@@ -72,14 +72,12 @@ export default function Dashboard() {
         <LiveIndicator lastUpdate={lastUpdate} />
       </div>
 
-      {/* TOP: EXECUTIVE KPI GAUGES */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+      {/* TOP: KEY KPI GAUGES */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <GaugeCard label="Factory Efficiency" value={Number(fk.efficiency)} unit="%" target={75} icon={Activity} trend="up" trendValue="+2.1%" sparkData={sparkEff} />
-        <GaugeCard label="Labor Productivity" value={Number(fk.laborProd)} unit=" pcs/op" icon={Users} trend="up" trendValue="+0.8" />
         <GaugeCard label="On Time Delivery" value={Number(fk.otd)} unit="%" target={95} icon={Truck} trend="flat" trendValue="0%" />
         <GaugeCard label="RFT Quality" value={Number(fk.rft)} unit="%" target={97} icon={CheckCircle2} trend="up" trendValue="+0.3%" />
         <GaugeCard label="DHU Rate" value={Number(fk.dhu)} unit="%" icon={Shield} trend="down" trendValue="-0.2%" />
-        <GaugeCard label="Cost / SMV" value={Number((Number(fk.costSmv) * 100).toFixed(1))} unit="¢" icon={DollarSign} trend="down" trendValue="-1.2¢" />
       </div>
 
       {/* Quick stats */}
