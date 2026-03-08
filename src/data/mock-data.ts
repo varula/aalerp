@@ -354,6 +354,7 @@ function generateLines(floorId: string, factoryId: string, linePrefix: string, l
       efficiency: eff,
       status: (eff >= 70 ? "normal" : eff >= 55 ? "warning" : "critical") as SewingLine["status"],
       smv: +(Math.random() * 8 + 4).toFixed(2),
+      overtimeHours: +(Math.random() * 3 + 0.5).toFixed(1),
     };
   }).map(l => ({ ...l, actual: Math.round(l.target * l.efficiency / 100) }));
 }
