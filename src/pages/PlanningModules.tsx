@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle } from "lucide-react";
 import { getAll, create, update, remove, exportToCsv, generateId, CrudRecord } from "@/lib/crud-storage";
+import { CapacityPanel, SewingCapacityKPIs } from "@/components/CapacityCalculator";
 
 // ── Plan Field Definitions ──────────────────────
 interface PlanField {
@@ -54,9 +55,10 @@ const sewingFields: PlanField[] = [
   { key: "plannedQty", label: "Planned Qty", type: "number", required: true },
   { key: "actualQty", label: "Actual Output", type: "number" },
   { key: "smv", label: "SMV", type: "number" },
-  { key: "targetPerHour", label: "Target/Hr", type: "number" },
   { key: "manpower", label: "Manpower", type: "number" },
-  { key: "efficiency", label: "Target Efficiency %", type: "number" },
+  { key: "workingHours", label: "Working Hours", type: "number" },
+  { key: "targetPerHour", label: "Target/Hr (auto)", type: "number" },
+  { key: "efficiency", label: "Efficiency % (auto)", type: "number" },
   { key: "startDate", label: "Start Date", type: "date" },
   { key: "endDate", label: "End Date", type: "date" },
   { key: "priority", label: "Priority", type: "select", options: PRIORITY_OPTIONS },
@@ -150,11 +152,24 @@ function PlanTable({ tab }: { tab: PlanTab }) {
       toast({ title: "Required fields missing", description: missing.map(f => f.label).join(", "), variant: "destructive" });
       return;
     }
+    // Auto-compute capacity fields for sewing
+    const saveData = { ...formData };
+    if (tab === "sewing") {
+      const mp = Number(saveData.manpower) || 0;
+      const smv = Number(saveData.smv) || 0;
+      const hours = Number(saveData.workingHours) || 10;
+      if (mp > 0 && smv > 0) {
+        saveData.targetPerHour = Math.floor((mp * 60) / smv);
+        const availMin = mp * hours * 60;
+        const actual = Number(saveData.actualQty) || 0;
+        saveData.efficiency = availMin > 0 ? Math.round(((actual * smv) / availMin) * 100) : 0;
+      }
+    }
     if (editing) {
-      update(cfg.storageKey, editing.id, formData);
+      update(cfg.storageKey, editing.id, saveData);
       toast({ title: "Plan updated" });
     } else {
-      create(cfg.storageKey, formData);
+      create(cfg.storageKey, saveData);
       toast({ title: "Plan created" });
     }
     setDialogOpen(false);
@@ -173,6 +188,8 @@ function PlanTable({ tab }: { tab: PlanTab }) {
     toast({ title: "CSV exported" });
   };
 
+  const isSewing = tab === "sewing";
+
   return (
     <div className="space-y-4">
       {/* KPI Row */}
@@ -183,6 +200,9 @@ function PlanTable({ tab }: { tab: PlanTab }) {
         <KpiCard icon={Clock} label="In Progress" value={inProgress} color="bg-amber-500/10 text-amber-600" />
         <KpiCard icon={AlertTriangle} label="Delayed" value={delayed} color="bg-destructive/10 text-destructive" />
       </div>
+
+      {/* Capacity Planning Summary (Sewing only) */}
+      {isSewing && <SewingCapacityKPIs records={records} />}
 
       {/* Achievement Bar */}
       {totalPlanned > 0 && (
@@ -269,7 +289,7 @@ function PlanTable({ tab }: { tab: PlanTab }) {
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editing ? "Edit Plan" : "Add New Plan"}</DialogTitle></DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-            {cfg.fields.map(f => (
+            {cfg.fields.filter(f => !(isSewing && (f.key === "targetPerHour" || f.key === "efficiency"))).map(f => (
               <div key={f.key} className={f.type === "textarea" ? "md:col-span-2" : ""}>
                 <Label className="text-xs mb-1.5 block">{f.label} {f.required && <span className="text-destructive">*</span>}</Label>
                 {f.type === "textarea" ? (
@@ -284,6 +304,18 @@ function PlanTable({ tab }: { tab: PlanTab }) {
                 )}
               </div>
             ))}
+            {/* Capacity Calculator for Sewing */}
+            {isSewing && (
+              <CapacityPanel
+                inputs={{
+                  manpower: Number(formData.manpower) || 0,
+                  smv: Number(formData.smv) || 0,
+                  workingHours: Number(formData.workingHours) || 10,
+                  actualOutput: Number(formData.actualQty) || 0,
+                  plannedQty: Number(formData.plannedQty) || 0,
+                }}
+              />
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
