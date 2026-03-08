@@ -223,8 +223,8 @@ function generateFactories(): Factory[] {
   const factoryDefs = [
     {
       name: "Armana Apparels",
-      location: "Hyderabad, India",
-      address: "Plot 42, IDA Bollaram, Hyderabad",
+      location: "Tejgaon Industrial Area, Dhaka",
+      address: "Tejgaon Industrial Area, Dhaka",
       user: FACTORY_USERS["F1"],
       lines: [
         { prefix: "L", count: 12, floor: "Production Floor" },
