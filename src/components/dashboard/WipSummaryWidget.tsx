@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Layers, Scissors, Wind } from "lucide-react";
+import { Layers, Scissors, Wind, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { type LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
 
@@ -22,6 +23,7 @@ const stages: StageData[] = [
 ];
 
 export function WipSummaryWidget() {
+  const navigate = useNavigate();
   const totalBundles = stages.reduce((s, st) => s + st.bundles, 0);
 
   return (
@@ -32,16 +34,25 @@ export function WipSummaryWidget() {
             <Layers className="h-4 w-4 text-primary" />
           </div>
           WIP Summary
-          <Badge variant="secondary" className="ml-auto text-xs rounded-full px-2.5">
-            {totalBundles} bundles
-          </Badge>
+          <button
+            onClick={() => navigate("/wip")}
+            className="ml-auto text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+          >
+            View all <ArrowUpRight className="h-3.5 w-3.5" />
+          </button>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {stages.map((stage) => {
           const pct = Math.round((stage.bundles / totalBundles) * 100);
           return (
-            <div key={stage.label} className="space-y-1.5">
+            <motion.div
+              key={stage.label}
+              className="space-y-1.5 cursor-pointer rounded-lg p-2 -mx-2 hover:bg-muted/50 transition-colors"
+              whileHover={{ x: 2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate(`/wip?stage=${stage.label.toLowerCase()}`)}
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`h-7 w-7 rounded-lg ${stage.bgColor} flex items-center justify-center`}>
@@ -56,21 +67,24 @@ export function WipSummaryWidget() {
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <motion.div
-                  className={`h-full rounded-full ${stage.bgColor.replace("/10", "")}`}
+                  className={`h-full rounded-full`}
                   style={{ backgroundColor: `hsl(var(--chart-${stages.indexOf(stage) === 0 ? 1 : stages.indexOf(stage) === 1 ? 2 : 4}))` }}
                   initial={{ width: 0 }}
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.8, ease: appleEase, delay: 0.2 }}
                 />
               </div>
-            </div>
+            </motion.div>
           );
         })}
         {/* Flow arrow summary */}
         <div className="flex items-center justify-center gap-2 pt-2 border-t border-border/40">
           {stages.map((stage, i) => (
             <div key={stage.label} className="flex items-center gap-2">
-              <div className="text-center">
+              <div
+                className="text-center cursor-pointer hover:opacity-70 transition-opacity"
+                onClick={() => navigate(`/wip?stage=${stage.label.toLowerCase()}`)}
+              >
                 <p className="text-lg font-bold tabular-nums text-foreground">{stage.bundles}</p>
                 <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{stage.label}</p>
               </div>
