@@ -136,7 +136,7 @@ export default function Dashboard() {
           <WipSummaryWidget />
         </motion.div>
         {/* Live Line Status — compact grid */}
-        <motion.div variants={fadeUp} className="xl:col-span-2">
+        <motion.div variants={fadeUp} className="xl:col-span-3">
           <Card className="h-full">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold flex items-center gap-2.5">
