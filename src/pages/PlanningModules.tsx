@@ -367,6 +367,11 @@ function PlanTable({ tab }: { tab: PlanTab }) {
           }}
         />
       )}
+
+      {/* Line Balancing Tool (Sewing only) */}
+      {isSewing && (
+        <LineBalancingTool open={balancingOpen} onOpenChange={setBalancingOpen} />
+      )}
     </div>
   );
 }
