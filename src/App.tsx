@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/lines" element={<SewingLines />} />
             <Route path="/operators" element={<Operators />} />
             <Route path="/alerts" element={<Alerts />} />
+            <Route path="/reports" element={<Reports />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
