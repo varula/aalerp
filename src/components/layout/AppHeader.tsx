@@ -61,9 +61,6 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
         <SidebarTrigger />
 
         <div className="hidden sm:flex flex-col justify-center min-w-0">
-          <h1 className="text-[14px] font-semibold text-foreground leading-tight">
-            {factoryInfo.name}
-          </h1>
           <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{factoryInfo.location}</p>
         </div>
 
