@@ -722,6 +722,82 @@ function generateFactoryLevelKPIs(factories: Factory[]): FactoryLevelKPI[] {
   });
 }
 
+// ---------- Trend Data for Dashboard Charts ----------
+function generateEfficiencyTrend(): { day: string; efficiency: number; target: number }[] {
+  return Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(2026, 1, 23 + i);
+    return { day: `${d.getMonth() + 1}/${d.getDate()}`, efficiency: rng(62, 82), target: 75 };
+  });
+}
+
+function generateDHUTrend(): { day: string; dhu: number; ucl: number; lcl: number; cl: number }[] {
+  return Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(2026, 1, 23 + i);
+    return { day: `${d.getMonth() + 1}/${d.getDate()}`, dhu: +(Math.random() * 3 + 1).toFixed(1), ucl: 5, lcl: 0.5, cl: 2.5 };
+  });
+}
+
+function generateProductionFunnel(): { stage: string; qty: number; fill: string }[] {
+  const cut = rng(8000, 12000);
+  const sewInput = Math.round(cut * (rng(92, 98) / 100));
+  const sewOutput = Math.round(sewInput * (rng(88, 95) / 100));
+  const finishOutput = Math.round(sewOutput * (rng(90, 97) / 100));
+  const shipped = Math.round(finishOutput * (rng(93, 99) / 100));
+  return [
+    { stage: "Cut", qty: cut, fill: "hsl(var(--chart-1))" },
+    { stage: "Sew Input", qty: sewInput, fill: "hsl(var(--chart-2))" },
+    { stage: "Sew Output", qty: sewOutput, fill: "hsl(var(--chart-3))" },
+    { stage: "Finish", qty: finishOutput, fill: "hsl(var(--chart-4))" },
+    { stage: "Shipped", qty: shipped, fill: "hsl(var(--chart-5))" },
+  ];
+}
+
+function generateLaborProductivity(): { dept: string; productivity: number }[] {
+  return [
+    { dept: "Cutting", productivity: rng(35, 55) },
+    { dept: "Sewing", productivity: rng(28, 48) },
+    { dept: "Finishing", productivity: rng(40, 60) },
+    { dept: "Quality", productivity: rng(45, 65) },
+    { dept: "Stores", productivity: rng(50, 70) },
+  ];
+}
+
+function generateLostTimeBreakdown(): { category: string; value: number; fill: string }[] {
+  return [
+    { category: "Machine Breakdown", value: rng(25, 40), fill: "hsl(0, 72%, 51%)" },
+    { category: "No Material", value: rng(15, 30), fill: "hsl(38, 92%, 50%)" },
+    { category: "Style Changeover", value: rng(12, 25), fill: "hsl(280, 45%, 55%)" },
+    { category: "Operator Absence", value: rng(10, 22), fill: "hsl(200, 70%, 50%)" },
+    { category: "Other", value: rng(5, 15), fill: "hsl(142, 60%, 45%)" },
+  ];
+}
+
+function generateAbsenteeismHeatmap(): { dept: string; day: string; rate: number }[] {
+  const depts = ["Cutting", "Sewing", "Finishing", "Quality", "Stores"];
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const data: { dept: string; day: string; rate: number }[] = [];
+  for (const dept of depts) {
+    for (const day of days) {
+      data.push({ dept, day, rate: +(Math.random() * 12 + 2).toFixed(1) });
+    }
+  }
+  return data;
+}
+
+function generateQualityPerformance(): { day: string; pass: number; rework: number; reject: number }[] {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(2026, 2, 2 + i);
+    const pass = rng(82, 95);
+    const rework = rng(3, 12);
+    return { day: `${d.getMonth() + 1}/${d.getDate()}`, pass, rework, reject: 100 - pass - rework };
+  });
+}
+
+function generateTurnoverTrend(): { month: string; rate: number }[] {
+  const months = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb"];
+  return months.map(m => ({ month: m, rate: +(Math.random() * 4 + 2).toFixed(1) }));
+}
+
 // ---------- Export All ----------
 export const factories = generateFactories();
 export const allLines = factories.flatMap(f => f.floors.flatMap(fl => fl.lines));
@@ -738,6 +814,14 @@ export const downtimeLogs = generateDowntimeLogs(factories);
 export const cvCameras = generateCVCameras(factories);
 export const aiPredictions = generateAIPredictions(factories);
 export const materialInventory = generateMaterials(factories);
+export const efficiencyTrend = generateEfficiencyTrend();
+export const dhuTrend = generateDHUTrend();
+export const productionFunnel = generateProductionFunnel();
+export const laborProductivity = generateLaborProductivity();
+export const lostTimeBreakdown = generateLostTimeBreakdown();
+export const absenteeismHeatmap = generateAbsenteeismHeatmap();
+export const qualityPerformance = generateQualityPerformance();
+export const turnoverTrend = generateTurnoverTrend();
 
 // ---------- Aggregate KPIs ----------
 export function getFactoryKPIs(factoryId?: string) {
