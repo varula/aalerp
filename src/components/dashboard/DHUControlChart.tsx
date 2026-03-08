@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { dhuTrend } from "@/data/mock-data";
+import { getFactoryChartData, dhuTrend } from "@/data/mock-data";
 import { Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -12,9 +12,12 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
 };
 
-export function DHUControlChart() {
-  const avg = +(dhuTrend.reduce((s, d) => s + d.dhu, 0) / dhuTrend.length).toFixed(1);
-  const outOfControl = dhuTrend.filter(d => d.dhu > d.ucl).length;
+interface Props { factoryId?: string; }
+
+export function DHUControlChart({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).dhuTrend : dhuTrend;
+  const avg = +(data.reduce((s, d) => s + d.dhu, 0) / data.length).toFixed(1);
+  const outOfControl = data.filter(d => d.dhu > d.ucl).length;
 
   return (
     <Card className="border-border/40">
@@ -35,7 +38,7 @@ export function DHUControlChart() {
       <CardContent className="pt-2">
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={dhuTrend}>
+            <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
               <XAxis dataKey="day" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis domain={[0, 7]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />

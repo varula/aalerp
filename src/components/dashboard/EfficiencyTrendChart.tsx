@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart } from "recharts";
-import { efficiencyTrend } from "@/data/mock-data";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart } from "recharts";
+import { getFactoryChartData, efficiencyTrend } from "@/data/mock-data";
 import { TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -12,9 +12,12 @@ const TOOLTIP_STYLE = {
   boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
 };
 
-export function EfficiencyTrendChart() {
-  const latest = efficiencyTrend[efficiencyTrend.length - 1]?.efficiency || 0;
-  const prev = efficiencyTrend[efficiencyTrend.length - 2]?.efficiency || 0;
+interface Props { factoryId?: string; }
+
+export function EfficiencyTrendChart({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).efficiencyTrend : efficiencyTrend;
+  const latest = data[data.length - 1]?.efficiency || 0;
+  const prev = data[data.length - 2]?.efficiency || 0;
   const delta = latest - prev;
 
   return (
@@ -33,7 +36,7 @@ export function EfficiencyTrendChart() {
       <CardContent className="pt-2">
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={efficiencyTrend}>
+            <AreaChart data={data}>
               <defs>
                 <linearGradient id="effGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.2} />

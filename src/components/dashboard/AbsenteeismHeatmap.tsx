@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { absenteeismHeatmap } from "@/data/mock-data";
+import { getFactoryChartData, absenteeismHeatmap } from "@/data/mock-data";
 import { CalendarDays } from "lucide-react";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -19,7 +19,11 @@ function getCellBg(rate: number): string {
   return "rgba(239, 68, 68, 0.2)";
 }
 
-export function AbsenteeismHeatmap() {
+interface Props { factoryId?: string; }
+
+export function AbsenteeismHeatmap({ factoryId }: Props) {
+  const data = factoryId ? getFactoryChartData(factoryId).absenteeismHeatmap : absenteeismHeatmap;
+
   return (
     <Card className="border-border/40">
       <CardHeader className="pb-1">
@@ -46,7 +50,7 @@ export function AbsenteeismHeatmap() {
                 <tr key={dept}>
                   <td className="text-[11px] font-semibold text-foreground py-1 pr-2">{dept}</td>
                   {days.map(day => {
-                    const entry = absenteeismHeatmap.find(e => e.dept === dept && e.day === day);
+                    const entry = data.find(e => e.dept === dept && e.day === day);
                     const rate = entry?.rate || 0;
                     return (
                       <td key={day} className="py-0.5 px-0.5">
@@ -65,7 +69,6 @@ export function AbsenteeismHeatmap() {
             </tbody>
           </table>
         </div>
-        {/* Legend */}
         <div className="flex items-center gap-4 mt-3 justify-center">
           {[
             { label: "< 4% Good", color: "rgba(16, 185, 129, 0.15)" },
