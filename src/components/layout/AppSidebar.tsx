@@ -125,7 +125,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-3">
         {!collapsed && (
-          <p className="text-[10px] text-sidebar-foreground/40 text-center">v1.0 · GarmentIQ</p>
+          <p className="text-[10px] text-sidebar-foreground/40 text-center">v1.0 · Armana Fashions</p>
         )}
       </SidebarFooter>
     </Sidebar>
