@@ -7,6 +7,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Index";
 import ProductionOrders from "@/pages/ProductionOrders";
 import Operators from "@/pages/Operators";
+import SewingLines from "@/pages/SewingLines";
 import Alerts from "@/pages/Alerts";
 import NotFound from "@/pages/NotFound";
 
