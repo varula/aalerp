@@ -130,12 +130,12 @@ export default function Dashboard() {
         <motion.div variants={fadeUp} className="xl:col-span-2">
           <Card className="h-full">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+              <CardTitle className="text-base font-semibold flex items-center gap-2.5">
                 <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Zap className="h-4 w-4 text-primary" />
                 </div>
                 Live Line Status
-                <Badge variant="secondary" className="ml-auto text-[10px] rounded-full px-2.5">{lines.length} lines</Badge>
+                <Badge variant="secondary" className="ml-auto text-xs rounded-full px-2.5">{lines.length} lines</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
