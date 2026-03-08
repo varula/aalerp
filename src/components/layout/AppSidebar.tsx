@@ -83,6 +83,7 @@ const sections: NavSection[] = [
   {
     label: "Operations",
     items: [
+      { title: "Overtime", url: "/overtime", icon: Timer },
       { title: "Downtime Tracking", url: "/downtime", icon: Clock },
       { title: "Alerts & Andon", url: "/alerts", icon: AlertTriangle },
       { title: "Material Tracking", url: "/materials", icon: Boxes },
