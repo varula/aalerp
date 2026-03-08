@@ -13,6 +13,7 @@ import {
 } from "@/data/mock-data";
 import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
+import { WipSummaryWidget } from "@/components/dashboard/WipSummaryWidget";
 import { computeKPIs } from "@/lib/compute-kpis";
 import { GaugeCard } from "@/components/dashboard/GaugeCard";
 import { StatCard } from "@/components/dashboard/StatCard";
@@ -128,10 +129,14 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
-      {/* LIVE LINE STATUS + LINE PERFORMANCE TABLE — side by side */}
-      <motion.div className="grid grid-cols-1 xl:grid-cols-5 gap-4" variants={stagger}>
+      {/* WIP SUMMARY + LIVE LINE STATUS + LINE PERFORMANCE TABLE */}
+      <motion.div className="grid grid-cols-1 xl:grid-cols-12 gap-4" variants={stagger}>
+        {/* WIP Summary Widget */}
+        <motion.div variants={fadeUp} className="xl:col-span-3">
+          <WipSummaryWidget />
+        </motion.div>
         {/* Live Line Status — compact grid */}
-        <motion.div variants={fadeUp} className="xl:col-span-2">
+        <motion.div variants={fadeUp} className="xl:col-span-3">
           <Card className="h-full">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold flex items-center gap-2.5">
@@ -178,7 +183,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Line Performance Table */}
-        <motion.div variants={fadeUp} className="xl:col-span-3">
+        <motion.div variants={fadeUp} className="xl:col-span-6">
           <Card className="h-full">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold flex items-center gap-2.5">
