@@ -46,7 +46,13 @@ export function WipSummaryWidget() {
         {stages.map((stage) => {
           const pct = Math.round((stage.bundles / totalBundles) * 100);
           return (
-            <div key={stage.label} className="space-y-1.5">
+            <motion.div
+              key={stage.label}
+              className="space-y-1.5 cursor-pointer rounded-lg p-2 -mx-2 hover:bg-muted/50 transition-colors"
+              whileHover={{ x: 2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate(`/wip?stage=${stage.label.toLowerCase()}`)}
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`h-7 w-7 rounded-lg ${stage.bgColor} flex items-center justify-center`}>
@@ -61,14 +67,14 @@ export function WipSummaryWidget() {
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <motion.div
-                  className={`h-full rounded-full ${stage.bgColor.replace("/10", "")}`}
+                  className={`h-full rounded-full`}
                   style={{ backgroundColor: `hsl(var(--chart-${stages.indexOf(stage) === 0 ? 1 : stages.indexOf(stage) === 1 ? 2 : 4}))` }}
                   initial={{ width: 0 }}
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.8, ease: appleEase, delay: 0.2 }}
                 />
               </div>
-            </div>
+            </motion.div>
           );
         })}
         {/* Flow arrow summary */}
