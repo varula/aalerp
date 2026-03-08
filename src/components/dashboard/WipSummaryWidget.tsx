@@ -34,9 +34,12 @@ export function WipSummaryWidget() {
             <Layers className="h-4 w-4 text-primary" />
           </div>
           WIP Summary
-          <Badge variant="secondary" className="ml-auto text-xs rounded-full px-2.5">
-            {totalBundles} bundles
-          </Badge>
+          <button
+            onClick={() => navigate("/wip")}
+            className="ml-auto text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+          >
+            View all <ArrowUpRight className="h-3.5 w-3.5" />
+          </button>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
