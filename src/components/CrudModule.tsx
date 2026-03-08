@@ -86,11 +86,37 @@ export function CrudDataTable({ module: mod, sectionSlug, hideBackButton }: { mo
     setDialogOpen(true);
   };
 
+  const validateField = (field: FieldDef, value: any): string | null => {
+    const v = field.validation;
+    if (!v) return null;
+    if (field.type === "number" && value !== "" && value != null) {
+      const num = Number(value);
+      if (v.min !== undefined && num < v.min) return `${field.label} must be at least ${v.min}`;
+      if (v.max !== undefined && num > v.max) return `${field.label} must be at most ${v.max}`;
+    }
+    if (field.type === "date" && value && v.maxDate === "today") {
+      const today = new Date().toISOString().split("T")[0];
+      if (value > today) return `${field.label} cannot be in the future`;
+    }
+    if (field.type === "text" || field.type === "textarea") {
+      const str = String(value || "");
+      if (v.minLength && str.length < v.minLength) return `${field.label} must be at least ${v.minLength} characters`;
+      if (v.maxLength && str.length > v.maxLength) return `${field.label} must be at most ${v.maxLength} characters`;
+    }
+    return null;
+  };
+
   const handleSave = () => {
     // validate required fields
     const missing = mod.fields.filter(f => f.required && !formData[f.key]);
     if (missing.length > 0) {
       toast({ title: "Required fields missing", description: missing.map(f => f.label).join(", "), variant: "destructive" });
+      return;
+    }
+    // validate field rules
+    const errors = mod.fields.map(f => validateField(f, formData[f.key])).filter(Boolean);
+    if (errors.length > 0) {
+      toast({ title: "Validation errors", description: errors.join("; "), variant: "destructive" });
       return;
     }
     if (editingRecord) {

@@ -1,5 +1,13 @@
 export type FieldType = "text" | "number" | "date" | "select" | "textarea" | "email";
 
+export interface FieldValidation {
+  min?: number;
+  max?: number;
+  maxDate?: "today"; // prevents future dates
+  minLength?: number;
+  maxLength?: number;
+}
+
 export interface FieldDef {
   key: string;
   label: string;
@@ -7,6 +15,7 @@ export interface FieldDef {
   required?: boolean;
   options?: string[]; // for select type
   placeholder?: string;
+  validation?: FieldValidation;
 }
 
 export interface ModuleDef {

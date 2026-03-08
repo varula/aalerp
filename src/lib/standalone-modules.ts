@@ -64,7 +64,7 @@ export const standaloneCrudModules: Record<string, ModuleDef> = {
       dateField(), styleField, orderField, lineField,
       { key: "defectType", label: "Defect Type", type: "select", options: ["Broken Stitch", "Skip Stitch", "Open Seam", "Puckering", "Shading", "Stain", "Hole", "Wrong Measurement", "Misalignment", "Other"], required: true },
       { key: "defectLocation", label: "Defect Location", type: "text" },
-      { key: "defectCount", label: "Defect Count", type: "number", required: true },
+      { key: "defectCount", label: "Defect Count", type: "number", required: true, validation: { min: 1 } },
       { key: "severity", label: "Severity", type: "select", options: ["Minor", "Major", "Critical"] },
       { key: "rootCause", label: "Root Cause", type: "textarea" },
       { key: "correctiveAction", label: "Corrective Action", type: "textarea" },
