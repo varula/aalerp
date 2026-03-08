@@ -75,6 +75,7 @@ const App = () => (
 
               {/* Planning */}
               <Route path="/planning" element={<PlanningModules />} />
+              <Route path="/planning-overview" element={<PlanningOverview />} />
               {/* CRUD Module Routes */}
               <Route path="/modules/:sectionSlug" element={<SectionModulesPage />} />
               <Route path="/modules/:sectionSlug/:moduleSlug" element={<CrudModulePage />} />
