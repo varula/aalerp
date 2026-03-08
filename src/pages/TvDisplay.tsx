@@ -200,7 +200,7 @@ export default function TvDisplay() {
       {/* Footer */}
       <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2">
         <span>Armana Group v1.0 · Denim Production Management</span>
-        <span className="font-mono">Last refresh: {clock} · Cycle #{refreshCount}</span>
+        <span className="font-mono">Last refresh: {lastUpdate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>
       </div>
     </div>
   );
