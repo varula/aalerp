@@ -127,6 +127,7 @@ function PlanTable({ tab }: { tab: PlanTab }) {
   const [editing, setEditing] = useState<CrudRecord | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [simulatorOpen, setSimulatorOpen] = useState(false);
 
   const refresh = () => setRecords(getAll(cfg.storageKey));
   const displayFields = cfg.fields.filter(f => cfg.displayCols.includes(f.key));
