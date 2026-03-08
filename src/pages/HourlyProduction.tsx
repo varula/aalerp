@@ -13,7 +13,7 @@ import { Plus, Download, Trash2, Clock, TrendingUp, Target, Users, Search, Chevr
 
 const STORAGE_KEY = "hourly-production";
 const HOURS = ["H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10"];
-const SHIFTS = ["Morning", "Afternoon", "Night"];
+const DEFAULT_SHIFT = "8:00 AM – 7:00 PM";
 const PAGE_SIZE = 12;
 
 interface HourlyEntry {
