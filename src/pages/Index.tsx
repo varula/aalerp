@@ -165,7 +165,7 @@ export default function Dashboard() {
               </TableHeader>
               <TableBody>
                 {lines.slice(0, 30).map(line => (
-                  <TableRow key={line.id}>
+                  <TableRow key={line.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/lines?line=${line.id}`)}>
                     <TableCell className="font-medium font-mono text-sm">{line.name}</TableCell>
                     <TableCell className="text-sm">{line.style}</TableCell>
                     <TableCell className="text-right font-mono text-sm">{line.target}</TableCell>
