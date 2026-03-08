@@ -40,11 +40,20 @@ function LiveClock() {
   );
 }
 
+const FACTORY_COLORS: Record<string, string> = {
+  all: "bg-primary",
+  F1: "bg-emerald-500",
+  F2: "bg-blue-500",
+  F3: "bg-purple-500",
+  F4: "bg-amber-500",
+};
+
 export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const pendingAlerts = alerts.filter(a => !a.acknowledged).length;
   const factoryInfo = getFactoryInfo(selectedFactory);
   const user = factoryInfo.user;
+  const factoryDot = FACTORY_COLORS[selectedFactory] || "bg-primary";
 
   return (
     <header className="h-20 border-b border-border/40 bg-card/60 backdrop-blur-xl flex items-center justify-between px-6 shrink-0 shadow-sm">
