@@ -8,7 +8,10 @@ import {
   Maximize, Minimize, RefreshCw, Factory, AlertTriangle, TrendingUp,
   Clock, Zap, XCircle,
 } from "lucide-react";
-import { allLines, alerts, getFactoryKPIs, getFactoryInfo, type SewingLine } from "@/data/mock-data";
+import { allLines, getFactoryInfo, type SewingLine } from "@/data/mock-data";
+import { useRealtimeSimulation } from "@/hooks/use-realtime-simulation";
+import { AnimatedValue } from "@/components/AnimatedValue";
+import { computeKPIs } from "@/lib/compute-kpis";
 
 function StatusDot({ status }: { status: string }) {
   const cls = status === "normal" ? "bg-status-success" : status === "warning" ? "bg-status-warning animate-pulse" : "bg-status-critical animate-pulse";
