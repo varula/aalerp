@@ -83,7 +83,7 @@ export default function TvDisplay() {
           <Button variant="outline" size="sm" onClick={() => setRefreshCount(c => c + 1)}>
             <RefreshCw className="h-4 w-4 mr-1.5" /> Refresh
           </Button>
-          <Button variant="outline" size="icon" size-sm onClick={toggleFullscreen}>
+          <Button variant="outline" size="icon" onClick={toggleFullscreen}>
             {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
           </Button>
         </div>
