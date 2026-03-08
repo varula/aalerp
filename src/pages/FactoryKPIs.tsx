@@ -10,6 +10,8 @@ import {
   Factory, CheckCircle2, Target,
 } from "lucide-react";
 import { factoryLevelKPIs, getFactoryInfo, type FactoryLevelKPI } from "@/data/mock-data";
+import { motion } from "framer-motion";
+import { PanelSection } from "@/components/dashboard/PanelSection";
 
 function getStatus(value: number, good: number, warn: number, higherIsBetter = true): "success" | "warning" | "critical" {
   if (higherIsBetter) return value >= good ? "success" : value >= warn ? "warning" : "critical";
@@ -25,9 +27,25 @@ function StatusBadge({ status }: { status: "success" | "warning" | "critical" })
 function TrendIcon({ value, threshold, higherIsBetter = true }: { value: number; threshold: number; higherIsBetter?: boolean }) {
   const isGood = higherIsBetter ? value >= threshold : value <= threshold;
   return isGood
-    ? <TrendingUp className="h-4 w-4 text-status-success" />
-    : <TrendingDown className="h-4 w-4 text-status-critical" />;
+    ? <TrendingUp className="h-3.5 w-3.5 text-status-success" />
+    : <TrendingDown className="h-3.5 w-3.5 text-status-critical" />;
 }
+
+const cardHover = {
+  whileHover: { y: -2, scale: 1.01 },
+  whileTap: { scale: 0.985 },
+  transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] },
+};
+
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.05 } },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16, scale: 0.97 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
 
 interface KPICardData {
   label: string;
@@ -46,7 +64,6 @@ export default function FactoryKPIs() {
     ? factoryLevelKPIs
     : factoryLevelKPIs.filter(k => k.factoryId === selectedFactory);
 
-  // Aggregate for summary cards (average across selected factories)
   const avg = (key: keyof FactoryLevelKPI) => {
     const vals = kpis.map(k => Number(k[key]));
     return vals.length ? +(vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : 0;
@@ -78,130 +95,145 @@ export default function FactoryKPIs() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Factory KPIs</h1>
-        <p className="text-sm text-muted-foreground">Key Performance Indicators · Denim Pant Production</p>
-      </div>
-
-      {/* Summary Cards — Top 6 KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {summaryCards.map(card => {
-          const statusColor = card.status === "success" ? "border-status-success/30" : card.status === "warning" ? "border-status-warning/30" : "border-status-critical/30";
-          return (
-            <Card key={card.label} className={`relative overflow-hidden border-l-4 ${statusColor}`}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{card.label}</p>
-                    <p className="text-2xl font-bold font-mono mt-1">{card.value}<span className="text-xs text-muted-foreground ml-0.5">{card.unit}</span></p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Target: {card.target}</p>
-                  </div>
-                  <card.icon className="h-6 w-6 text-primary/30 shrink-0" />
-                </div>
-                <div className="mt-2">
-                  <StatusBadge status={card.status} />
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Detailed Scorecard Table — All Factories Side by Side */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Factory className="h-4 w-4 text-primary" />
-            Factory KPI Scorecard
-            <Badge variant="secondary" className="ml-auto text-[10px] font-mono">{kpis.length} {kpis.length === 1 ? "factory" : "factories"}</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-xs min-w-[200px]">KPI</TableHead>
-                  <TableHead className="text-xs text-center min-w-[80px]">Target</TableHead>
-                  {kpis.map(k => (
-                    <TableHead key={k.factoryId} className="text-xs text-center min-w-[120px]">{k.factoryName}</TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {allKpiRows.map(row => (
-                  <TableRow key={row.key}>
-                    <TableCell className="text-sm">
-                      <div className="flex items-center gap-2">
-                        <row.icon className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <span className="font-medium">{row.label}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center text-xs text-muted-foreground font-mono">{row.target}</TableCell>
-                    {kpis.map(k => {
-                      const val = Number(k[row.key]);
-                      const status = getStatus(val, row.good, row.warn, row.higher);
-                      const textColor = status === "success" ? "text-status-success" : status === "warning" ? "text-status-warning" : "text-status-critical";
-                      const prefix = row.key === "costPerStandardMinute" ? "$" : "";
-                      const displayVal = row.key === "costPerStandardMinute" ? val.toFixed(3) : val;
-                      return (
-                        <TableCell key={k.factoryId} className="text-center">
-                          <div className="flex items-center justify-center gap-1.5">
-                            <span className={`font-mono font-semibold text-sm ${textColor}`}>
-                              {prefix}{displayVal}{row.unit !== "$" ? row.unit : ""}
-                            </span>
-                            <TrendIcon value={val} threshold={row.good} higherIsBetter={row.higher} />
-                          </div>
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Individual Factory Cards (when viewing all) */}
-      {selectedFactory === "all" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {kpis.map(k => {
-            const effStatus = getStatus(k.factoryEfficiency, 70, 55);
-            const borderColor = effStatus === "success" ? "border-status-success/30" : effStatus === "warning" ? "border-status-warning/30" : "border-status-critical/30";
+    <div className="space-y-8">
+      <PanelSection
+        title={`${factoryInfo.name} — Factory KPIs`}
+        subtitle="Key Performance Indicators · Denim Pant Production"
+        icon={<div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center"><Activity className="h-4 w-4 text-primary" /></div>}
+      >
+        <motion.div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" variants={stagger} initial="hidden" animate="visible">
+          {summaryCards.map(card => {
+            const statusBorder = card.status === "success" ? "border-l-status-success" : card.status === "warning" ? "border-l-status-warning" : "border-l-status-critical";
             return (
-              <Card key={k.factoryId} className={`border-t-4 ${borderColor}`}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold flex items-center justify-between">
-                    {k.factoryName}
-                    <StatusBadge status={effStatus} />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { label: "Efficiency", value: `${k.factoryEfficiency}%` },
-                      { label: "Productivity", value: `${k.overallLaborProductivity} pcs/hr` },
-                      { label: "Cost/SM", value: `$${k.costPerStandardMinute.toFixed(3)}` },
-                      { label: "OTD Rate", value: `${k.onTimeDeliveryRate}%` },
-                      { label: "RFT", value: `${k.rftQuality}%` },
-                      { label: "DHU", value: `${k.dhuPercent}%` },
-                      { label: "Cut→Ship", value: `${k.cutToShipRatio}%` },
-                      { label: "Absenteeism", value: `${k.workerAbsenteeismRate}%` },
-                      { label: "Turnover", value: `${k.employeeTurnoverRate}%` },
-                    ].map(item => (
-                      <div key={item.label} className="text-center p-2 rounded-lg bg-muted/50">
-                        <p className="text-[10px] text-muted-foreground">{item.label}</p>
-                        <p className="text-sm font-bold font-mono mt-0.5">{item.value}</p>
+              <motion.div key={card.label} variants={fadeUp} {...cardHover} className="will-change-transform">
+                <Card className={`relative overflow-hidden border-l-[3px] ${statusBorder}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{card.label}</p>
+                        <p className="text-xl font-semibold mt-1.5 tabular-nums">{card.value}<span className="text-[10px] text-muted-foreground ml-0.5">{card.unit}</span></p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Target: {card.target}</p>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                        <card.icon className="h-4 w-4 text-primary/50" />
+                      </div>
+                    </div>
+                    <div className="mt-2.5">
+                      <StatusBadge status={card.status} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
+      </PanelSection>
+
+      {/* Scorecard Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Factory className="h-4 w-4 text-primary" />
+              Factory KPI Scorecard
+              <Badge variant="secondary" className="ml-auto text-[10px]">{kpis.length} {kpis.length === 1 ? "factory" : "factories"}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-[10px] uppercase tracking-wider min-w-[200px]">KPI</TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-wider text-center min-w-[80px]">Target</TableHead>
+                    {kpis.map(k => (
+                      <TableHead key={k.factoryId} className="text-[10px] uppercase tracking-wider text-center min-w-[120px]">{k.factoryName}</TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {allKpiRows.map((row, idx) => (
+                    <TableRow key={row.key} className={idx % 2 === 0 ? "bg-muted/40" : ""}>
+                      <TableCell className="text-[12px]">
+                        <div className="flex items-center gap-2">
+                          <row.icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                          <span className="font-medium">{row.label}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center text-[11px] text-muted-foreground tabular-nums">{row.target}</TableCell>
+                      {kpis.map(k => {
+                        const val = Number(k[row.key]);
+                        const status = getStatus(val, row.good, row.warn, row.higher);
+                        const textColor = status === "success" ? "text-status-success" : status === "warning" ? "text-status-warning" : "text-status-critical";
+                        const prefix = row.key === "costPerStandardMinute" ? "$" : "";
+                        const displayVal = row.key === "costPerStandardMinute" ? val.toFixed(3) : val;
+                        return (
+                          <TableCell key={k.factoryId} className="text-center">
+                            <div className="flex items-center justify-center gap-1.5">
+                              <span className={`font-semibold text-[12px] tabular-nums ${textColor}`}>
+                                {prefix}{displayVal}{row.unit !== "$" ? row.unit : ""}
+                              </span>
+                              <TrendIcon value={val} threshold={row.good} higherIsBetter={row.higher} />
+                            </div>
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Individual Factory Cards */}
+      {selectedFactory === "all" && (
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          variants={stagger} initial="hidden" animate="visible"
+        >
+          {kpis.map(k => {
+            const effStatus = getStatus(k.factoryEfficiency, 70, 55);
+            const borderColor = effStatus === "success" ? "border-t-status-success" : effStatus === "warning" ? "border-t-status-warning" : "border-t-status-critical";
+            return (
+              <motion.div key={k.factoryId} variants={fadeUp} {...cardHover} className="will-change-transform">
+                <Card className={`border-t-[3px] ${borderColor}`}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold flex items-center justify-between">
+                      {k.factoryName}
+                      <StatusBadge status={effStatus} />
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { label: "Efficiency", value: `${k.factoryEfficiency}%` },
+                        { label: "Productivity", value: `${k.overallLaborProductivity} pcs/hr` },
+                        { label: "Cost/SM", value: `$${k.costPerStandardMinute.toFixed(3)}` },
+                        { label: "OTD Rate", value: `${k.onTimeDeliveryRate}%` },
+                        { label: "RFT", value: `${k.rftQuality}%` },
+                        { label: "DHU", value: `${k.dhuPercent}%` },
+                        { label: "Cut→Ship", value: `${k.cutToShipRatio}%` },
+                        { label: "Absenteeism", value: `${k.workerAbsenteeismRate}%` },
+                        { label: "Turnover", value: `${k.employeeTurnoverRate}%` },
+                      ].map(item => (
+                        <div key={item.label} className="text-center p-2.5 rounded-xl bg-muted/50">
+                          <p className="text-[10px] text-muted-foreground">{item.label}</p>
+                          <p className="text-sm font-semibold tabular-nums mt-0.5">{item.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       )}
     </div>
   );
