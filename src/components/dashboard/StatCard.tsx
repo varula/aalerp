@@ -9,9 +9,17 @@ interface StatCardProps {
   sub: string;
   icon: LucideIcon;
   iconColor?: string;
+  change?: string;
+  changeType?: "positive" | "negative" | "neutral";
 }
 
-export function StatCard({ label, value, sub, icon: Icon, iconColor = "text-primary" }: StatCardProps) {
+export function StatCard({ label, value, sub, icon: Icon, iconColor = "text-primary", change, changeType = "neutral" }: StatCardProps) {
+  const changeColor = changeType === "positive"
+    ? "text-status-success bg-status-success/10"
+    : changeType === "negative"
+      ? "text-destructive bg-destructive/10"
+      : "text-muted-foreground bg-muted";
+
   return (
     <motion.div
       whileHover={{ y: -2, scale: 1.01 }}
@@ -19,20 +27,25 @@ export function StatCard({ label, value, sub, icon: Icon, iconColor = "text-prim
       transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="will-change-transform"
     >
-      <Card className="group overflow-hidden">
-        <CardContent className="p-4 flex items-center gap-3">
-          <motion.div
-            className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0"
-            whileHover={{ rotate: 6, scale: 1.08 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            <Icon className={`h-[18px] w-[18px] ${iconColor} opacity-80`} />
-          </motion.div>
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
-            <AnimatedValue value={value} className="text-2xl font-semibold text-foreground" />
-            <p className="text-xs text-muted-foreground">{sub}</p>
+      <Card className="group overflow-hidden border-border/40 hover:border-primary/20 hover:shadow-lg transition-all duration-300">
+        <CardContent className="p-5">
+          <div className="flex items-start justify-between mb-3">
+            <motion.div
+              className="h-11 w-11 rounded-full bg-primary/8 border border-primary/10 flex items-center justify-center shrink-0"
+              whileHover={{ rotate: 6, scale: 1.08 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              <Icon className={`h-5 w-5 ${iconColor}`} />
+            </motion.div>
+            {change && (
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${changeColor}`}>
+                {change}
+              </span>
+            )}
           </div>
+          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">{label}</p>
+          <AnimatedValue value={value} className="text-2xl font-bold text-foreground tracking-tight" />
+          <p className="text-xs text-muted-foreground mt-1">{sub}</p>
         </CardContent>
       </Card>
     </motion.div>
