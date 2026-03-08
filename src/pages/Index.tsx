@@ -88,13 +88,14 @@ export default function Dashboard() {
           <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-16 gap-2">
             {lines.slice(0, 16).map(line => {
               const barColor = line.efficiency >= 70 ? "bg-status-success" : line.efficiency >= 55 ? "bg-status-warning" : "bg-status-critical";
+              const isUpdated = updatedLineIds.has(line.id);
               return (
-                <div key={line.id} className="text-center p-2 rounded-lg border border-border/60 hover:border-primary/40 transition-colors cursor-pointer" onClick={() => navigate(`/lines?line=${line.id}`)}>
+                <div key={line.id} className={`text-center p-2 rounded-lg border border-border/60 hover:border-primary/40 transition-all cursor-pointer ${isUpdated ? "animate-value-flash" : ""}`} onClick={() => navigate(`/lines?line=${line.id}`)}>
                   <p className="text-[11px] font-bold font-mono">{line.name}</p>
                   <div className="h-12 w-full flex items-end justify-center mt-1">
-                    <div className={`w-5 rounded-t-sm ${barColor} transition-all`} style={{ height: `${Math.max(line.efficiency, 10)}%` }} />
+                    <div className={`w-5 rounded-t-sm ${barColor} transition-all duration-500`} style={{ height: `${Math.max(line.efficiency, 10)}%` }} />
                   </div>
-                  <p className="text-[11px] font-bold font-mono mt-1">{line.efficiency}%</p>
+                  <AnimatedValue value={`${line.efficiency}%`} className="text-[11px] font-bold font-mono mt-1" />
                 </div>
               );
             })}
