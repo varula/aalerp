@@ -511,6 +511,12 @@ export default function PlanningOverview() {
         <GanttChart monthOffset={monthOffset} />
       </div>
 
+      {/* Efficiency Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <EfficiencyByLineChart />
+        <EfficiencyTrendChart />
+      </div>
+
       {/* Cross-Department Comparison */}
       <ComparisonTable />
     </div>
