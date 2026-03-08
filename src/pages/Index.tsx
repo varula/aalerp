@@ -224,7 +224,7 @@ export default function Dashboard() {
                               <AnimatedValue value={`${line.efficiency}%`} />
                             </span>
                           </TableCell>
-                          <TableCell className="text-right text-xs tabular-nums py-2.5">
+                          <TableCell className="text-right text-sm tabular-nums py-2.5">
                             <span className={line.overtimeHours > 2 ? "text-status-warning font-medium" : ""}>
                               {line.overtimeHours}h
                             </span>
