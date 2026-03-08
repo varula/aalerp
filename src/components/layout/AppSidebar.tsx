@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   LayoutDashboard, ClipboardList, Users, AlertTriangle, Factory, BarChart3,
-  Monitor, Package, Gauge, Shield, Wrench, Eye, Brain, Boxes, Clock,
+  Monitor, Package, Gauge, Shield, Wrench, Eye, Brain, Boxes, Clock, Timer,
   Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
   Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
   ClipboardCheck, ShieldCheck, Building, Warehouse, FileText, CalendarRange,

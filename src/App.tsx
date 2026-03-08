@@ -65,6 +65,7 @@ const App = () => (
               <Route path="/cv-counting" element={<CVCounting />} />
               <Route path="/ai-defects" element={<StandaloneCrudPage moduleKey="ai-defects" />} />
               {/* Operations */}
+              <Route path="/overtime" element={<OvertimeModule />} />
               <Route path="/downtime" element={<DowntimeTracking />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/materials" element={<MaterialTracking />} />

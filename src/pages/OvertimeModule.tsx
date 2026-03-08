@@ -60,9 +60,9 @@ const otRequests = [
 
 const statusBadge = (status: string) => {
   switch (status) {
-    case "pending": return <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-[10px]">Pending</Badge>;
-    case "approved": return <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-[10px]">Approved</Badge>;
-    case "rejected": return <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-[10px]">Rejected</Badge>;
+    case "pending": return <Badge variant="secondary" className="text-[10px] bg-status-warning/15 text-status-warning border-status-warning/20">Pending</Badge>;
+    case "approved": return <Badge variant="secondary" className="text-[10px] bg-status-success/15 text-status-success border-status-success/20">Approved</Badge>;
+    case "rejected": return <Badge variant="secondary" className="text-[10px] bg-status-critical/15 text-status-critical border-status-critical/20">Rejected</Badge>;
   }
 };
 
