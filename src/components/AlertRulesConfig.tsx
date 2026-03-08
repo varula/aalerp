@@ -15,17 +15,7 @@ import {
   AlertTriangle, Wrench, ShieldAlert, Package, Settings2, Plus, Pencil, Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
-
-export interface AlertRule {
-  id: string;
-  name: string;
-  type: "Production" | "Quality" | "Machine" | "Material";
-  metric: string;
-  condition: "below" | "above" | "equals";
-  threshold: number;
-  severity: "warning" | "critical";
-  enabled: boolean;
-}
+import { useAlertRules, metricOptions, getMetricLabel, type AlertRule } from "@/hooks/use-alert-rules";
 
 const typeIcons: Record<string, React.ElementType> = {
   Production: AlertTriangle,
@@ -34,43 +24,12 @@ const typeIcons: Record<string, React.ElementType> = {
   Material: Package,
 };
 
-const metricOptions: Record<string, { label: string; value: string }[]> = {
-  Production: [
-    { label: "Line Efficiency (%)", value: "efficiency" },
-    { label: "Hourly Output (pcs)", value: "hourly_output" },
-    { label: "Target Variance (%)", value: "target_variance" },
-  ],
-  Quality: [
-    { label: "DHU Rate (%)", value: "dhu_rate" },
-    { label: "Defect Count", value: "defect_count" },
-    { label: "Rework Rate (%)", value: "rework_rate" },
-  ],
-  Machine: [
-    { label: "Downtime (min)", value: "downtime_minutes" },
-    { label: "Breakdown Count", value: "breakdown_count" },
-    { label: "Maintenance Overdue (days)", value: "maintenance_overdue" },
-  ],
-  Material: [
-    { label: "Bundle Wait Time (min)", value: "bundle_wait" },
-    { label: "Stock Level (%)", value: "stock_level" },
-    { label: "Supply Delay (hrs)", value: "supply_delay" },
-  ],
-};
-
-const defaultRules: AlertRule[] = [
-  { id: "R1", name: "Low Efficiency Alert", type: "Production", metric: "efficiency", condition: "below", threshold: 55, severity: "critical", enabled: true },
-  { id: "R2", name: "Efficiency Warning", type: "Production", metric: "efficiency", condition: "below", threshold: 70, severity: "warning", enabled: true },
-  { id: "R3", name: "High DHU Rate", type: "Quality", metric: "dhu_rate", condition: "above", threshold: 8, severity: "critical", enabled: true },
-  { id: "R4", name: "Machine Downtime Spike", type: "Machine", metric: "downtime_minutes", condition: "above", threshold: 30, severity: "warning", enabled: true },
-  { id: "R5", name: "Bundle Supply Delay", type: "Material", metric: "bundle_wait", condition: "above", threshold: 15, severity: "warning", enabled: false },
-];
-
 const emptyRule: Omit<AlertRule, "id"> = {
   name: "", type: "Production", metric: "efficiency", condition: "below", threshold: 0, severity: "warning", enabled: true,
 };
 
 export default function AlertRulesConfig() {
-  const [rules, setRules] = useState<AlertRule[]>(defaultRules);
+  const { rules, addRule, updateRule, deleteRule, toggleRule, triggeredAlerts } = useAlertRules();
   const [editingRule, setEditingRule] = useState<Omit<AlertRule, "id"> & { id?: string }>(emptyRule);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -95,27 +54,23 @@ export default function AlertRulesConfig() {
     }
 
     if (editingRule.id) {
-      setRules(prev => prev.map(r => r.id === editingRule.id ? { ...editingRule, id: r.id } as AlertRule : r));
+      updateRule(editingRule as AlertRule);
       toast.success("Rule updated");
     } else {
-      const newRule: AlertRule = { ...editingRule, id: `R${Date.now()}` } as AlertRule;
-      setRules(prev => [...prev, newRule]);
+      const { id: _, ...ruleData } = editingRule;
+      addRule(ruleData);
       toast.success("Rule created");
     }
     setDialogOpen(false);
   };
 
-  const deleteRule = (id: string) => {
-    setRules(prev => prev.filter(r => r.id !== id));
+  const handleDelete = (id: string) => {
+    deleteRule(id);
     toast.success("Rule deleted");
   };
 
-  const toggleRule = (id: string) => {
-    setRules(prev => prev.map(r => r.id === id ? { ...r, enabled: !r.enabled } : r));
-  };
-
-  const getMetricLabel = (type: string, metric: string) =>
-    metricOptions[type]?.find(m => m.value === metric)?.label || metric;
+  const countTriggered = (ruleId: string) =>
+    triggeredAlerts.filter(a => a.ruleId === ruleId).length;
 
   return (
     <Card>
@@ -123,6 +78,9 @@ export default function AlertRulesConfig() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Settings2 className="h-4 w-4" /> Alert Rules Configuration
+            <Badge variant="secondary" className="text-[10px] font-mono ml-1">
+              {triggeredAlerts.length} triggered
+            </Badge>
           </CardTitle>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
@@ -235,6 +193,7 @@ export default function AlertRulesConfig() {
           )}
           {rules.map(rule => {
             const Icon = typeIcons[rule.type] || AlertTriangle;
+            const trigCount = countTriggered(rule.id);
             return (
               <div
                 key={rule.id}
@@ -255,6 +214,11 @@ export default function AlertRulesConfig() {
                     >
                       {rule.severity}
                     </Badge>
+                    {rule.enabled && trigCount > 0 && (
+                      <Badge variant="destructive" className="text-[10px] px-1.5 shrink-0 font-mono">
+                        {trigCount} triggered
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {getMetricLabel(rule.type, rule.metric)} {rule.condition} <span className="font-mono font-semibold">{rule.threshold}</span>
@@ -265,7 +229,7 @@ export default function AlertRulesConfig() {
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(rule)}>
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-status-critical" onClick={() => deleteRule(rule.id)}>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-status-critical" onClick={() => handleDelete(rule.id)}>
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
