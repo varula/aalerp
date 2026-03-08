@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Sun, Moon, Settings } from "lucide-react";
+import { Bell, Sun, Moon, Settings, Search } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +30,7 @@ function LiveClock() {
         </span>
         <span className="text-[10px] font-medium text-status-success uppercase tracking-wider">Live</span>
       </div>
-      <span className="text-sm font-medium text-foreground tabular-nums">
+      <span className="text-[13px] font-medium text-foreground tabular-nums">
         {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
       </span>
     </div>
@@ -45,25 +45,25 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
 
   return (
     <motion.header
-      className="h-16 border-b border-border/60 bg-card/80 backdrop-blur-xl flex items-center justify-between px-5 shrink-0"
-      initial={{ opacity: 0, y: -8 }}
+      className="h-16 border-b border-border bg-card flex items-center justify-between px-5 shrink-0"
+      initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.3 }}
     >
       <div className="flex items-center gap-3">
         <SidebarTrigger />
 
         <div className="hidden sm:flex flex-col justify-center min-w-0">
-          <h1 className="text-[15px] font-semibold text-foreground leading-tight tracking-tight">
+          <h1 className="text-[14px] font-semibold text-foreground leading-tight">
             {factoryInfo.name}
           </h1>
           <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{factoryInfo.location}</p>
         </div>
 
-        <div className="h-8 w-px bg-border/60 mx-1 hidden sm:block" />
+        <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
 
         <Select value={selectedFactory} onValueChange={onFactoryChange}>
-          <SelectTrigger className="w-[200px] h-9 text-[13px] border-border/50 rounded-xl bg-background/60 backdrop-blur-sm">
+          <SelectTrigger className="w-[200px] h-9 text-[12px] border-border rounded-lg bg-background">
             <SelectValue placeholder="Select Factory" />
           </SelectTrigger>
           <SelectContent>
@@ -78,40 +78,33 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
       <div className="flex items-center gap-1.5">
         <LiveClock />
 
-        <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
+        <div className="h-6 w-px bg-border mx-1.5 hidden md:block" />
 
-        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 rounded-xl">
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.15 }}>
-          <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-xl">
-            <Bell className="h-4 w-4" />
-            {pendingAlerts > 0 && (
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
-            )}
-          </Button>
-        </motion.div>
+        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg">
+          <Search className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 rounded-lg">
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
+        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg">
+          <Settings className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
+          <Bell className="h-4 w-4" />
+          {pendingAlerts > 0 && (
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
+          )}
+        </Button>
 
-        <motion.div
-          className="ml-2 flex items-center gap-2.5"
-          whileHover={{ scale: 1.03 }}
-          transition={{ duration: 0.2 }}
-        >
+        <div className="ml-2 flex items-center gap-2.5">
           <div className={`h-9 w-9 rounded-full ${user.color} flex items-center justify-center text-white text-xs font-semibold`}>
             {user.initials}
           </div>
           <div className="hidden lg:block">
-            <p className="text-[13px] font-medium text-foreground leading-tight">{user.name}</p>
+            <p className="text-[12px] font-medium text-foreground leading-tight">{user.name}</p>
             <p className="text-[10px] text-muted-foreground leading-tight">Production Manager</p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </motion.header>
   );
