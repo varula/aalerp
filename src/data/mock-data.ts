@@ -829,6 +829,33 @@ export const absenteeismHeatmap = generateAbsenteeismHeatmap();
 export const qualityPerformance = generateQualityPerformance();
 export const turnoverTrend = generateTurnoverTrend();
 
+// ---------- OT Hours Data ----------
+export interface OTSectionData {
+  section: string;
+  otHours: number;
+  otPercent: number;
+  fill: string;
+}
+
+function generateOTBySection(): OTSectionData[] {
+  const colors = ["hsl(82, 55%, 42%)", "hsl(142, 60%, 45%)", "hsl(200, 70%, 50%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)"];
+  return [
+    { section: "Cutting Floor", otHours: rng(15, 45), otPercent: +(Math.random() * 10 + 4).toFixed(1), fill: colors[0] },
+    { section: "Sewing Floor 1", otHours: rng(30, 80), otPercent: +(Math.random() * 14 + 6).toFixed(1), fill: colors[1] },
+    { section: "Sewing Floor 2", otHours: rng(25, 70), otPercent: +(Math.random() * 14 + 5).toFixed(1), fill: colors[2] },
+    { section: "Finishing Floor", otHours: rng(12, 35), otPercent: +(Math.random() * 8 + 3).toFixed(1), fill: colors[3] },
+    { section: "Quality / Stores", otHours: rng(5, 20), otPercent: +(Math.random() * 6 + 2).toFixed(1), fill: colors[4] },
+  ];
+}
+
+export const otBySection = generateOTBySection();
+
+export function getOTBySection(factoryId?: string): OTSectionData[] {
+  // Return factory-specific OT data (re-generated for variety)
+  if (factoryId) return generateOTBySection();
+  return otBySection;
+}
+
 // ---------- Per-Factory Chart Data ----------
 export interface FactoryChartData {
   efficiencyTrend: ReturnType<typeof generateEfficiencyTrend>;
