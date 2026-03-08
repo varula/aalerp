@@ -111,7 +111,7 @@ export default function Dashboard() {
           <StatCard label="Total Downtime" value={`${kpis.totalDowntime} min`} sub="Today" icon={Clock} iconColor="text-status-warning" change="-12%" changeType="negative" />
         </motion.div>
         <motion.div variants={fadeUp}>
-          <StatCard label="Pending Alerts" value={kpis.pendingAlerts} sub="Unacknowledged" icon={AlertTriangle} iconColor="text-destructive" change={`${kpis.pendingAlerts > 0 ? "Action needed" : "Clear"}`} changeType={kpis.pendingAlerts > 0 ? "negative" : "positive"} />
+          <StatCard label="Cut to Ship" value={`${kpis.cutToShipRatio}%`} sub="Production yield" icon={Scissors} iconColor="text-chart-4" change={kpis.cutToShipRatio >= 95 ? "On target" : "Below target"} changeType={kpis.cutToShipRatio >= 95 ? "positive" : "negative"} />
         </motion.div>
       </motion.div>
 
