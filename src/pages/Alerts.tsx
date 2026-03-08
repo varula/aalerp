@@ -203,6 +203,8 @@ export default function AlertsPage() {
           </div>
         </CardContent>
       </Card>
+      {/* Alert Rules Configuration */}
+      <AlertRulesConfig />
     </div>
   );
 }
