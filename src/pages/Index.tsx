@@ -155,7 +155,7 @@ export default function Dashboard() {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => navigate(`/lines?line=${line.id}`)}
                     >
-                      <p className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">{line.name}</p>
+                      <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">{line.name}</p>
                       <div className="h-10 w-full flex items-end justify-center mt-1">
                         <motion.div
                           className={`w-3.5 rounded-t ${barColor}`}
