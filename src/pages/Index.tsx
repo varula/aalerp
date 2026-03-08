@@ -18,6 +18,7 @@ import {
 import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
 import { computeKPIs } from "@/lib/compute-kpis";
+import { ModuleActivityWidgets } from "@/components/ModuleActivityWidgets";
 
 const DEFECT_COLORS = [
   "hsl(0, 72%, 51%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)",
@@ -268,6 +269,9 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Module Activity Widgets */}
+      <ModuleActivityWidgets />
 
       {/* Line Performance Table */}
       <Card>
