@@ -10,7 +10,7 @@ import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
 import { Badge } from "@/components/ui/badge";
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -21,7 +21,7 @@ interface NavSection {
 
 const sections: NavSection[] = [
   {
-    label: "Overview",
+    label: "MAIN",
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Factory KPIs", url: "/kpis", icon: Gauge },
@@ -31,7 +31,7 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "Production",
+    label: "PRODUCTION",
     items: [
       { title: "Production Orders", url: "/orders", icon: ClipboardList },
       { title: "Sewing Lines", url: "/lines", icon: Factory },
@@ -42,7 +42,7 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "Quality",
+    label: "QUALITY",
     items: [
       { title: "Quality Dashboard", url: "/quality", icon: Shield },
       { title: "Inspections", url: "/inspections", icon: Eye },
@@ -50,7 +50,7 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "Resources",
+    label: "RESOURCES",
     items: [
       { title: "Operators", url: "/operators", icon: Users },
       { title: "Machines & IoT", url: "/machines", icon: Wrench },
@@ -59,7 +59,7 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "MIS Modules",
+    label: "MIS MODULES",
     items: [
       { title: "Pre Production", url: "/modules/pre-production", icon: ClipboardCheck },
       { title: "Cutting Production", url: "/modules/cutting-production", icon: Scissors },
@@ -73,7 +73,7 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "AI & Automation",
+    label: "AI & AUTOMATION",
     items: [
       { title: "AI Predictions", url: "/ai-predictions", icon: Brain },
       { title: "CV Counting", url: "/cv-counting", icon: Camera },
@@ -81,7 +81,7 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "Operations",
+    label: "OPERATIONS",
     items: [
       { title: "Overtime", url: "/overtime", icon: Timer },
       { title: "Downtime Tracking", url: "/downtime", icon: Clock },
@@ -90,21 +90,21 @@ const sections: NavSection[] = [
     ],
   },
   {
-    label: "Analytics",
+    label: "ANALYTICS",
     items: [
       { title: "Reports", url: "/reports", icon: BarChart3 },
       { title: "Buyer Analytics", url: "/buyer-analytics", icon: Truck },
     ],
   },
   {
-    label: "Advanced",
+    label: "ADVANCED",
     items: [
       { title: "Digital Twin", url: "/digital-twin", icon: FlaskConical },
       { title: "Benchmarking", url: "/benchmarking", icon: MapPin },
     ],
   },
   {
-    label: "Administration",
+    label: "OTHERS",
     items: [
       { title: "Master Data", url: "/master-data", icon: Database },
       { title: "Settings", url: "/settings", icon: Settings },
@@ -113,7 +113,6 @@ const sections: NavSection[] = [
   },
 ];
 
-// Sidebar navigation component
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
@@ -122,7 +121,7 @@ export function AppSidebar() {
   const totalTriggered = triggeredAlerts.length;
 
   const [openSections, setOpenSections] = useState<Set<string>>(
-    new Set(["Overview", "Production", "Quality", "Resources", "Operations", "MIS Modules"])
+    new Set(["MAIN", "PRODUCTION", "QUALITY", "RESOURCES", "OPERATIONS", "MIS MODULES"])
   );
 
   const toggleSection = (label: string) => {
@@ -135,21 +134,21 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="p-5 pb-4">
+      <SidebarHeader className="p-5 pb-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm shrink-0">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shrink-0">
             AG
           </div>
           {!collapsed && (
             <div className="flex flex-col min-w-0">
-              <h2 className="text-[15.5px] font-semibold text-foreground truncate" style={{ letterSpacing: "-0.03em" }}>Armana Group</h2>
+              <h2 className="text-[14px] font-semibold text-foreground truncate">Armana Group</h2>
               <p className="text-[10px] text-muted-foreground">Denim Production</p>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-3 pt-2">
         {sections.map(section => {
           const isOpen = openSections.has(section.label);
           return (
@@ -157,9 +156,9 @@ export function AppSidebar() {
               {!collapsed && (
                 <button
                   onClick={() => toggleSection(section.label)}
-                  className="flex items-center w-full px-2 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+                  className="flex items-center w-full px-2 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
-                  {isOpen ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
+                  {isOpen ? <ChevronDown className="h-3 w-3 mr-1.5 opacity-50" /> : <ChevronRight className="h-3 w-3 mr-1.5 opacity-50" />}
                   {section.label}
                 </button>
               )}
@@ -175,15 +174,15 @@ export function AppSidebar() {
                             <NavLink
                               to={item.url}
                               end={item.url === "/"}
-                              className="rounded-lg hover:bg-accent transition-colors"
-                              activeClassName="bg-accent text-accent-foreground font-medium"
+                              className="rounded-lg hover:bg-accent/60 transition-colors border-l-2 border-transparent"
+                              activeClassName="bg-accent text-accent-foreground font-medium !border-l-primary"
                             >
-                              <item.icon className="mr-2.5 h-[16px] w-[16px] opacity-70 shrink-0" />
+                              <item.icon className="mr-2.5 h-[15px] w-[15px] opacity-60 shrink-0" />
                               {!collapsed && <span className="flex-1 text-[12.5px] truncate">{item.title}</span>}
                               {isAlerts && badgeCount > 0 && (
                                 <Badge
                                   variant={criticalCount > 0 ? "destructive" : "secondary"}
-                                  className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center font-mono"
+                                  className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] justify-center"
                                 >
                                   {badgeCount}
                                 </Badge>
@@ -201,9 +200,17 @@ export function AppSidebar() {
         })}
       </SidebarContent>
 
-      <SidebarFooter className="p-4">
+      <SidebarFooter className="p-4 border-t border-sidebar-border">
         {!collapsed && (
-          <p className="text-[10px] text-muted-foreground/40 text-center">v1.0 · Armana Group</p>
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[11px] font-semibold">
+              AG
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium text-foreground truncate">Armana Group</p>
+              <p className="text-[10px] text-muted-foreground">v1.0 · Production</p>
+            </div>
+          </div>
         )}
       </SidebarFooter>
     </Sidebar>
