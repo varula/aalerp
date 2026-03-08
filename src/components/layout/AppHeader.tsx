@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
-import { Bell, Sun, Moon, Settings, Search } from "lucide-react";
+import { Bell, Sun, Moon, Settings, Search, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { factories, alerts, getFactoryInfo } from "@/data/mock-data";
 import { useTheme } from "@/hooks/use-theme";
+import { useAuth } from "@/hooks/use-auth";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
 interface AppHeaderProps {
@@ -39,9 +44,11 @@ function LiveClock() {
 
 export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const { profile, role, signOut } = useAuth();
   const pendingAlerts = alerts.filter(a => !a.acknowledged).length;
   const factoryInfo = getFactoryInfo(selectedFactory);
-  const user = factoryInfo.user;
+  const displayName = profile?.full_name || factoryInfo.user.name;
+  const initials = displayName ? displayName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() : "U";
 
   return (
     <motion.header
@@ -96,15 +103,29 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
           )}
         </Button>
 
-        <div className="ml-2 flex items-center gap-2.5">
-          <div className={`h-9 w-9 rounded-full ${user.color} flex items-center justify-center text-white text-xs font-semibold`}>
-            {user.initials}
-          </div>
-          <div className="hidden lg:block">
-            <p className="text-[12px] font-medium text-foreground leading-tight">{user.name}</p>
-            <p className="text-[10px] text-muted-foreground leading-tight">Production Manager</p>
-          </div>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="ml-2 flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-semibold">
+                {initials}
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-[12px] font-medium text-foreground leading-tight">{displayName}</p>
+                <p className="text-[10px] text-muted-foreground leading-tight capitalize">{role || "User"}</p>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{displayName}</p>
+              <p className="text-xs text-muted-foreground capitalize">{role || "User"}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
+              <LogOut className="h-4 w-4 mr-2" /> Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </motion.header>
   );
