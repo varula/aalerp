@@ -16,6 +16,7 @@ import {
 
 export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
+  const navigate = useNavigate();
   const factoryId = selectedFactory === "all" ? undefined : selectedFactory;
   const kpis = getFactoryKPIs(factoryId);
   const lines = factoryId ? allLines.filter(l => l.factoryId === factoryId) : allLines;
