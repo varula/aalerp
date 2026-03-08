@@ -22,6 +22,7 @@ import MaterialTracking from "@/pages/MaterialTracking";
 import CVCounting from "@/pages/CVCounting";
 import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
+import { SectionModulesPage, CrudModulePage } from "@/components/CrudModule";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,10 @@ const App = () => (
               <Route path="/master-data" element={<ComingSoon title="Master Data" description="Factory, line, and style master data management" />} />
               <Route path="/settings" element={<ComingSoon title="Settings" description="System configuration and preferences" />} />
               <Route path="/tv" element={<TvDisplay />} />
+
+              {/* CRUD Module Routes */}
+              <Route path="/modules/:sectionSlug" element={<SectionModulesPage />} />
+              <Route path="/modules/:sectionSlug/:moduleSlug" element={<CrudModulePage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
