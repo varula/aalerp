@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { allLines, alerts, type SewingLine, type Alert } from "@/data/mock-data";
 
+export interface ActivityEvent {
+  id: string;
+  timestamp: Date;
+  type: "efficiency" | "status" | "alert";
+  message: string;
+  severity: "normal" | "warning" | "critical";
+  lineId?: string;
+}
+
 interface SimulationState {
   lines: SewingLine[];
   alerts: Alert[];
@@ -8,6 +17,7 @@ interface SimulationState {
   updatedLineIds: Set<string>;
   updatedAlertIds: Set<string>;
   isLive: boolean;
+  activityFeed: ActivityEvent[];
 }
 
 function clamp(v: number, min: number, max: number) {
