@@ -43,7 +43,7 @@ export default function HourlyProduction() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({
     date: new Date().toISOString().split("T")[0],
-    shift: "Morning",
+    shift: DEFAULT_SHIFT,
   });
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
