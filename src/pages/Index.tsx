@@ -15,7 +15,7 @@ import {
   hourlyProduction, downtimeReasons, wipData,
   DENIM_DEFECTS, getFactoryInfo,
 } from "@/data/mock-data";
-import { useRealtimeSimulation } from "@/hooks/use-realtime-simulation";
+import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
 import { computeKPIs } from "@/lib/compute-kpis";
 
@@ -28,7 +28,7 @@ export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
   const navigate = useNavigate();
   const factoryId = selectedFactory === "all" ? undefined : selectedFactory;
-  const { lines: allSimLines, alerts: simAlerts, lastUpdate, updatedLineIds } = useRealtimeSimulation(5000);
+  const { lines: allSimLines, alerts: simAlerts, lastUpdate, updatedLineIds } = useSimulation();
   const lines = factoryId ? allSimLines.filter(l => l.factoryId === factoryId) : allSimLines;
   const factoryAlerts = factoryId ? simAlerts.filter(a => a.factoryId === factoryId) : simAlerts;
   const kpis = computeKPIs(lines, factoryAlerts);
