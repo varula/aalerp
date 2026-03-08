@@ -183,7 +183,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Line Performance Table */}
-        <motion.div variants={fadeUp} className="xl:col-span-3">
+        <motion.div variants={fadeUp} className="xl:col-span-6">
           <Card className="h-full">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold flex items-center gap-2.5">
