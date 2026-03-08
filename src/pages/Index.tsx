@@ -213,8 +213,8 @@ export default function Dashboard() {
                           className={`cursor-pointer hover:bg-muted/60 transition-colors border-b border-border/20 ${isUpdated ? "animate-value-flash" : ""} ${idx % 2 === 0 ? "bg-muted/20" : ""}`}
                           onClick={() => navigate(`/lines?line=${line.id}`)}
                         >
-                          <TableCell className="font-medium text-xs py-2.5">{line.name}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground py-2.5 truncate max-w-[140px]">{line.style}</TableCell>
+                        <TableCell className="font-medium text-sm py-2.5">{line.name}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground py-2.5 truncate max-w-[140px]">{line.style}</TableCell>
                           <TableCell className="text-right text-xs tabular-nums py-2.5">{line.target}</TableCell>
                           <TableCell className="text-right text-xs tabular-nums py-2.5">
                             <AnimatedValue value={line.actual} />
