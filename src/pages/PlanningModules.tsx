@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle } from "lucide-react";
 import { getAll, create, update, remove, exportToCsv, generateId, CrudRecord } from "@/lib/crud-storage";
+import { CapacityPanel, SewingCapacityKPIs } from "@/components/CapacityCalculator";
 
 // ── Plan Field Definitions ──────────────────────
 interface PlanField {
