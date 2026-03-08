@@ -141,6 +141,8 @@ export interface FactoryLevelKPI {
   lostTimePercent: number;
   workerAbsenteeismRate: number;
   employeeTurnoverRate: number;
+  overtimePercent: number;
+  totalOvertimeHours: number;
 }
 
 export interface DenimDefect {
