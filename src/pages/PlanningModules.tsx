@@ -342,6 +342,24 @@ function PlanTable({ tab }: { tab: PlanTab }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* What-If Simulator (Sewing only) */}
+      {isSewing && (
+        <WhatIfSimulator
+          open={simulatorOpen}
+          onOpenChange={setSimulatorOpen}
+          onApply={(values) => {
+            setFormData(p => ({
+              ...p,
+              manpower: values.manpower,
+              smv: values.smv,
+              workingHours: values.workingHours,
+            }));
+            setEditing(null);
+            setDialogOpen(true);
+          }}
+        />
+      )}
     </div>
   );
 }
