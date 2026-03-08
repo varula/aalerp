@@ -12,9 +12,12 @@ import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
 } from "lucide-react";
 import {
-  getFactoryKPIs, allLines, hourlyProduction, downtimeReasons, wipData,
+  hourlyProduction, downtimeReasons, wipData,
   DENIM_DEFECTS, getFactoryInfo,
 } from "@/data/mock-data";
+import { useRealtimeSimulation } from "@/hooks/use-realtime-simulation";
+import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
+import { computeKPIs } from "@/lib/compute-kpis";
 
 const DEFECT_COLORS = [
   "hsl(0, 72%, 51%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)",
@@ -25,8 +28,10 @@ export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
   const navigate = useNavigate();
   const factoryId = selectedFactory === "all" ? undefined : selectedFactory;
-  const kpis = getFactoryKPIs(factoryId);
-  const lines = factoryId ? allLines.filter(l => l.factoryId === factoryId) : allLines;
+  const { lines: allSimLines, alerts: simAlerts, lastUpdate, updatedLineIds } = useRealtimeSimulation(5000);
+  const lines = factoryId ? allSimLines.filter(l => l.factoryId === factoryId) : allSimLines;
+  const factoryAlerts = factoryId ? simAlerts.filter(a => a.factoryId === factoryId) : simAlerts;
+  const kpis = computeKPIs(lines, factoryAlerts);
   const factoryInfo = getFactoryInfo(selectedFactory);
 
   const kpiCards = [
