@@ -13,6 +13,7 @@ import {
   AlertTriangle, Wrench, Package, ShieldAlert, CheckCircle, XCircle, Bell,
 } from "lucide-react";
 import { alerts, allLines, type Alert } from "@/data/mock-data";
+import AlertRulesConfig from "@/components/AlertRulesConfig";
 
 const typeIcons: Record<string, React.ElementType> = {
   Production: AlertTriangle,
@@ -202,6 +203,8 @@ export default function AlertsPage() {
           </div>
         </CardContent>
       </Card>
+      {/* Alert Rules Configuration */}
+      <AlertRulesConfig />
     </div>
   );
 }
