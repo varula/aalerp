@@ -216,7 +216,7 @@ export default function Dashboard() {
                         <TableCell className="font-medium text-sm py-2.5">{line.name}</TableCell>
                         <TableCell className="text-sm text-muted-foreground py-2.5 truncate max-w-[140px]">{line.style}</TableCell>
                           <TableCell className="text-right text-sm tabular-nums py-2.5">{line.target}</TableCell>
-                          <TableCell className="text-right text-xs tabular-nums py-2.5">
+                        <TableCell className="text-right text-sm tabular-nums py-2.5">
                             <AnimatedValue value={line.actual} />
                           </TableCell>
                           <TableCell className="text-right py-2.5">
