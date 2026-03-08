@@ -10,20 +10,16 @@ interface StatCardProps {
   iconColor?: string;
 }
 
-export function StatCard({ label, value, sub, icon: Icon, iconColor = "text-primary/50" }: StatCardProps) {
+export function StatCard({ label, value, sub, icon: Icon, iconColor = "text-primary" }: StatCardProps) {
   return (
-    <Card className="group border-border/40 hover:border-primary/20 hover:shadow-md transition-all duration-300 overflow-hidden relative">
-      {/* Decorative background icon */}
-      <div className="absolute -right-2 -bottom-2 opacity-[0.04] group-hover:opacity-[0.08] transition-opacity">
-        <Icon className="h-20 w-20" />
-      </div>
-      <CardContent className="p-4 flex items-center gap-3 relative">
-        <div className={`h-10 w-10 rounded-xl bg-muted/60 flex items-center justify-center shrink-0`}>
-          <Icon className={`h-5 w-5 ${iconColor}`} />
+    <Card className="group overflow-hidden">
+      <CardContent className="p-4 flex items-center gap-3">
+        <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+          <Icon className={`h-[18px] w-[18px] ${iconColor} opacity-80`} />
         </div>
         <div className="min-w-0">
-          <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
-          <AnimatedValue value={value} className="text-xl font-bold font-mono text-foreground" />
+          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
+          <AnimatedValue value={value} className="text-xl font-semibold text-foreground" />
           <p className="text-[10px] text-muted-foreground">{sub}</p>
         </div>
       </CardContent>

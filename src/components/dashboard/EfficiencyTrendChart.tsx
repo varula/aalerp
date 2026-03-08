@@ -3,14 +3,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLin
 import { getFactoryChartData, efficiencyTrend } from "@/data/mock-data";
 import { TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { APPLE_TOOLTIP, APPLE_AXIS, APPLE_GRID, APPLE_COLORS } from "@/lib/chart-styles";
 
 interface Props { factoryId?: string; }
 
@@ -21,34 +14,34 @@ export function EfficiencyTrendChart({ factoryId }: Props) {
   const delta = latest - prev;
 
   return (
-    <Card className="border-border/40">
+    <Card>
       <CardHeader className="pb-1 flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm font-semibold flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-chart-2/10 flex items-center justify-center">
-            <TrendingUp className="h-4 w-4 text-chart-2" />
+        <CardTitle className="text-[13px] font-semibold flex items-center gap-2.5">
+          <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-status-success" />
           </div>
-          Factory Efficiency Trend
+          Efficiency Trend
         </CardTitle>
-        <Badge variant={delta >= 0 ? "default" : "destructive"} className="text-[10px] font-mono">
-          {delta >= 0 ? "+" : ""}{delta}% vs prev
+        <Badge variant={delta >= 0 ? "default" : "destructive"} className="text-[10px] font-medium rounded-full px-2.5">
+          {delta >= 0 ? "+" : ""}{delta}%
         </Badge>
       </CardHeader>
       <CardContent className="pt-2">
-        <div className="h-[240px]">
+        <div className="h-[220px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="effGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0.2} />
-                  <stop offset="100%" stopColor="hsl(142, 60%, 45%)" stopOpacity={0} />
+                  <stop offset="0%" stopColor={APPLE_COLORS.green} stopOpacity={0.15} />
+                  <stop offset="100%" stopColor={APPLE_COLORS.green} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} />
-              <XAxis dataKey="day" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis domain={[50, 100]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <ReferenceLine y={75} stroke="hsl(var(--destructive))" strokeDasharray="6 4" strokeWidth={1.5} label={{ value: "Target 75%", fill: "hsl(var(--muted-foreground))", fontSize: 9, position: "insideTopRight" }} />
-              <Area type="monotone" dataKey="efficiency" stroke="hsl(142, 60%, 45%)" strokeWidth={2.5} fill="url(#effGradient)" dot={{ fill: "hsl(142, 60%, 45%)", strokeWidth: 2, r: 3, stroke: "hsl(var(--card))" }} activeDot={{ r: 5, fill: "hsl(142, 60%, 45%)", stroke: "hsl(var(--card))", strokeWidth: 2 }} name="Efficiency %" />
+              <CartesianGrid {...APPLE_GRID} />
+              <XAxis dataKey="day" {...APPLE_AXIS} />
+              <YAxis domain={[50, 100]} {...APPLE_AXIS} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
+              <ReferenceLine y={75} stroke="hsl(var(--muted-foreground))" strokeDasharray="4 4" strokeWidth={1} strokeOpacity={0.4} />
+              <Area type="monotone" dataKey="efficiency" stroke={APPLE_COLORS.green} strokeWidth={2} fill="url(#effGradient)" dot={false} activeDot={{ r: 4, fill: APPLE_COLORS.green, stroke: "hsl(var(--card))", strokeWidth: 2 }} name="Efficiency %" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
