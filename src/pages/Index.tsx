@@ -18,6 +18,7 @@ import { GaugeCard } from "@/components/dashboard/GaugeCard";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { PerformanceOverview } from "@/components/dashboard/PerformanceOverview";
 import { OvertimeSectionChart } from "@/components/dashboard/OvertimeSectionChart";
+import { TargetCompletionDonut } from "@/components/dashboard/TargetCompletionDonut";
 import { motion } from "framer-motion";
 
 const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
