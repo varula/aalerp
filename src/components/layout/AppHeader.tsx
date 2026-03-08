@@ -22,7 +22,7 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
   const pendingAlerts = alerts.filter(a => !a.acknowledged).length;
 
   return (
-    <header className="h-14 border-b bg-card flex items-center justify-between px-4 shrink-0">
+    <header className="h-14 border-b bg-card/80 glass flex items-center justify-between px-5 shrink-0">
       <div className="flex items-center gap-3">
         <SidebarTrigger />
         <Select value={selectedFactory} onValueChange={onFactoryChange}>
