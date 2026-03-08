@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
-  DollarSign, Users, Truck, BarChart3, Layers,
+  Users, Truck, BarChart3, Layers,
 } from "lucide-react";
 import {
   downtimeReasons, wipData,
