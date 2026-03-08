@@ -26,15 +26,11 @@ export default function TvDisplay() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [clock, setClock] = useState(formatTime());
-  const [refreshCount, setRefreshCount] = useState(0);
+
+  const { lines: allSimLines, alerts: simAlerts, updatedLineIds, lastUpdate, tick } = useRealtimeSimulation(4000);
 
   useEffect(() => {
     const t = setInterval(() => setClock(formatTime()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const t = setInterval(() => setRefreshCount(c => c + 1), 60000);
     return () => clearInterval(t);
   }, []);
 
@@ -47,10 +43,11 @@ export default function TvDisplay() {
   };
 
   const factoryInfo = getFactoryInfo(selectedFactory);
-  const lines = allLines.filter(l => selectedFactory === "all" || l.factoryId === selectedFactory);
-  const kpis = getFactoryKPIs(selectedFactory === "all" ? undefined : selectedFactory);
-  const activeAlerts = alerts
-    .filter(a => !a.acknowledged && (selectedFactory === "all" || a.factoryId === selectedFactory))
+  const lines = allSimLines.filter(l => selectedFactory === "all" || l.factoryId === selectedFactory);
+  const factoryAlerts = simAlerts.filter(a => selectedFactory === "all" || a.factoryId === selectedFactory);
+  const kpis = computeKPIs(lines, factoryAlerts);
+  const activeAlerts = factoryAlerts
+    .filter(a => !a.acknowledged)
     .sort((a, b) => {
       const sev = { critical: 0, warning: 1, normal: 2 };
       return sev[a.severity] - sev[b.severity];
