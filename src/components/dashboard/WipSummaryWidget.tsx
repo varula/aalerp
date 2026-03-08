@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Layers, Scissors, Wind } from "lucide-react";
+import { Layers, Scissors, Wind, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { type LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
 
