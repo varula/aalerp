@@ -74,8 +74,8 @@ export default function Dashboard() {
       {/* HEADER */}
       <motion.div variants={fadeIn} className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-foreground tracking-tight">Production Overview</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">Production Overview</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
             {factoryInfo.name} · Real-time monitoring
           </p>
         </div>
@@ -130,12 +130,12 @@ export default function Dashboard() {
         <motion.div variants={fadeUp} className="xl:col-span-2">
           <Card className="h-full">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+              <CardTitle className="text-base font-semibold flex items-center gap-2.5">
                 <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Zap className="h-4 w-4 text-primary" />
                 </div>
                 Live Line Status
-                <Badge variant="secondary" className="ml-auto text-[10px] rounded-full px-2.5">{lines.length} lines</Badge>
+                <Badge variant="secondary" className="ml-auto text-xs rounded-full px-2.5">{lines.length} lines</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -155,7 +155,7 @@ export default function Dashboard() {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => navigate(`/lines?line=${line.id}`)}
                     >
-                      <p className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">{line.name}</p>
+                      <p className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">{line.name}</p>
                       <div className="h-10 w-full flex items-end justify-center mt-1">
                         <motion.div
                           className={`w-3.5 rounded-t ${barColor}`}
@@ -164,7 +164,7 @@ export default function Dashboard() {
                           transition={{ duration: 0.8, ease: appleEase, delay: 0.1 }}
                         />
                       </div>
-                      <AnimatedValue value={`${line.efficiency}%`} className="text-[10px] font-semibold mt-1" />
+                      <AnimatedValue value={`${line.efficiency}%`} className="text-xs font-semibold mt-1" />
                     </motion.div>
                   );
                 })}
@@ -177,16 +177,16 @@ export default function Dashboard() {
         <motion.div variants={fadeUp} className="xl:col-span-3">
           <Card className="h-full">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+              <CardTitle className="text-base font-semibold flex items-center gap-2.5">
                 <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Factory className="h-4 w-4 text-primary" />
                 </div>
                 Line Performance
                 <button
                   onClick={() => navigate("/lines")}
-                  className="ml-auto text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+                  className="ml-auto text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
                 >
-                  View all <ArrowUpRight className="h-3 w-3" />
+                  View all <ArrowUpRight className="h-3.5 w-3.5" />
                 </button>
               </CardTitle>
             </CardHeader>
@@ -195,13 +195,13 @@ export default function Dashboard() {
                 <Table>
                   <TableHeader>
                     <TableRow className="border-b border-border/40">
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider w-[70px]">Line</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Style</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Target</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Actual</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Eff %</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-right w-[60px]">OT</TableHead>
-                      <TableHead className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-center w-[50px]">Status</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[70px]">Line</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Style</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Target</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Actual</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[70px]">Eff %</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right w-[60px]">OT</TableHead>
+                      <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-center w-[50px]">Status</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -213,18 +213,18 @@ export default function Dashboard() {
                           className={`cursor-pointer hover:bg-muted/60 transition-colors border-b border-border/20 ${isUpdated ? "animate-value-flash" : ""} ${idx % 2 === 0 ? "bg-muted/20" : ""}`}
                           onClick={() => navigate(`/lines?line=${line.id}`)}
                         >
-                          <TableCell className="font-medium text-xs py-2.5">{line.name}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground py-2.5 truncate max-w-[140px]">{line.style}</TableCell>
-                          <TableCell className="text-right text-xs tabular-nums py-2.5">{line.target}</TableCell>
-                          <TableCell className="text-right text-xs tabular-nums py-2.5">
+                        <TableCell className="font-medium text-sm py-2.5">{line.name}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground py-2.5 truncate max-w-[140px]">{line.style}</TableCell>
+                          <TableCell className="text-right text-sm tabular-nums py-2.5">{line.target}</TableCell>
+                        <TableCell className="text-right text-sm tabular-nums py-2.5">
                             <AnimatedValue value={line.actual} />
                           </TableCell>
                           <TableCell className="text-right py-2.5">
-                            <span className={`text-xs font-medium tabular-nums ${line.efficiency >= 70 ? "text-status-success" : line.efficiency >= 55 ? "text-status-warning" : "text-status-critical"}`}>
+                            <span className={`text-sm font-medium tabular-nums ${line.efficiency >= 70 ? "text-status-success" : line.efficiency >= 55 ? "text-status-warning" : "text-status-critical"}`}>
                               <AnimatedValue value={`${line.efficiency}%`} />
                             </span>
                           </TableCell>
-                          <TableCell className="text-right text-xs tabular-nums py-2.5">
+                          <TableCell className="text-right text-sm tabular-nums py-2.5">
                             <span className={line.overtimeHours > 2 ? "text-status-warning font-medium" : ""}>
                               {line.overtimeHours}h
                             </span>

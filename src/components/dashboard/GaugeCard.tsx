@@ -80,16 +80,16 @@ export function GaugeCard({
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-[22px] font-semibold text-foreground leading-none tracking-tight">{value}</span>
-              <span className="text-[9px] text-muted-foreground font-medium mt-0.5">{unit}</span>
+              <span className="text-2xl font-semibold text-foreground leading-none tracking-tight">{value}</span>
+              <span className="text-[10px] text-muted-foreground font-medium mt-0.5">{unit}</span>
             </div>
           </motion.div>
 
           {/* Label */}
           <div className="text-center w-full space-y-1">
-            <p className="text-[12px] font-medium text-foreground tracking-tight">{label}</p>
+            <p className="text-sm font-medium text-foreground tracking-tight">{label}</p>
             {target !== undefined && (
-              <p className="text-[10px] text-muted-foreground">Target {target}{unit}</p>
+              <p className="text-xs text-muted-foreground">Target {target}{unit}</p>
             )}
             <div className="flex items-center justify-center gap-2">
               {trend && (
@@ -100,7 +100,7 @@ export function GaugeCard({
                   transition={{ delay: 0.5, duration: 0.3 }}
                 >
                   <TrendIcon className="h-3 w-3" />
-                  {trendValue && <span className="text-[10px] font-medium">{trendValue}</span>}
+                  {trendValue && <span className="text-xs font-medium">{trendValue}</span>}
                 </motion.div>
               )}
               {sparkData && <MiniSparkline data={sparkData} color={arcColor} />}

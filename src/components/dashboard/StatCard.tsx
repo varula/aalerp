@@ -29,9 +29,9 @@ export function StatCard({ label, value, sub, icon: Icon, iconColor = "text-prim
             <Icon className={`h-[18px] w-[18px] ${iconColor} opacity-80`} />
           </motion.div>
           <div className="min-w-0">
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
-            <AnimatedValue value={value} className="text-xl font-semibold text-foreground" />
-            <p className="text-[10px] text-muted-foreground">{sub}</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
+            <AnimatedValue value={value} className="text-2xl font-semibold text-foreground" />
+            <p className="text-xs text-muted-foreground">{sub}</p>
           </div>
         </CardContent>
       </Card>
