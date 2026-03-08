@@ -31,11 +31,13 @@ function TrendIcon({ value, threshold, higherIsBetter = true }: { value: number;
     : <TrendingDown className="h-3.5 w-3.5 text-status-critical" />;
 }
 
+const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
+
 const cardHover = {
   whileHover: { y: -2, scale: 1.01 },
   whileTap: { scale: 0.985 },
-  transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] },
-};
+  transition: { duration: 0.25, ease: appleEase },
+} as const;
 
 const stagger = {
   hidden: {},
@@ -44,8 +46,8 @@ const stagger = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: appleEase } },
+} as const;
 
 interface KPICardData {
   label: string;
