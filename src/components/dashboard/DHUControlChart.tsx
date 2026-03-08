@@ -40,15 +40,9 @@ export function DHUControlChart() {
               <XAxis dataKey="day" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis domain={[0, 7]} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <ReferenceLine y={5} stroke="hsl(0, 72%, 51%)" strokeDasharray="6 4" strokeWidth={1.5}>
-                <label position="insideTopRight" style={{ fill: "hsl(0, 72%, 51%)", fontSize: 9 }}>UCL 5%</label>
-              </ReferenceLine>
-              <ReferenceLine y={2.5} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" strokeWidth={1}>
-                <label position="insideTopRight" style={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }}>CL</label>
-              </ReferenceLine>
-              <ReferenceLine y={0.5} stroke="hsl(142, 60%, 45%)" strokeDasharray="6 4" strokeWidth={1}>
-                <label position="insideBottomRight" style={{ fill: "hsl(142, 60%, 45%)", fontSize: 9 }}>LCL</label>
-              </ReferenceLine>
+              <ReferenceLine y={5} stroke="hsl(0, 72%, 51%)" strokeDasharray="6 4" strokeWidth={1.5} label={{ value: "UCL 5%", fill: "hsl(0, 72%, 51%)", fontSize: 9, position: "insideTopRight" }} />
+              <ReferenceLine y={2.5} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" strokeWidth={1} label={{ value: "CL", fill: "hsl(var(--muted-foreground))", fontSize: 9, position: "insideTopRight" }} />
+              <ReferenceLine y={0.5} stroke="hsl(142, 60%, 45%)" strokeDasharray="6 4" strokeWidth={1} label={{ value: "LCL", fill: "hsl(142, 60%, 45%)", fontSize: 9, position: "insideBottomRight" }} />
               <Line type="monotone" dataKey="dhu" stroke="hsl(0, 72%, 51%)" strokeWidth={2.5} dot={{ fill: "hsl(0, 72%, 51%)", strokeWidth: 2, r: 3.5, stroke: "hsl(var(--card))" }} activeDot={{ r: 5, fill: "hsl(0, 72%, 51%)", stroke: "hsl(var(--card))", strokeWidth: 2 }} name="DHU %" />
             </LineChart>
           </ResponsiveContainer>
