@@ -61,7 +61,7 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
         <SidebarTrigger />
 
         <div className="hidden sm:flex flex-col justify-center min-w-0">
-          <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{factoryInfo.location}</p>
+          <p className="text-sm text-muted-foreground leading-tight">{factoryInfo.location}</p>
         </div>
 
         <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
