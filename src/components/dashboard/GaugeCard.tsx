@@ -100,7 +100,7 @@ export function GaugeCard({
                   transition={{ delay: 0.5, duration: 0.3 }}
                 >
                   <TrendIcon className="h-3 w-3" />
-                  {trendValue && <span className="text-[10px] font-medium">{trendValue}</span>}
+                  {trendValue && <span className="text-xs font-medium">{trendValue}</span>}
                 </motion.div>
               )}
               {sparkData && <MiniSparkline data={sparkData} color={arcColor} />}
