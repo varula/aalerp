@@ -20,11 +20,11 @@ import AIPredictions from "@/pages/AIPredictions";
 import DowntimeTracking from "@/pages/DowntimeTracking";
 import MaterialTracking from "@/pages/MaterialTracking";
 import CVCounting from "@/pages/CVCounting";
-import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
 import { SectionModulesPage, CrudModulePage } from "@/components/CrudModule";
 import PlanningModules from "@/pages/PlanningModules";
 import PlanningOverview from "@/pages/PlanningOverview";
+import { StandaloneCrudPage } from "@/components/StandaloneCrudPage";
 
 const queryClient = new QueryClient();
 
@@ -44,33 +44,33 @@ const App = () => (
               <Route path="/orders" element={<ProductionOrders />} />
               <Route path="/lines" element={<SewingLines />} />
               <Route path="/wip" element={<WipTracking />} />
-              <Route path="/cut-to-pack" element={<ComingSoon title="Cut to Pack Flow" description="End-to-end cutting to packing tracking" />} />
+              <Route path="/cut-to-pack" element={<StandaloneCrudPage moduleKey="cut-to-pack" />} />
               {/* Quality */}
               <Route path="/quality" element={<QualityDashboard />} />
-              <Route path="/inspections" element={<ComingSoon title="Inspections" description="Detailed inspection management" />} />
-              <Route path="/defects" element={<ComingSoon title="Defect Analysis" description="In-depth defect trend analysis" />} />
+              <Route path="/inspections" element={<StandaloneCrudPage moduleKey="inspections" />} />
+              <Route path="/defects" element={<StandaloneCrudPage moduleKey="defects" />} />
               {/* Resources */}
               <Route path="/operators" element={<Operators />} />
               <Route path="/machines" element={<Machines />} />
-              <Route path="/skills" element={<ComingSoon title="Skill Matrix" description="Operator skill assessment and training" />} />
-              <Route path="/attendance" element={<ComingSoon title="Attendance" description="Worker attendance and shift management" />} />
+              <Route path="/skills" element={<StandaloneCrudPage moduleKey="skills" />} />
+              <Route path="/attendance" element={<StandaloneCrudPage moduleKey="attendance" />} />
               {/* AI & Automation */}
               <Route path="/ai-predictions" element={<AIPredictions />} />
               <Route path="/cv-counting" element={<CVCounting />} />
-              <Route path="/ai-defects" element={<ComingSoon title="AI Defect Detection" description="Computer vision powered defect detection" />} />
+              <Route path="/ai-defects" element={<StandaloneCrudPage moduleKey="ai-defects" />} />
               {/* Operations */}
               <Route path="/downtime" element={<DowntimeTracking />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/materials" element={<MaterialTracking />} />
               {/* Analytics */}
               <Route path="/reports" element={<Reports />} />
-              <Route path="/buyer-analytics" element={<ComingSoon title="Buyer Analytics" description="Buyer-wise performance analytics" />} />
+              <Route path="/buyer-analytics" element={<StandaloneCrudPage moduleKey="buyer-analytics" />} />
               {/* Advanced */}
-              <Route path="/digital-twin" element={<ComingSoon title="Digital Twin" description="Factory simulation and scenario modeling" />} />
-              <Route path="/benchmarking" element={<ComingSoon title="Benchmarking" description="Cross-factory performance benchmarking" />} />
+              <Route path="/digital-twin" element={<StandaloneCrudPage moduleKey="digital-twin" />} />
+              <Route path="/benchmarking" element={<StandaloneCrudPage moduleKey="benchmarking" />} />
               {/* Administration */}
-              <Route path="/master-data" element={<ComingSoon title="Master Data" description="Factory, line, and style master data management" />} />
-              <Route path="/settings" element={<ComingSoon title="Settings" description="System configuration and preferences" />} />
+              <Route path="/master-data" element={<StandaloneCrudPage moduleKey="master-data" />} />
+              <Route path="/settings" element={<StandaloneCrudPage moduleKey="settings" />} />
               <Route path="/tv" element={<TvDisplay />} />
 
               {/* Planning */}

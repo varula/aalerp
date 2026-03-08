@@ -51,7 +51,7 @@ export function CrudModulePage() {
   return <CrudDataTable module={mod} sectionSlug={sectionSlug || ""} />;
 }
 
-function CrudDataTable({ module: mod, sectionSlug }: { module: ModuleDef; sectionSlug: string }) {
+export function CrudDataTable({ module: mod, sectionSlug, hideBackButton }: { module: ModuleDef; sectionSlug: string; hideBackButton?: boolean }) {
   const navigate = useNavigate();
   const [records, setRecords] = useState<CrudRecord[]>(() => getAll(mod.slug));
   const [search, setSearch] = useState("");
@@ -120,12 +120,14 @@ function CrudDataTable({ module: mod, sectionSlug }: { module: ModuleDef; sectio
     <div className="p-4 md:p-6 space-y-4 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" onClick={() => navigate(`/modules/${sectionSlug}`)}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
+        {!hideBackButton && (
+          <Button variant="ghost" size="sm" onClick={() => navigate(`/modules/${sectionSlug}`)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        )}
         <div className="flex-1 min-w-0">
           <h1 className="text-lg md:text-xl font-semibold text-foreground truncate">{mod.title}</h1>
-          <p className="text-xs text-muted-foreground">{mod.section} · Module #{mod.id}</p>
+          <p className="text-xs text-muted-foreground">{mod.section}</p>
         </div>
         <Badge variant="secondary" className="font-mono text-xs">{records.length} records</Badge>
       </div>
