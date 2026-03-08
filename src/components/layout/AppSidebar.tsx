@@ -53,12 +53,12 @@ export function AppSidebar() {
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground font-bold text-sm">
-            GQ
+            AF
           </div>
           {!collapsed && (
             <div>
-              <h2 className="text-sm font-bold text-sidebar-foreground">GarmentIQ</h2>
-              <p className="text-[10px] text-sidebar-foreground/60">Smart Factory MES</p>
+              <h2 className="text-sm font-bold text-sidebar-foreground">Armana Fashions</h2>
+              <p className="text-[10px] text-sidebar-foreground/60">Production Management</p>
             </div>
           )}
         </div>
@@ -125,7 +125,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-3">
         {!collapsed && (
-          <p className="text-[10px] text-sidebar-foreground/40 text-center">v1.0 · GarmentIQ</p>
+          <p className="text-[10px] text-sidebar-foreground/40 text-center">v1.0 · Armana Fashions</p>
         )}
       </SidebarFooter>
     </Sidebar>
