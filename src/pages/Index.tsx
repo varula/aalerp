@@ -48,9 +48,12 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Real-time denim pant production overview · 8:00 AM – 7:00 PM</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Real-time denim pant production overview · 8:00 AM – 7:00 PM</p>
+        </div>
+        <LiveIndicator lastUpdate={lastUpdate} />
       </div>
 
       {/* KPI Cards */}
