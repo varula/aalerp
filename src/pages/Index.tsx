@@ -164,7 +164,7 @@ export default function Dashboard() {
                           transition={{ duration: 0.8, ease: appleEase, delay: 0.1 }}
                         />
                       </div>
-                      <AnimatedValue value={`${line.efficiency}%`} className="text-[10px] font-semibold mt-1" />
+                      <AnimatedValue value={`${line.efficiency}%`} className="text-xs font-semibold mt-1" />
                     </motion.div>
                   );
                 })}
