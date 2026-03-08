@@ -13,6 +13,7 @@ import {
 } from "@/data/mock-data";
 import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
+import { WipSummaryWidget } from "@/components/dashboard/WipSummaryWidget";
 import { computeKPIs } from "@/lib/compute-kpis";
 import { GaugeCard } from "@/components/dashboard/GaugeCard";
 import { StatCard } from "@/components/dashboard/StatCard";
