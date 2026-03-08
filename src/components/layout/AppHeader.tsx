@@ -102,7 +102,7 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
           </div>
           <div className="hidden lg:block">
             <p className="text-xs font-medium text-foreground leading-tight">{user.name}</p>
-            <p className="text-[10px] text-muted-foreground leading-tight">{factoryInfo.location}</p>
+            <p className="text-[10px] text-muted-foreground leading-tight">Manager</p>
           </div>
         </div>
       </div>
