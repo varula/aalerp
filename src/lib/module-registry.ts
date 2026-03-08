@@ -33,7 +33,7 @@ const RESULT_OPTIONS = ["Pass", "Fail", "Conditional"];
 const DEPT_OPTIONS = ["Cutting", "Sewing", "Finishing", "Quality", "Stores", "Admin"];
 
 // Helper to create common fields
-const dateField = (key = "date", label = "Date"): FieldDef => ({ key, label, type: "date", required: true });
+const dateField = (key = "date", label = "Date"): FieldDef => ({ key, label, type: "date", required: true, validation: { maxDate: "today" } });
 const styleField: FieldDef = { key: "styleNo", label: "Style No", type: "text", required: true };
 const orderField: FieldDef = { key: "orderNo", label: "Order No", type: "text", required: true };
 const buyerField: FieldDef = { key: "buyer", label: "Buyer", type: "text" };
