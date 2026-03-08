@@ -4,7 +4,7 @@ import {
   Monitor, Package, Gauge, Shield, Wrench, Eye, Brain, Boxes, Clock,
   Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
   Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
-  ClipboardCheck, ShieldCheck, Building, Warehouse, FileText,
+  ClipboardCheck, ShieldCheck, Building, Warehouse, FileText, CalendarRange,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
@@ -34,6 +34,7 @@ const sections: NavSection[] = [
       { title: "Sewing Lines", url: "/lines", icon: Factory },
       { title: "WIP Tracking", url: "/wip", icon: Package },
       { title: "Cut to Pack", url: "/cut-to-pack", icon: Scissors },
+      { title: "Planning", url: "/planning", icon: CalendarRange },
     ],
   },
   {

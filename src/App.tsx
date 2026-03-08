@@ -23,6 +23,7 @@ import CVCounting from "@/pages/CVCounting";
 import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
 import { SectionModulesPage, CrudModulePage } from "@/components/CrudModule";
+import PlanningModules from "@/pages/PlanningModules";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,8 @@ const App = () => (
               <Route path="/settings" element={<ComingSoon title="Settings" description="System configuration and preferences" />} />
               <Route path="/tv" element={<TvDisplay />} />
 
+              {/* Planning */}
+              <Route path="/planning" element={<PlanningModules />} />
               {/* CRUD Module Routes */}
               <Route path="/modules/:sectionSlug" element={<SectionModulesPage />} />
               <Route path="/modules/:sectionSlug/:moduleSlug" element={<CrudModulePage />} />
