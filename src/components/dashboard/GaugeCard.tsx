@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { type LucideIcon, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface GaugeCardProps {
   label: string;
@@ -51,42 +52,62 @@ export function GaugeCard({
   const trendColorClass = trend === "up" ? "text-status-success" : trend === "down" ? "text-destructive" : "text-muted-foreground";
 
   return (
-    <Card className="group relative overflow-hidden">
-      <CardContent className="p-5 flex flex-col items-center gap-2">
-        {/* Gauge */}
-        <div className="relative h-[84px] w-[84px]">
-          <svg viewBox="0 0 100 100" className="h-full w-full -rotate-[135deg]">
-            {/* Track */}
-            <circle cx="50" cy="50" r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth={strokeWidth}
-              strokeDasharray={`${arcLength} ${circumference - arcLength}`} strokeLinecap="round" />
-            {/* Value arc */}
-            <circle cx="50" cy="50" r={radius} fill="none" stroke={arcColor} strokeWidth={strokeWidth}
-              strokeDasharray={`${arcLength} ${circumference - arcLength}`} strokeDashoffset={offset}
-              strokeLinecap="round" className="transition-all duration-1000 ease-out" />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-[22px] font-semibold text-foreground leading-none tracking-tight">{value}</span>
-            <span className="text-[9px] text-muted-foreground font-medium mt-0.5">{unit}</span>
-          </div>
-        </div>
+    <motion.div
+      whileHover={{ y: -3, scale: 1.015 }}
+      whileTap={{ scale: 0.985 }}
+      transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="will-change-transform"
+    >
+      <Card className="group relative overflow-hidden">
+        <CardContent className="p-5 flex flex-col items-center gap-2">
+          {/* Gauge */}
+          <motion.div
+            className="relative h-[84px] w-[84px]"
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <svg viewBox="0 0 100 100" className="h-full w-full -rotate-[135deg]">
+              <circle cx="50" cy="50" r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth={strokeWidth}
+                strokeDasharray={`${arcLength} ${circumference - arcLength}`} strokeLinecap="round" />
+              <motion.circle
+                cx="50" cy="50" r={radius} fill="none" stroke={arcColor} strokeWidth={strokeWidth}
+                strokeDasharray={`${arcLength} ${circumference - arcLength}`}
+                strokeLinecap="round"
+                initial={{ strokeDashoffset: arcLength }}
+                animate={{ strokeDashoffset: offset }}
+                transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-[22px] font-semibold text-foreground leading-none tracking-tight">{value}</span>
+              <span className="text-[9px] text-muted-foreground font-medium mt-0.5">{unit}</span>
+            </div>
+          </motion.div>
 
-        {/* Label */}
-        <div className="text-center w-full space-y-1">
-          <p className="text-[12px] font-medium text-foreground tracking-tight">{label}</p>
-          {target !== undefined && (
-            <p className="text-[10px] text-muted-foreground">Target {target}{unit}</p>
-          )}
-          <div className="flex items-center justify-center gap-2">
-            {trend && (
-              <div className={`flex items-center gap-0.5 ${trendColorClass}`}>
-                <TrendIcon className="h-3 w-3" />
-                {trendValue && <span className="text-[10px] font-medium">{trendValue}</span>}
-              </div>
+          {/* Label */}
+          <div className="text-center w-full space-y-1">
+            <p className="text-[12px] font-medium text-foreground tracking-tight">{label}</p>
+            {target !== undefined && (
+              <p className="text-[10px] text-muted-foreground">Target {target}{unit}</p>
             )}
-            {sparkData && <MiniSparkline data={sparkData} color={arcColor} />}
+            <div className="flex items-center justify-center gap-2">
+              {trend && (
+                <motion.div
+                  className={`flex items-center gap-0.5 ${trendColorClass}`}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5, duration: 0.3 }}
+                >
+                  <TrendIcon className="h-3 w-3" />
+                  {trendValue && <span className="text-[10px] font-medium">{trendValue}</span>}
+                </motion.div>
+              )}
+              {sparkData && <MiniSparkline data={sparkData} color={arcColor} />}
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
