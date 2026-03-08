@@ -67,7 +67,7 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
         <div className="h-8 w-px bg-border mx-1 hidden sm:block" />
 
         <Select value={selectedFactory} onValueChange={onFactoryChange}>
-          <SelectTrigger className="w-[200px] h-9 text-[12px] border-border rounded-lg bg-background">
+          <SelectTrigger className="w-[220px] h-10 text-sm border-border rounded-lg bg-background">
             <SelectValue placeholder="Select Factory" />
           </SelectTrigger>
           <SelectContent>
