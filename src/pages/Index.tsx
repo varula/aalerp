@@ -6,19 +6,27 @@ import {
 } from "@/components/ui/table";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  PieChart, Pie, Cell,
 } from "recharts";
 import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
+  DollarSign, Users, Truck, Target,
 } from "lucide-react";
 import {
   hourlyProduction, downtimeReasons, wipData,
-  DENIM_DEFECTS, getFactoryInfo,
+  DENIM_DEFECTS, getFactoryInfo, factoryLevelKPIs,
 } from "@/data/mock-data";
 import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
 import { computeKPIs } from "@/lib/compute-kpis";
-import { ModuleActivityWidgets } from "@/components/ModuleActivityWidgets";
+import { GaugeCard } from "@/components/dashboard/GaugeCard";
+import { EfficiencyTrendChart } from "@/components/dashboard/EfficiencyTrendChart";
+import { DHUControlChart } from "@/components/dashboard/DHUControlChart";
+import { LaborProductivityChart } from "@/components/dashboard/LaborProductivityChart";
+import { ProductionFunnelChart } from "@/components/dashboard/ProductionFunnelChart";
+import { LostTimeDonut } from "@/components/dashboard/LostTimeDonut";
+import { QualityStackedChart } from "@/components/dashboard/QualityStackedChart";
+import { AbsenteeismHeatmap } from "@/components/dashboard/AbsenteeismHeatmap";
+import { TurnoverChart } from "@/components/dashboard/TurnoverChart";
 
 const DEFECT_COLORS = [
   "hsl(0, 72%, 51%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)",
@@ -35,20 +43,29 @@ export default function Dashboard() {
   const kpis = computeKPIs(lines, factoryAlerts);
   const factoryInfo = getFactoryInfo(selectedFactory);
 
-  const kpiCards = [
-    { label: "Total Output", value: kpis.totalOutput.toLocaleString(), icon: TrendingUp, sub: `of ${kpis.totalTarget.toLocaleString()} target` },
-    { label: "Avg Efficiency", value: `${kpis.avgEfficiency}%`, icon: Activity, sub: kpis.avgEfficiency >= 70 ? "On track" : "Below target" },
-    { label: "Active Lines", value: kpis.activeLines, icon: Factory, sub: "Currently running" },
-    { label: "Downtime", value: `${kpis.totalDowntime} min`, icon: Clock, sub: "Total today" },
-    { label: "DHU", value: `${kpis.dhu}%`, icon: Shield, sub: `RFT ${kpis.rft}%` },
-    { label: "Pending Alerts", value: kpis.pendingAlerts, icon: AlertTriangle, sub: "Unacknowledged" },
-  ];
+  // Use factory-level KPIs (average across all or single factory)
+  const fKPIs = factoryId
+    ? factoryLevelKPIs.find(k => k.factoryId === factoryId)
+    : undefined;
+  const avgFKPI = fKPIs || {
+    factoryEfficiency: kpis.avgEfficiency,
+    overallLaborProductivity: +(factoryLevelKPIs.reduce((s, k) => s + k.overallLaborProductivity, 0) / factoryLevelKPIs.length).toFixed(1),
+    costPerStandardMinute: +(factoryLevelKPIs.reduce((s, k) => s + k.costPerStandardMinute, 0) / factoryLevelKPIs.length).toFixed(3),
+    onTimeDeliveryRate: +(factoryLevelKPIs.reduce((s, k) => s + k.onTimeDeliveryRate, 0) / factoryLevelKPIs.length).toFixed(1),
+    rftQuality: kpis.rft,
+    dhuPercent: kpis.dhu,
+    lostTimePercent: +(factoryLevelKPIs.reduce((s, k) => s + k.lostTimePercent, 0) / factoryLevelKPIs.length).toFixed(1),
+    workerAbsenteeismRate: +(factoryLevelKPIs.reduce((s, k) => s + k.workerAbsenteeismRate, 0) / factoryLevelKPIs.length).toFixed(1),
+    manToMachineRatio: +(factoryLevelKPIs.reduce((s, k) => s + k.manToMachineRatio, 0) / factoryLevelKPIs.length).toFixed(2),
+    cutToShipRatio: +(factoryLevelKPIs.reduce((s, k) => s + k.cutToShipRatio, 0) / factoryLevelKPIs.length).toFixed(1),
+  };
 
   const statusColor = (s: string) =>
     s === "normal" ? "bg-status-success" : s === "warning" ? "bg-status-warning" : "bg-status-critical";
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">{factoryInfo.name} — Dashboard</h1>
@@ -57,22 +74,80 @@ export default function Dashboard() {
         <LiveIndicator lastUpdate={lastUpdate} />
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {kpiCards.map((kpi) => (
-          <Card key={kpi.label} className="relative overflow-hidden">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">{kpi.label}</p>
-                  <AnimatedValue value={kpi.value} className="text-2xl font-bold font-mono mt-1" />
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{kpi.sub}</p>
-                </div>
-                <kpi.icon className="h-8 w-8 text-primary/30" />
+      {/* ═══════════════════ TOP: GAUGE KPI CARDS ═══════════════════ */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <GaugeCard label="Factory Efficiency" value={Number(avgFKPI.factoryEfficiency)} unit="%" target={75} icon={Activity} />
+        <GaugeCard label="Labor Productivity" value={Number(avgFKPI.overallLaborProductivity)} unit=" pcs/op" icon={Users} />
+        <GaugeCard label="On Time Delivery" value={Number(avgFKPI.onTimeDeliveryRate)} unit="%" target={95} icon={Truck} />
+        <GaugeCard label="RFT Quality" value={Number(avgFKPI.rftQuality)} unit="%" target={97} icon={CheckCircle2} />
+        <GaugeCard label="DHU" value={Number(avgFKPI.dhuPercent)} unit="%" icon={Shield} />
+        <GaugeCard label="Cost / SMV" value={Number((Number(avgFKPI.costPerStandardMinute) * 100).toFixed(1))} unit="¢" icon={DollarSign} />
+      </div>
+
+      {/* Quick stats row */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: "Total Output", value: kpis.totalOutput.toLocaleString(), sub: `of ${kpis.totalTarget.toLocaleString()} target`, icon: TrendingUp },
+          { label: "Active Lines", value: kpis.activeLines, sub: "Currently running", icon: Factory },
+          { label: "Total Downtime", value: `${kpis.totalDowntime} min`, sub: "Today", icon: Clock },
+          { label: "Pending Alerts", value: kpis.pendingAlerts, sub: "Unacknowledged", icon: AlertTriangle },
+        ].map(kpi => (
+          <Card key={kpi.label}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <kpi.icon className="h-8 w-8 text-primary/30 shrink-0" />
+              <div>
+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{kpi.label}</p>
+                <AnimatedValue value={kpi.value} className="text-xl font-bold font-mono" />
+                <p className="text-[10px] text-muted-foreground">{kpi.sub}</p>
               </div>
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* ═══════ PANEL 1: PRODUCTIVITY ═══════ */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+          <div className="h-1 w-4 rounded-full bg-primary" />
+          Productivity Panel
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <EfficiencyTrendChart />
+          <LaborProductivityChart />
+        </div>
+      </div>
+
+      {/* ═══════ PANEL 2: PRODUCTION FLOW ═══════ */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+          <div className="h-1 w-4 rounded-full bg-chart-2" />
+          Production Flow Panel
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ProductionFunnelChart />
+          {/* Hourly Production */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold">Hourly Output — Predicted vs Actual</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[260px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={hourlyProduction}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="hour" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+                    <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+                    <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
+                    <Legend />
+                    <Area type="monotone" dataKey="target" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted-foreground)/0.1)" strokeDasharray="5 5" name="Target" />
+                    <Area type="monotone" dataKey="predicted" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1)/0.15)" name="Predicted" />
+                    <Area type="monotone" dataKey="actual" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2)/0.2)" name="Actual" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Line Status Quick View */}
@@ -103,144 +178,50 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Hourly Production */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Hourly Denim Output — Predicted vs Actual</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[280px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={hourlyProduction}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="hour" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Legend />
-                  <Area type="monotone" dataKey="target" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted-foreground)/0.1)" strokeDasharray="5 5" name="Target" />
-                  <Area type="monotone" dataKey="predicted" stroke="hsl(var(--chart-1))" fill="hsl(var(--chart-1)/0.15)" name="Predicted" />
-                  <Area type="monotone" dataKey="actual" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2)/0.2)" name="Actual" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Downtime Pareto */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Downtime Pareto Chart</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[280px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={downtimeReasons.sort((a, b) => b.minutes - a.minutes).slice(0, 6)} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
-                  <YAxis dataKey="reason" type="category" width={130} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Bar dataKey="minutes" fill="hsl(var(--chart-5))" radius={[0, 4, 4, 0]} name="Minutes" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* DHU + Denim Defect Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* DHU & RFT Cards */}
-        <div className="space-y-4">
-          <Card className="border-primary/20">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-3">
-                <Shield className="h-10 w-10 text-primary" />
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">Defects per Hundred Units</p>
-                  <p className="text-3xl font-bold font-mono text-foreground">{kpis.dhu}</p>
-                  <p className="text-[11px] text-muted-foreground">DHU Rate</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-status-success/20">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-10 w-10 text-status-success" />
-                <div>
-                  <p className="text-xs text-muted-foreground font-medium">Right First Time</p>
-                  <p className="text-3xl font-bold font-mono text-status-success">{kpis.rft}%</p>
-                  <p className="text-[11px] text-muted-foreground">Quality Pass Rate</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* ═══════ PANEL 3: QUALITY ═══════ */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+          <div className="h-1 w-4 rounded-full bg-chart-5" />
+          Quality Panel
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DHUControlChart />
+          <QualityStackedChart />
         </div>
-
-        {/* Denim Defect Distribution Doughnut */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Denim Defect Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-6">
-              <div className="h-[220px] w-[220px] shrink-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Defect Pareto */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold">Defect Pareto — Top Denim Defects</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[260px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={DENIM_DEFECTS}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={55}
-                      outerRadius={90}
-                      paddingAngle={3}
-                      dataKey="count"
-                      nameKey="defect"
-                    >
-                      {DENIM_DEFECTS.map((_, i) => (
-                        <Cell key={i} fill={DEFECT_COLORS[i]} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                        fontSize: "12px",
-                      }}
-                    />
-                  </PieChart>
+                  <BarChart data={downtimeReasons.sort((a, b) => b.minutes - a.minutes).slice(0, 6)} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} />
+                    <YAxis dataKey="reason" type="category" width={130} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+                    <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
+                    <Bar dataKey="minutes" fill="hsl(var(--chart-5))" radius={[0, 4, 4, 0]} name="Minutes" />
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
-              <div className="flex-1 space-y-2">
-                {DENIM_DEFECTS.map((d, i) => (
-                  <div key={d.defect} className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded-sm shrink-0" style={{ backgroundColor: DEFECT_COLORS[i] }} />
-                    <span className="text-xs text-foreground flex-1">{d.defect}</span>
-                    <span className="text-xs font-mono text-muted-foreground">{d.count}</span>
-                    <span className="text-xs font-mono font-semibold">{d.percentage}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          <LostTimeDonut />
+        </div>
+      </div>
+
+      {/* ═══════ PANEL 4: WORKFORCE ═══════ */}
+      <div className="space-y-2">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+          <div className="h-1 w-4 rounded-full bg-chart-3" />
+          Workforce Panel
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AbsenteeismHeatmap />
+          <TurnoverChart />
+        </div>
       </div>
 
       {/* Bottleneck Detection */}
@@ -269,9 +250,6 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Module Activity Widgets */}
-      <ModuleActivityWidgets />
 
       {/* Line Performance Table */}
       <Card>
