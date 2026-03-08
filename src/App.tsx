@@ -63,6 +63,7 @@ const App = () => (
                 <Route path="/lines" element={<SewingLines />} />
                 <Route path="/wip" element={<WipTracking />} />
                 <Route path="/cut-to-pack" element={<StandaloneCrudPage moduleKey="cut-to-pack" />} />
+                <Route path="/hourly-production" element={<HourlyProduction />} />
                 <Route path="/quality" element={<QualityDashboard />} />
                 <Route path="/inspections" element={<StandaloneCrudPage moduleKey="inspections" />} />
                 <Route path="/defects" element={<StandaloneCrudPage moduleKey="defects" />} />
