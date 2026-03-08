@@ -9,7 +9,7 @@ const SHIFT_OPTIONS = ["Morning", "Afternoon", "Night"];
 const RESULT_OPTIONS = ["Pass", "Fail", "Conditional"];
 const DEPT_OPTIONS = ["Cutting", "Sewing", "Finishing", "Quality", "Stores", "Admin"];
 
-const dateField = (key = "date", label = "Date"): FieldDef => ({ key, label, type: "date", required: true });
+const dateField = (key = "date", label = "Date"): FieldDef => ({ key, label, type: "date", required: true, validation: { maxDate: "today" } });
 const statusField: FieldDef = { key: "status", label: "Status", type: "select", options: STATUS_OPTIONS, required: true };
 const remarksField: FieldDef = { key: "remarks", label: "Remarks", type: "textarea" };
 const styleField: FieldDef = { key: "styleNo", label: "Style No", type: "text", required: true };
