@@ -113,6 +113,7 @@ const sections: NavSection[] = [
   },
 ];
 
+// Sidebar navigation component
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
