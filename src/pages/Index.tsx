@@ -5,15 +5,11 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-} from "recharts";
-import {
   TrendingUp, Activity, Zap, Clock, AlertTriangle, Factory, Shield, CheckCircle2,
-  Users, Truck, BarChart3, Layers,
+  Users, BarChart3, Layers, Timer,
 } from "lucide-react";
 import {
-  downtimeReasons, wipData,
-  DENIM_DEFECTS, getFactoryInfo, factoryLevelKPIs, getFactoryChartData,
+  wipData, getFactoryInfo, factoryLevelKPIs, getFactoryChartData,
 } from "@/data/mock-data";
 import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue, LiveIndicator } from "@/components/AnimatedValue";
@@ -32,6 +28,7 @@ import { TurnoverChart } from "@/components/dashboard/TurnoverChart";
 import { ManMachineGauge } from "@/components/dashboard/ManMachineGauge";
 import { HourlyOutputChart } from "@/components/dashboard/HourlyOutputChart";
 import { DowntimeParetoChart } from "@/components/dashboard/DowntimeParetoChart";
+import { OvertimeSectionChart } from "@/components/dashboard/OvertimeSectionChart";
 
 export default function Dashboard() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
@@ -48,11 +45,10 @@ export default function Dashboard() {
     +(factoryLevelKPIs.reduce((s, k) => s + Number(k[key]), 0) / factoryLevelKPIs.length).toFixed(1);
   const fk = {
     efficiency: fKPIs ? fKPIs.factoryEfficiency : kpis.avgEfficiency,
-    laborProd: fKPIs ? fKPIs.overallLaborProductivity : avg("overallLaborProductivity"),
-    otd: fKPIs ? fKPIs.onTimeDeliveryRate : avg("onTimeDeliveryRate"),
     rft: fKPIs ? fKPIs.rftQuality : kpis.rft,
     dhu: fKPIs ? fKPIs.dhuPercent : kpis.dhu,
-    costSmv: fKPIs ? fKPIs.costPerStandardMinute : avg("costPerStandardMinute"),
+    otPercent: fKPIs ? fKPIs.overtimePercent : avg("overtimePercent"),
+    totalOT: fKPIs ? fKPIs.totalOvertimeHours : Math.round(factoryLevelKPIs.reduce((s, k) => s + k.totalOvertimeHours, 0)),
   };
 
   const chartData = getFactoryChartData(factoryId);
@@ -72,12 +68,12 @@ export default function Dashboard() {
         <LiveIndicator lastUpdate={lastUpdate} />
       </div>
 
-      {/* TOP: KEY KPI GAUGES */}
+      {/* TOP: KEY KPI GAUGES — only 4 essential */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <GaugeCard label="Factory Efficiency" value={Number(fk.efficiency)} unit="%" target={75} icon={Activity} trend="up" trendValue="+2.1%" sparkData={sparkEff} />
-        <GaugeCard label="On Time Delivery" value={Number(fk.otd)} unit="%" target={95} icon={Truck} trend="flat" trendValue="0%" />
         <GaugeCard label="RFT Quality" value={Number(fk.rft)} unit="%" target={97} icon={CheckCircle2} trend="up" trendValue="+0.3%" />
         <GaugeCard label="DHU Rate" value={Number(fk.dhu)} unit="%" icon={Shield} trend="down" trendValue="-0.2%" />
+        <GaugeCard label="OT Hours" value={Number(fk.otPercent)} unit="%" icon={Timer} trend="up" trendValue={`${fk.totalOT}h total`} />
       </div>
 
       {/* Quick stats */}
@@ -153,10 +149,13 @@ export default function Dashboard() {
         </div>
       </PanelSection>
 
-      {/* PANEL 4: WORKFORCE */}
-      <PanelSection title="Workforce" subtitle="Attendance patterns and employee retention" accentColor="bg-chart-3" icon={<Users className="h-4 w-4 text-chart-3" />}>
+      {/* PANEL 4: WORKFORCE + OT */}
+      <PanelSection title="Workforce & Overtime" subtitle="Attendance, overtime hours by section/floor, and retention" accentColor="bg-chart-3" icon={<Users className="h-4 w-4 text-chart-3" />}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <OvertimeSectionChart factoryId={factoryId} />
           <AbsenteeismHeatmap factoryId={factoryId} />
+        </div>
+        <div className="grid grid-cols-1">
           <TurnoverChart factoryId={factoryId} />
         </div>
       </PanelSection>
@@ -199,37 +198,48 @@ export default function Dashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="max-h-[400px] overflow-auto rounded-lg">
+          <div className="max-h-[400px] overflow-auto rounded-lg border border-border/30">
             <Table>
               <TableHeader>
-                <TableRow className="border-border/40">
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Line</TableHead>
+                <TableRow className="bg-muted/40 border-border/40">
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider w-[80px]">Line</TableHead>
                   <TableHead className="text-[10px] font-semibold uppercase tracking-wider">Style</TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Target</TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Actual</TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Efficiency</TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right">Operators</TableHead>
-                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-center">Status</TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right w-[80px]">Target</TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right w-[80px]">Actual</TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right w-[80px]">Eff %</TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right w-[60px]">Ops</TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-right w-[70px]">OT Hrs</TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase tracking-wider text-center w-[60px]">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {lines.slice(0, 20).map(line => {
+                {lines.slice(0, 20).map((line, idx) => {
                   const isUpdated = updatedLineIds.has(line.id);
+                  const isEven = idx % 2 === 0;
                   return (
-                    <TableRow key={line.id} className={`cursor-pointer hover:bg-muted/30 transition-colors border-border/30 ${isUpdated ? "animate-value-flash" : ""}`} onClick={() => navigate(`/lines?line=${line.id}`)}>
-                      <TableCell className="font-semibold font-mono text-sm">{line.name}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{line.style}</TableCell>
-                      <TableCell className="text-right font-mono text-sm">{line.target}</TableCell>
-                      <TableCell className="text-right font-mono text-sm">
+                    <TableRow
+                      key={line.id}
+                      className={`cursor-pointer hover:bg-accent/50 transition-colors border-border/20 ${isUpdated ? "animate-value-flash" : ""} ${isEven ? "bg-muted/15" : ""}`}
+                      onClick={() => navigate(`/lines?line=${line.id}`)}
+                    >
+                      <TableCell className="font-semibold font-mono text-sm py-2.5">{line.name}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground py-2.5 truncate max-w-[160px]">{line.style}</TableCell>
+                      <TableCell className="text-right font-mono text-sm tabular-nums py-2.5">{line.target}</TableCell>
+                      <TableCell className="text-right font-mono text-sm tabular-nums py-2.5">
                         <AnimatedValue value={line.actual} className="font-mono" />
                       </TableCell>
-                      <TableCell className="text-right">
-                        <span className={`font-mono text-sm font-semibold ${line.efficiency >= 70 ? "text-emerald-600 dark:text-emerald-400" : line.efficiency >= 55 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"}`}>
+                      <TableCell className="text-right py-2.5">
+                        <span className={`font-mono text-sm font-semibold tabular-nums ${line.efficiency >= 70 ? "text-emerald-600 dark:text-emerald-400" : line.efficiency >= 55 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"}`}>
                           <AnimatedValue value={`${line.efficiency}%`} className="font-mono" />
                         </span>
                       </TableCell>
-                      <TableCell className="text-right font-mono text-sm">{line.operatorCount}</TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-right font-mono text-sm tabular-nums py-2.5">{line.operatorCount}</TableCell>
+                      <TableCell className="text-right font-mono text-sm tabular-nums py-2.5">
+                        <span className={line.overtimeHours > 2 ? "text-amber-600 dark:text-amber-400 font-semibold" : ""}>
+                          {line.overtimeHours}h
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center py-2.5">
                         <div className={`h-2.5 w-2.5 rounded-full mx-auto ring-2 ring-background transition-colors duration-500 ${statusColor(line.status)}`} />
                       </TableCell>
                     </TableRow>

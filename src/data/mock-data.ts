@@ -38,6 +38,7 @@ export interface SewingLine {
   efficiency: number;
   status: "normal" | "warning" | "critical";
   smv: number;
+  overtimeHours: number;
 }
 
 export interface Operator {
@@ -140,6 +141,8 @@ export interface FactoryLevelKPI {
   lostTimePercent: number;
   workerAbsenteeismRate: number;
   employeeTurnoverRate: number;
+  overtimePercent: number;
+  totalOvertimeHours: number;
 }
 
 export interface DenimDefect {
@@ -351,6 +354,7 @@ function generateLines(floorId: string, factoryId: string, linePrefix: string, l
       efficiency: eff,
       status: (eff >= 70 ? "normal" : eff >= 55 ? "warning" : "critical") as SewingLine["status"],
       smv: +(Math.random() * 8 + 4).toFixed(2),
+      overtimeHours: +(Math.random() * 3 + 0.5).toFixed(1),
     };
   }).map(l => ({ ...l, actual: Math.round(l.target * l.efficiency / 100) }));
 }
@@ -718,6 +722,8 @@ function generateFactoryLevelKPIs(factories: Factory[]): FactoryLevelKPI[] {
       lostTimePercent: +(Math.random() * 6 + 3).toFixed(1),
       workerAbsenteeismRate: +(Math.random() * 8 + 4).toFixed(1),
       employeeTurnoverRate: +(Math.random() * 5 + 2).toFixed(1),
+      overtimePercent: +(Math.random() * 12 + 5).toFixed(1),
+      totalOvertimeHours: Math.round(lines.reduce((s, l) => s + (l.overtimeHours || 0), 0)),
     };
   });
 }
@@ -822,6 +828,33 @@ export const lostTimeBreakdown = generateLostTimeBreakdown();
 export const absenteeismHeatmap = generateAbsenteeismHeatmap();
 export const qualityPerformance = generateQualityPerformance();
 export const turnoverTrend = generateTurnoverTrend();
+
+// ---------- OT Hours Data ----------
+export interface OTSectionData {
+  section: string;
+  otHours: number;
+  otPercent: number;
+  fill: string;
+}
+
+function generateOTBySection(): OTSectionData[] {
+  const colors = ["hsl(82, 55%, 42%)", "hsl(142, 60%, 45%)", "hsl(200, 70%, 50%)", "hsl(38, 92%, 50%)", "hsl(280, 45%, 55%)"];
+  return [
+    { section: "Cutting Floor", otHours: rng(15, 45), otPercent: +(Math.random() * 10 + 4).toFixed(1), fill: colors[0] },
+    { section: "Sewing Floor 1", otHours: rng(30, 80), otPercent: +(Math.random() * 14 + 6).toFixed(1), fill: colors[1] },
+    { section: "Sewing Floor 2", otHours: rng(25, 70), otPercent: +(Math.random() * 14 + 5).toFixed(1), fill: colors[2] },
+    { section: "Finishing Floor", otHours: rng(12, 35), otPercent: +(Math.random() * 8 + 3).toFixed(1), fill: colors[3] },
+    { section: "Quality / Stores", otHours: rng(5, 20), otPercent: +(Math.random() * 6 + 2).toFixed(1), fill: colors[4] },
+  ];
+}
+
+export const otBySection = generateOTBySection();
+
+export function getOTBySection(factoryId?: string): OTSectionData[] {
+  // Return factory-specific OT data (re-generated for variety)
+  if (factoryId) return generateOTBySection();
+  return otBySection;
+}
 
 // ---------- Per-Factory Chart Data ----------
 export interface FactoryChartData {
