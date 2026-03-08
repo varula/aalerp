@@ -10,6 +10,7 @@ import Operators from "@/pages/Operators";
 import SewingLines from "@/pages/SewingLines";
 import Alerts from "@/pages/Alerts";
 import Reports from "@/pages/Reports";
+import WipTracking from "@/pages/WipTracking";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
