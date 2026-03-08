@@ -129,8 +129,12 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
-      {/* LIVE LINE STATUS + LINE PERFORMANCE TABLE — side by side */}
-      <motion.div className="grid grid-cols-1 xl:grid-cols-5 gap-4" variants={stagger}>
+      {/* WIP SUMMARY + LIVE LINE STATUS + LINE PERFORMANCE TABLE */}
+      <motion.div className="grid grid-cols-1 xl:grid-cols-12 gap-4" variants={stagger}>
+        {/* WIP Summary Widget */}
+        <motion.div variants={fadeUp} className="xl:col-span-3">
+          <WipSummaryWidget />
+        </motion.div>
         {/* Live Line Status — compact grid */}
         <motion.div variants={fadeUp} className="xl:col-span-2">
           <Card className="h-full">
