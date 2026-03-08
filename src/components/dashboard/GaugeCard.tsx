@@ -30,19 +30,19 @@ function MiniSparkline({ data, color }: { data: number[]; color: string }) {
   );
 }
 
+const appleEase = [0.25, 0.46, 0.45, 0.94] as const;
+
 export function GaugeCard({
   label, value, unit = "%", target, icon: Icon, trend, trendValue, sparkData,
 }: GaugeCardProps) {
   const pct = unit === "%" ? Math.min(value, 100) : target ? Math.min((value / target) * 100, 100) : 75;
-  const radius = 44;
-  const strokeWidth = 6;
+  const radius = 52;
+  const strokeWidth = 7;
   const circumference = 2 * Math.PI * radius;
-  const arcLength = circumference * 0.75;
-  const offset = arcLength - (pct / 100) * arcLength;
+  const offset = circumference - (pct / 100) * circumference;
 
-  const getArcColor = () => {
+  const getColor = () => {
     if (label.toLowerCase().includes("dhu") || label.toLowerCase().includes("ot")) {
-      // For metrics where lower is better
       if (value <= 3) return "hsl(142, 71%, 45%)";
       if (value <= 5) return "hsl(38, 92%, 50%)";
       return "hsl(0, 72%, 51%)";
@@ -52,7 +52,7 @@ export function GaugeCard({
     if (pct >= 50) return "hsl(38, 92%, 50%)";
     return "hsl(0, 72%, 51%)";
   };
-  const arcColor = getArcColor();
+  const color = getColor();
 
   const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus;
   const trendColorClass = label.toLowerCase().includes("dhu")
@@ -63,38 +63,48 @@ export function GaugeCard({
     <motion.div
       whileHover={{ y: -3, scale: 1.015 }}
       whileTap={{ scale: 0.985 }}
-      transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.25, ease: appleEase }}
       className="will-change-transform"
     >
       <Card className="group relative overflow-hidden border-border/40 hover:border-primary/20 hover:shadow-lg transition-all duration-300">
         <CardContent className="p-6 flex flex-col items-center gap-3">
-          {/* Gauge */}
+          {/* Full-circle gauge */}
           <motion.div
-            className="relative h-[110px] w-[110px]"
+            className="relative h-[120px] w-[120px]"
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.6, ease: appleEase }}
           >
-            <svg viewBox="0 0 110 110" className="h-full w-full -rotate-[135deg]">
-              <circle cx="55" cy="55" r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth={strokeWidth}
-                strokeDasharray={`${arcLength} ${circumference - arcLength}`} strokeLinecap="round" strokeOpacity={0.5} />
+            <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+              {/* Track */}
+              <circle
+                cx="60" cy="60" r={radius}
+                fill="none"
+                stroke="hsl(var(--muted))"
+                strokeWidth={strokeWidth}
+                strokeOpacity={0.45}
+              />
+              {/* Value arc */}
               <motion.circle
-                cx="55" cy="55" r={radius} fill="none" stroke={arcColor} strokeWidth={strokeWidth}
-                strokeDasharray={`${arcLength} ${circumference - arcLength}`}
+                cx="60" cy="60" r={radius}
+                fill="none"
+                stroke={color}
+                strokeWidth={strokeWidth}
                 strokeLinecap="round"
-                initial={{ strokeDashoffset: arcLength }}
+                strokeDasharray={circumference}
+                initial={{ strokeDashoffset: circumference }}
                 animate={{ strokeDashoffset: offset }}
-                transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
+                transition={{ duration: 1.2, ease: appleEase, delay: 0.15 }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-3xl font-bold text-foreground leading-none tracking-tight">{value}</span>
-              <span className="text-xs text-muted-foreground font-medium mt-1">{unit}</span>
+              <span className="text-[11px] text-muted-foreground font-medium mt-0.5">{unit}</span>
             </div>
           </motion.div>
 
-          {/* Label & Meta */}
-          <div className="text-center w-full space-y-1.5">
+          {/* Label & meta */}
+          <div className="text-center w-full space-y-1">
             <p className="text-sm font-semibold text-foreground">{label}</p>
             {target !== undefined && (
               <p className="text-xs text-muted-foreground">Target {target}{unit}</p>
@@ -111,7 +121,7 @@ export function GaugeCard({
                   {trendValue && <span className="text-xs font-semibold">{trendValue}</span>}
                 </motion.div>
               )}
-              {sparkData && <MiniSparkline data={sparkData} color={arcColor} />}
+              {sparkData && <MiniSparkline data={sparkData} color={color} />}
             </div>
           </div>
         </CardContent>
