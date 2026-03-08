@@ -15,7 +15,6 @@ import WipTracking from "@/pages/WipTracking";
 import TvDisplay from "@/pages/TvDisplay";
 import FactoryKPIs from "@/pages/FactoryKPIs";
 import NotFound from "@/pages/NotFound";
-import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
