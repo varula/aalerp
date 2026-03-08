@@ -1,15 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { downtimeReasons } from "@/data/mock-data";
 import { AlertTriangle } from "lucide-react";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { APPLE_TOOLTIP, APPLE_AXIS } from "@/lib/chart-styles";
 
 export function DowntimeParetoChart() {
   const data = [...downtimeReasons].sort((a, b) => b.minutes - a.minutes).slice(0, 6);
@@ -28,10 +21,9 @@ export function DowntimeParetoChart() {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" barSize={16}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} horizontal={false} />
-              <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis dataKey="reason" type="category" width={120} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis type="number" {...APPLE_AXIS} />
+              <YAxis dataKey="reason" type="category" width={120} {...APPLE_AXIS} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <Bar dataKey="minutes" fill="hsl(0, 72%, 51%)" radius={[0, 6, 6, 0]} name="Minutes" />
             </BarChart>
           </ResponsiveContainer>

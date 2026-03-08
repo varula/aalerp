@@ -2,14 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { getFactoryChartData, lostTimeBreakdown } from "@/data/mock-data";
 import { Clock } from "lucide-react";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { APPLE_TOOLTIP } from "@/lib/chart-styles";
 
 interface Props { factoryId?: string; }
 
@@ -37,7 +30,7 @@ export function LostTimeDonut({ factoryId }: Props) {
                     <Cell key={i} fill={entry.fill} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Tooltip contentStyle={APPLE_TOOLTIP} />
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">

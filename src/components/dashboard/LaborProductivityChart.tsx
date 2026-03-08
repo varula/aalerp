@@ -1,18 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, Cell } from "recharts";
 import { getFactoryChartData, laborProductivity } from "@/data/mock-data";
 import { Users } from "lucide-react";
-
-const TOOLTIP_STYLE = {
-  backgroundColor: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: "12px",
-  fontSize: "11px",
-  boxShadow: "0 8px 32px -8px hsl(var(--foreground) / 0.12)",
-};
+import { APPLE_TOOLTIP, APPLE_AXIS, APPLE_COLORS } from "@/lib/chart-styles";
 
 const BAR_COLORS = [
-  "hsl(82, 55%, 42%)", "hsl(142, 60%, 45%)", "hsl(200, 70%, 50%)", "hsl(280, 45%, 55%)", "hsl(38, 92%, 50%)",
+  APPLE_COLORS.green, APPLE_COLORS.teal, APPLE_COLORS.blue, APPLE_COLORS.purple, APPLE_COLORS.orange,
 ];
 
 interface Props { factoryId?: string; }
@@ -34,10 +27,9 @@ export function LaborProductivityChart({ factoryId }: Props) {
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barSize={36}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
-              <XAxis dataKey="dept" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: "pcs/operator", angle: -90, position: "insideLeft", style: { fill: "hsl(var(--muted-foreground))", fontSize: 9 } }} />
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <XAxis dataKey="dept" {...APPLE_AXIS} tick={{ ...APPLE_AXIS.tick, fontSize: 11 }} />
+              <YAxis {...APPLE_AXIS} label={{ value: "pcs/operator", angle: -90, position: "insideLeft", style: { fill: "hsl(var(--muted-foreground))", fontSize: 9 } }} />
+              <Tooltip contentStyle={APPLE_TOOLTIP} />
               <Bar dataKey="productivity" radius={[8, 8, 0, 0]} name="Pcs/Operator">
                 {data.map((_, i) => (
                   <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />
