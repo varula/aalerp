@@ -18,6 +18,7 @@ import QualityDashboard from "@/pages/QualityDashboard";
 import Machines from "@/pages/Machines";
 import AIPredictions from "@/pages/AIPredictions";
 import DowntimeTracking from "@/pages/DowntimeTracking";
+import OvertimeModule from "@/pages/OvertimeModule";
 import MaterialTracking from "@/pages/MaterialTracking";
 import CVCounting from "@/pages/CVCounting";
 import NotFound from "@/pages/NotFound";
