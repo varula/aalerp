@@ -56,6 +56,7 @@ const sections: NavSection[] = [
       { title: "Sewing Lines", url: "/lines", icon: Factory },
       { title: "WIP Tracking", url: "/wip", icon: Package },
       { title: "Cut to Pack", url: "/cut-to-pack", icon: Scissors, minRole: "supervisor" },
+      { title: "Hourly Production", url: "/hourly-production", icon: Clock },
       { title: "Planning", url: "/planning", icon: CalendarRange, minRole: "manager" },
       { title: "Planning Overview", url: "/planning-overview", icon: BarChart3, minRole: "manager" },
     ],
