@@ -4,7 +4,7 @@ import {
   Monitor, Package, Gauge, Shield, Wrench, Eye, Brain, Boxes, Clock,
   Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
   Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
-  ClipboardCheck, ShieldCheck, Building, Warehouse, FileText,
+  ClipboardCheck, ShieldCheck, Building, Warehouse, FileText, CalendarRange,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
