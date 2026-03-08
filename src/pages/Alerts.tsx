@@ -10,9 +10,10 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  AlertTriangle, Wrench, Package, ShieldAlert, CheckCircle, XCircle, Bell,
+  AlertTriangle, Wrench, Package, ShieldAlert, CheckCircle, XCircle, Bell, Zap,
 } from "lucide-react";
 import { alerts, allLines, type Alert } from "@/data/mock-data";
+import { useAlertRules, type TriggeredAlert } from "@/hooks/use-alert-rules";
 import AlertRulesConfig from "@/components/AlertRulesConfig";
 
 const typeIcons: Record<string, React.ElementType> = {
@@ -24,9 +25,17 @@ const typeIcons: Record<string, React.ElementType> = {
 
 export default function AlertsPage() {
   const { selectedFactory } = useOutletContext<{ selectedFactory: string }>();
+  const { getTriggeredForFactory } = useAlertRules();
   const [typeFilter, setTypeFilter] = useState("all");
   const [severityFilter, setSeverityFilter] = useState("all");
   const [acknowledged, setAcknowledged] = useState<Set<string>>(new Set());
+  const [dismissedTriggered, setDismissedTriggered] = useState<Set<string>>(new Set());
+
+  const factoryId = selectedFactory === "all" ? undefined : selectedFactory;
+  const triggeredAlerts = getTriggeredForFactory(factoryId)
+    .filter(a => typeFilter === "all" || a.type === typeFilter)
+    .filter(a => severityFilter === "all" || a.severity === severityFilter)
+    .filter(a => !dismissedTriggered.has(a.id));
 
   const filteredAlerts = alerts
     .filter(a => selectedFactory === "all" || a.factoryId === selectedFactory)
@@ -50,14 +59,14 @@ export default function AlertsPage() {
     s === "critical" ? "bg-status-critical animate-pulse-slow" : s === "warning" ? "bg-status-warning" : "bg-status-success";
 
   const activeCount = filteredAlerts.filter(a => !a.acknowledged && !isAck(a.id)).length;
-  const criticalCount = filteredAlerts.filter(a => a.severity === "critical").length;
-  const warningCount = filteredAlerts.filter(a => a.severity === "warning").length;
+  const criticalCount = filteredAlerts.filter(a => a.severity === "critical").length + triggeredAlerts.filter(a => a.severity === "critical").length;
+  const warningCount = filteredAlerts.filter(a => a.severity === "warning").length + triggeredAlerts.filter(a => a.severity === "warning").length;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Alerts & Andon</h1>
-        <p className="text-sm text-muted-foreground">Digital Andon system with smart alerts</p>
+        <p className="text-sm text-muted-foreground">Digital Andon system with smart alerts & rule-based triggers</p>
       </div>
 
       {/* Andon Strip */}
@@ -91,7 +100,7 @@ export default function AlertsPage() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Active (Unack)</p>
-              <p className="text-2xl font-bold font-mono">{activeCount}</p>
+              <p className="text-2xl font-bold font-mono">{activeCount + triggeredAlerts.length}</p>
             </div>
           </CardContent>
         </Card>
@@ -149,8 +158,81 @@ export default function AlertsPage() {
         </Select>
       </div>
 
-      {/* Alert Table */}
+      {/* Rule-Triggered Alerts */}
+      {triggeredAlerts.length > 0 && (
+        <Card className="border-primary/30">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" /> Rule-Triggered Alerts
+              <Badge variant="destructive" className="ml-auto text-[10px] font-mono">{triggeredAlerts.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-auto max-h-[350px]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs w-[40px]"></TableHead>
+                    <TableHead className="text-xs">Rule</TableHead>
+                    <TableHead className="text-xs">Type</TableHead>
+                    <TableHead className="text-xs">Line</TableHead>
+                    <TableHead className="text-xs text-right">Value</TableHead>
+                    <TableHead className="text-xs text-right">Threshold</TableHead>
+                    <TableHead className="text-xs text-center">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {triggeredAlerts
+                    .sort((a, b) => {
+                      const sev = { critical: 0, warning: 1 } as Record<string, number>;
+                      return (sev[a.severity] ?? 2) - (sev[b.severity] ?? 2);
+                    })
+                    .map(alert => {
+                      const Icon = typeIcons[alert.type] || AlertTriangle;
+                      return (
+                        <TableRow key={alert.id}>
+                          <TableCell>
+                            <div className={`h-3 w-3 rounded-full ${alert.severity === "critical" ? "bg-status-critical animate-pulse" : "bg-status-warning"}`} />
+                          </TableCell>
+                          <TableCell className="text-sm font-medium">{alert.ruleName}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1.5">
+                              <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span className="text-xs">{alert.type}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">{alert.lineName}</TableCell>
+                          <TableCell className={`text-right font-mono text-sm font-semibold ${alert.severity === "critical" ? "text-status-critical" : "text-status-warning"}`}>
+                            {alert.metricValue}
+                          </TableCell>
+                          <TableCell className="text-right font-mono text-sm text-muted-foreground">
+                            {alert.threshold}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-xs h-7"
+                              onClick={() => setDismissedTriggered(prev => new Set(prev).add(alert.id))}
+                            >
+                              Dismiss
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Manual Alert Table */}
       <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold">System Alerts</CardTitle>
+        </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-auto max-h-[500px]">
             <Table>
@@ -203,6 +285,7 @@ export default function AlertsPage() {
           </div>
         </CardContent>
       </Card>
+
       {/* Alert Rules Configuration */}
       <AlertRulesConfig />
     </div>
