@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
-import { Bell, Sun, Moon, Settings, Search } from "lucide-react";
+import { Bell, Sun, Moon, Settings, Search, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { factories, alerts, getFactoryInfo } from "@/data/mock-data";
 import { useTheme } from "@/hooks/use-theme";
+import { useAuth } from "@/hooks/use-auth";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
 interface AppHeaderProps {
