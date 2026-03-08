@@ -220,7 +220,7 @@ export default function Dashboard() {
                             <AnimatedValue value={line.actual} />
                           </TableCell>
                           <TableCell className="text-right py-2.5">
-                            <span className={`text-xs font-medium tabular-nums ${line.efficiency >= 70 ? "text-status-success" : line.efficiency >= 55 ? "text-status-warning" : "text-status-critical"}`}>
+                            <span className={`text-sm font-medium tabular-nums ${line.efficiency >= 70 ? "text-status-success" : line.efficiency >= 55 ? "text-status-warning" : "text-status-critical"}`}>
                               <AnimatedValue value={`${line.efficiency}%`} />
                             </span>
                           </TableCell>
