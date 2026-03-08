@@ -74,7 +74,6 @@ export default function Dashboard() {
       {/* HEADER */}
       <motion.div variants={fadeIn} className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">{factoryInfo.name}</h1>
           <p className="text-[13px] text-muted-foreground">Production Overview</p>
         </div>
         <LiveIndicator lastUpdate={lastUpdate} />
