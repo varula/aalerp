@@ -44,6 +44,9 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const { triggeredAlerts } = useAlertRules();
+  const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
+  const totalTriggered = triggeredAlerts.length;
 
   return (
     <Sidebar collapsible="icon">
