@@ -24,6 +24,7 @@ import ComingSoon from "@/pages/ComingSoon";
 import NotFound from "@/pages/NotFound";
 import { SectionModulesPage, CrudModulePage } from "@/components/CrudModule";
 import PlanningModules from "@/pages/PlanningModules";
+import PlanningOverview from "@/pages/PlanningOverview";
 
 const queryClient = new QueryClient();
 
