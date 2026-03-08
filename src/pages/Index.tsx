@@ -115,12 +115,15 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
-      {/* CHARTS ROW — Performance Overview (wider) + Overtime */}
-      <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-4" variants={stagger}>
-        <motion.div variants={fadeUp} className="lg:col-span-2">
+      {/* CHARTS ROW — Performance Overview + Target Donut + Overtime */}
+      <motion.div className="grid grid-cols-1 lg:grid-cols-12 gap-4" variants={stagger}>
+        <motion.div variants={fadeUp} className="lg:col-span-5">
           <PerformanceOverview factoryId={factoryId} totalOutput={kpis.totalOutput} totalTarget={kpis.totalTarget} />
         </motion.div>
-        <motion.div variants={fadeUp}>
+        <motion.div variants={fadeUp} className="lg:col-span-3">
+          <TargetCompletionDonut totalOutput={kpis.totalOutput} totalTarget={kpis.totalTarget} efficiency={kpis.avgEfficiency} />
+        </motion.div>
+        <motion.div variants={fadeUp} className="lg:col-span-4">
           <OvertimeSectionChart factoryId={factoryId} />
         </motion.div>
       </motion.div>
