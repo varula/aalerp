@@ -4,6 +4,7 @@ import {
   Monitor, Package, Gauge, Shield, Wrench, Eye, Brain, Boxes, Clock,
   Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
   Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
+  ClipboardCheck, ShieldCheck, Building, Warehouse, FileText,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
@@ -53,6 +54,20 @@ const sections: NavSection[] = [
     ],
   },
   {
+    label: "MIS Modules",
+    items: [
+      { title: "Pre Production", url: "/modules/pre-production", icon: ClipboardCheck },
+      { title: "Cutting Production", url: "/modules/cutting-production", icon: Scissors },
+      { title: "Cutting Quality", url: "/modules/cutting-quality", icon: ShieldCheck },
+      { title: "Sewing Production", url: "/modules/sewing-production", icon: Factory },
+      { title: "Sewing Quality", url: "/modules/sewing-quality", icon: ShieldCheck },
+      { title: "Finishing Production", url: "/modules/finishing-production", icon: Package },
+      { title: "Finishing Quality", url: "/modules/finishing-quality", icon: ShieldCheck },
+      { title: "General Activities", url: "/modules/general", icon: Building },
+      { title: "Stores Activities", url: "/modules/stores", icon: Warehouse },
+    ],
+  },
+  {
     label: "AI & Automation",
     items: [
       { title: "AI Predictions", url: "/ai-predictions", icon: Brain },
@@ -99,9 +114,8 @@ export function AppSidebar() {
   const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
   const totalTriggered = triggeredAlerts.length;
 
-  // Collapsible section state — Overview and Production open by default
   const [openSections, setOpenSections] = useState<Set<string>>(
-    new Set(["Overview", "Production", "Quality", "Resources", "Operations"])
+    new Set(["Overview", "Production", "Quality", "Resources", "Operations", "MIS Modules"])
   );
 
   const toggleSection = (label: string) => {
