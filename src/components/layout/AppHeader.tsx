@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select";
 import { factories, alerts, getFactoryInfo } from "@/data/mock-data";
 import { useTheme } from "@/hooks/use-theme";
+import { motion } from "framer-motion";
 
 interface AppHeaderProps {
   selectedFactory: string;
@@ -43,7 +44,12 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
   const user = factoryInfo.user;
 
   return (
-    <header className="h-16 border-b border-border/60 bg-card/80 backdrop-blur-xl flex items-center justify-between px-5 shrink-0">
+    <motion.header
+      className="h-16 border-b border-border/60 bg-card/80 backdrop-blur-xl flex items-center justify-between px-5 shrink-0"
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       <div className="flex items-center gap-3">
         <SidebarTrigger />
 
@@ -74,20 +80,30 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
 
         <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
 
-        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 rounded-xl">
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </Button>
-        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
-          <Settings className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-xl">
-          <Bell className="h-4 w-4" />
-          {pendingAlerts > 0 && (
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
-          )}
-        </Button>
+        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 rounded-xl">
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
+            <Settings className="h-4 w-4" />
+          </Button>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.9 }} transition={{ duration: 0.15 }}>
+          <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-xl">
+            <Bell className="h-4 w-4" />
+            {pendingAlerts > 0 && (
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
+            )}
+          </Button>
+        </motion.div>
 
-        <div className="ml-2 flex items-center gap-2.5">
+        <motion.div
+          className="ml-2 flex items-center gap-2.5"
+          whileHover={{ scale: 1.03 }}
+          transition={{ duration: 0.2 }}
+        >
           <div className={`h-9 w-9 rounded-full ${user.color} flex items-center justify-center text-white text-xs font-semibold`}>
             {user.initials}
           </div>
@@ -95,8 +111,8 @@ export function AppHeader({ selectedFactory, onFactoryChange }: AppHeaderProps) 
             <p className="text-[13px] font-medium text-foreground leading-tight">{user.name}</p>
             <p className="text-[10px] text-muted-foreground leading-tight">Production Manager</p>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </header>
+    </motion.header>
   );
 }
