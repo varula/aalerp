@@ -5,7 +5,7 @@ import { Users } from "lucide-react";
 import { APPLE_TOOLTIP, APPLE_AXIS, APPLE_COLORS } from "@/lib/chart-styles";
 
 const BAR_COLORS = [
-  "hsl(82, 55%, 42%)", "hsl(142, 60%, 45%)", "hsl(200, 70%, 50%)", "hsl(280, 45%, 55%)", "hsl(38, 92%, 50%)",
+  APPLE_COLORS.green, APPLE_COLORS.teal, APPLE_COLORS.blue, APPLE_COLORS.purple, APPLE_COLORS.orange,
 ];
 
 interface Props { factoryId?: string; }
