@@ -284,12 +284,7 @@ export default function HourlyProduction() {
               </div>
               <div>
                 <Label className="text-xs">Shift</Label>
-                <Select value={formData.shift || ""} onValueChange={v => setField("shift", v)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {SHIFTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Input value={DEFAULT_SHIFT} disabled className="bg-muted" />
               </div>
               <div>
                 <Label className="text-xs">Line No <span className="text-destructive">*</span></Label>
