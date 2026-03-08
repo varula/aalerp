@@ -90,11 +90,27 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.6" },
         },
+        "value-flash": {
+          "0%": { backgroundColor: "hsl(var(--primary) / 0.25)" },
+          "100%": { backgroundColor: "transparent" },
+        },
+        "slide-in-up": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "number-pop": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.12)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-slow": "pulse-slow 2s ease-in-out infinite",
+        "value-flash": "value-flash 0.8s ease-out",
+        "slide-in-up": "slide-in-up 0.3s ease-out",
+        "number-pop": "number-pop 0.35s ease-out",
       },
     },
   },
