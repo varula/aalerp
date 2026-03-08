@@ -51,7 +51,7 @@ export function CrudModulePage() {
   return <CrudDataTable module={mod} sectionSlug={sectionSlug || ""} />;
 }
 
-function CrudDataTable({ module: mod, sectionSlug }: { module: ModuleDef; sectionSlug: string }) {
+export function CrudDataTable({ module: mod, sectionSlug, hideBackButton }: { module: ModuleDef; sectionSlug: string; hideBackButton?: boolean }) {
   const navigate = useNavigate();
   const [records, setRecords] = useState<CrudRecord[]>(() => getAll(mod.slug));
   const [search, setSearch] = useState("");
