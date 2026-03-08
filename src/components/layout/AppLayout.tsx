@@ -4,10 +4,13 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AppHeader } from "./AppHeader";
 import { motion, AnimatePresence } from "framer-motion";
+import { SimulationProvider, useSimulation } from "@/hooks/use-simulation-context";
+import { ActivityFeedToggle } from "@/components/ActivityFeed";
 
-export default function AppLayout() {
+function LayoutInner() {
   const [selectedFactory, setSelectedFactory] = useState("all");
   const location = useLocation();
+  const { activityFeed, lastUpdate } = useSimulation();
 
   return (
     <SidebarProvider>
@@ -29,7 +32,16 @@ export default function AppLayout() {
             </AnimatePresence>
           </main>
         </div>
+        <ActivityFeedToggle events={activityFeed} lastUpdate={lastUpdate} />
       </div>
     </SidebarProvider>
+  );
+}
+
+export default function AppLayout() {
+  return (
+    <SimulationProvider>
+      <LayoutInner />
+    </SimulationProvider>
   );
 }

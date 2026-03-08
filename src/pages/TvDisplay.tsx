@@ -9,7 +9,7 @@ import {
   Clock, Zap, XCircle,
 } from "lucide-react";
 import { allLines, getFactoryInfo, type SewingLine } from "@/data/mock-data";
-import { useRealtimeSimulation } from "@/hooks/use-realtime-simulation";
+import { useSimulation } from "@/hooks/use-simulation-context";
 import { AnimatedValue } from "@/components/AnimatedValue";
 import { computeKPIs } from "@/lib/compute-kpis";
 
@@ -27,7 +27,7 @@ export default function TvDisplay() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [clock, setClock] = useState(formatTime());
 
-  const { lines: allSimLines, alerts: simAlerts, updatedLineIds, lastUpdate, tick } = useRealtimeSimulation(4000);
+  const { lines: allSimLines, alerts: simAlerts, updatedLineIds, lastUpdate, tick } = useSimulation();
 
   useEffect(() => {
     const t = setInterval(() => setClock(formatTime()), 1000);

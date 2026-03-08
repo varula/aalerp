@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { allLines, alerts, type SewingLine, type Alert } from "@/data/mock-data";
 
+export interface ActivityEvent {
+  id: string;
+  timestamp: Date;
+  type: "efficiency" | "status" | "alert";
+  message: string;
+  severity: "normal" | "warning" | "critical";
+  lineId?: string;
+}
+
 interface SimulationState {
   lines: SewingLine[];
   alerts: Alert[];
@@ -8,6 +17,7 @@ interface SimulationState {
   updatedLineIds: Set<string>;
   updatedAlertIds: Set<string>;
   isLive: boolean;
+  activityFeed: ActivityEvent[];
 }
 
 function clamp(v: number, min: number, max: number) {
@@ -86,13 +96,13 @@ export function useRealtimeSimulation(intervalMs = 5000) {
     updatedLineIds: new Set(),
     updatedAlertIds: new Set(),
     isLive: true,
+    activityFeed: [],
   }));
 
   const tickRef = useRef(0);
 
   const tick = useCallback(() => {
     setState(prev => {
-      // Pick ~20-35% of lines to update each tick
       const updateCount = Math.max(2, Math.floor(prev.lines.length * (0.2 + Math.random() * 0.15)));
       const indices = new Set<number>();
       while (indices.size < updateCount) {
@@ -100,10 +110,39 @@ export function useRealtimeSimulation(intervalMs = 5000) {
       }
 
       const updatedIds = new Set<string>();
+      const newEvents: ActivityEvent[] = [];
+      const now = new Date();
+
       const newLines = prev.lines.map((line, i) => {
         if (indices.has(i)) {
           updatedIds.add(line.id);
-          return simulateLineUpdate(line);
+          const updated = simulateLineUpdate(line);
+
+          // Generate activity events for notable changes
+          const effDiff = updated.efficiency - line.efficiency;
+          if (Math.abs(effDiff) >= 2) {
+            newEvents.push({
+              id: `evt-${now.getTime()}-${line.id}`,
+              timestamp: now,
+              type: "efficiency",
+              message: `${line.name} efficiency ${effDiff > 0 ? "↑" : "↓"} ${line.efficiency}% → ${updated.efficiency}%`,
+              severity: updated.status,
+              lineId: line.id,
+            });
+          }
+
+          if (updated.status !== line.status) {
+            newEvents.push({
+              id: `evt-status-${now.getTime()}-${line.id}`,
+              timestamp: now,
+              type: "status",
+              message: `${line.name} status changed to ${updated.status}`,
+              severity: updated.status,
+              lineId: line.id,
+            });
+          }
+
+          return updated;
         }
         return line;
       });
@@ -114,16 +153,26 @@ export function useRealtimeSimulation(intervalMs = 5000) {
       let newAlerts = prev.alerts;
       if (newAlert) {
         newAlertIds.add(newAlert.id);
-        newAlerts = [newAlert, ...prev.alerts].slice(0, 50); // cap at 50
+        newAlerts = [newAlert, ...prev.alerts].slice(0, 50);
+        const alertLine = newLines.find(l => l.id === newAlert.lineId);
+        newEvents.push({
+          id: `evt-alert-${newAlert.id}`,
+          timestamp: now,
+          type: "alert",
+          message: `🚨 ${newAlert.message} (${alertLine?.name || "—"})`,
+          severity: newAlert.severity,
+          lineId: newAlert.lineId,
+        });
       }
 
       return {
         lines: newLines,
         alerts: newAlerts,
-        lastUpdate: new Date(),
+        lastUpdate: now,
         updatedLineIds: updatedIds,
         updatedAlertIds: newAlertIds,
         isLive: true,
+        activityFeed: [...newEvents, ...prev.activityFeed].slice(0, 30),
       };
     });
     tickRef.current++;
