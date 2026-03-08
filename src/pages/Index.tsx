@@ -114,10 +114,10 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
-      {/* CHARTS ROW — Efficiency trend (wider) + Overtime */}
+      {/* CHARTS ROW — Performance Overview (wider) + Overtime */}
       <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-4" variants={stagger}>
         <motion.div variants={fadeUp} className="lg:col-span-2">
-          <EfficiencyTrendChart factoryId={factoryId} />
+          <PerformanceOverview factoryId={factoryId} totalOutput={kpis.totalOutput} totalTarget={kpis.totalTarget} />
         </motion.div>
         <motion.div variants={fadeUp}>
           <OvertimeSectionChart factoryId={factoryId} />
