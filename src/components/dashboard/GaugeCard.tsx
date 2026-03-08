@@ -87,9 +87,9 @@ export function GaugeCard({
 
           {/* Label */}
           <div className="text-center w-full space-y-1">
-            <p className="text-[12px] font-medium text-foreground tracking-tight">{label}</p>
+            <p className="text-sm font-medium text-foreground tracking-tight">{label}</p>
             {target !== undefined && (
-              <p className="text-[10px] text-muted-foreground">Target {target}{unit}</p>
+              <p className="text-xs text-muted-foreground">Target {target}{unit}</p>
             )}
             <div className="flex items-center justify-center gap-2">
               {trend && (
