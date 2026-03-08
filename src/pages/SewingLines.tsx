@@ -452,7 +452,7 @@ export default function SewingLinesPage() {
                                     }`}
                                     initial={{ width: 0 }}
                                     animate={{ width: `${pct}%` }}
-                                    transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: i * 0.05 }}
+                                    transition={{ duration: 0.8, ease: appleEase, delay: i * 0.05 }}
                                   />
                                   <div className="absolute inset-0 flex items-center px-2">
                                     {Array.from({ length: Math.min(w.wipBundles, 12) }).map((_, di) => (
