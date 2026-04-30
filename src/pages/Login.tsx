@@ -53,10 +53,10 @@ export default function Login() {
       >
         <div className="text-center mb-8">
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-bold text-xl mb-4">
-            AG
+            AO
           </div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">Armana Group</h1>
-          <p className="text-sm text-muted-foreground mt-1">Production Management System</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Armana OS</h1>
+          <p className="text-sm text-muted-foreground mt-1">Operating System for Manufacturing Excellence</p>
         </div>
 
         <Card className="border-border/40">

@@ -166,12 +166,12 @@ export function AppSidebar() {
       <SidebarHeader className="p-5 pb-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shrink-0">
-            AG
+              AO
           </div>
           {!collapsed && (
             <div className="flex flex-col min-w-0">
-              <h2 className="text-[14px] font-semibold text-foreground truncate">Armana Group</h2>
-              <p className="text-[10px] text-muted-foreground"></p>
+              <h2 className="text-[14px] font-semibold text-foreground truncate">Armana OS</h2>
+              <p className="text-[10px] text-muted-foreground truncate">Operating System for Manufacturing Excellence</p>
             </div>
           )}
         </div>
@@ -235,11 +235,11 @@ export function AppSidebar() {
         {!collapsed && (
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[11px] font-semibold">
-              AG
+              AO
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-medium text-foreground truncate">Armana Group</p>
-              <p className="text-[10px] text-muted-foreground">v1.0 · Production</p>
+              <p className="text-[11px] font-medium text-foreground truncate">Armana OS</p>
+              <p className="text-[10px] text-muted-foreground">v1.0 · Manufacturing Excellence</p>
             </div>
           </div>
         )}
