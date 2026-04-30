@@ -166,12 +166,12 @@ export function AppSidebar() {
       <SidebarHeader className="p-5 pb-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shrink-0">
-            AG
+              AO
           </div>
           {!collapsed && (
             <div className="flex flex-col min-w-0">
-              <h2 className="text-[14px] font-semibold text-foreground truncate">Armana Group</h2>
-              <p className="text-[10px] text-muted-foreground"></p>
+              <h2 className="text-[14px] font-semibold text-foreground truncate">Armana OS</h2>
+              <p className="text-[10px] text-muted-foreground truncate">Operating System for Manufacturing Excellence</p>
             </div>
           )}
         </div>
