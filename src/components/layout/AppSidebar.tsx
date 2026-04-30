@@ -235,11 +235,11 @@ export function AppSidebar() {
         {!collapsed && (
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[11px] font-semibold">
-              AG
+              AO
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-medium text-foreground truncate">Armana Group</p>
-              <p className="text-[10px] text-muted-foreground">v1.0 · Production</p>
+              <p className="text-[11px] font-medium text-foreground truncate">Armana OS</p>
+              <p className="text-[10px] text-muted-foreground">v1.0 · Manufacturing Excellence</p>
             </div>
           </div>
         )}
