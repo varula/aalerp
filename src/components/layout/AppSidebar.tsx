@@ -166,7 +166,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-5 pb-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm shrink-0">
-              AO
+              AG
           </div>
           {!collapsed && (
             <div className="flex flex-col min-w-0">
@@ -235,7 +235,7 @@ export function AppSidebar() {
         {!collapsed && (
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[11px] font-semibold">
-              AO
+              AG
             </div>
             <div className="min-w-0">
               <p className="text-[11px] font-medium text-foreground truncate">Armana OS</p>
