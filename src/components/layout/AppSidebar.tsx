@@ -147,8 +147,10 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const { triggeredAlerts } = useAlertRules();
   const { role } = useAuth();
+  const [helpOpen, setHelpOpen] = useState(false);
   const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
   const totalTriggered = triggeredAlerts.length;
+
 
   const userLevel = role ? ROLE_LEVEL[role] : 1;
   const canSee = (minRole?: AppRole) => !minRole || userLevel >= ROLE_LEVEL[minRole];
