@@ -4,13 +4,18 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ErpHelpContent } from "@/components/help/ErpHelpContent";
 import { getAll, CrudRecord } from "@/lib/crud-storage";
 import {
   Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock,
-  AlertTriangle, BarChart3, Layers
+  AlertTriangle, BarChart3, Layers, Info, ChevronDown, HelpCircle
 } from "lucide-react";
 import { format, parseISO, differenceInDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval, addMonths, subMonths } from "date-fns";
 import { EfficiencyByLineChart, EfficiencyTrendChart } from "@/components/EfficiencyCharts";
+
 
 // ── Types ──────────────────────────────────
 type Department = "cutting" | "sewing" | "finishing";
@@ -411,15 +416,63 @@ export default function PlanningOverview() {
     return { totalPlanned, totalActual, totalPlans, totalDelayed, totalInProgress, achievement };
   }, []);
 
+  const [helpOpen, setHelpOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("help_erp_overview_open") === "1";
+  });
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const handleHelpToggle = (o: boolean) => {
+    setHelpOpen(o);
+    try { window.localStorage.setItem("help_erp_overview_open", o ? "1" : "0"); } catch {}
+  };
+
   return (
     <div className="p-4 md:p-6 space-y-5 max-w-[1400px] mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Planning Overview</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold text-foreground">Planning Overview</h1>
+          <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-primary" onClick={() => setHelpDialogOpen(true)} aria-label="About ERP & MRP">
+            <Info className="h-4 w-4" />
+          </Button>
+        </div>
         <p className="text-xs text-muted-foreground">
           Consolidated view of Cutting, Sewing & Finishing plans with timeline tracking
         </p>
       </div>
+
+      <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>About ERP & MRP</DialogTitle></DialogHeader>
+          <ErpHelpContent />
+        </DialogContent>
+      </Dialog>
+
+      {/* ERP Help Panel */}
+      <Collapsible open={helpOpen} onOpenChange={handleHelpToggle}>
+        <Card>
+          <CollapsibleTrigger asChild>
+            <button className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/30 transition-colors rounded-lg">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  <HelpCircle className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">What is ERP?</p>
+                  <p className="text-[11px] text-muted-foreground">Quick primer on ERP, MRP, BOM & MPS</p>
+                </div>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${helpOpen ? "rotate-180" : ""}`} />
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="px-4 pb-4 pt-1 border-t border-border/60">
+              <ErpHelpContent />
+            </div>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
 
       {/* Global KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">

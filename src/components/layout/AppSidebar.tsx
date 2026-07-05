@@ -5,15 +5,19 @@ import {
   Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
   Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
   ClipboardCheck, ShieldCheck, Building, Warehouse, FileText, CalendarRange,
+  HelpCircle,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
 import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ErpHelpContent } from "@/components/help/ErpHelpContent";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
+
 
 type AppRole = "admin" | "manager" | "supervisor" | "operator";
 
@@ -143,8 +147,10 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const { triggeredAlerts } = useAlertRules();
   const { role } = useAuth();
+  const [helpOpen, setHelpOpen] = useState(false);
   const criticalCount = triggeredAlerts.filter(a => a.severity === "critical").length;
   const totalTriggered = triggeredAlerts.length;
+
 
   const userLevel = role ? ROLE_LEVEL[role] : 1;
   const canSee = (minRole?: AppRole) => !minRole || userLevel >= ROLE_LEVEL[minRole];
@@ -231,7 +237,15 @@ export function AppSidebar() {
         })}
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-sidebar-border">
+      <SidebarFooter className="p-4 border-t border-sidebar-border space-y-3">
+        <button
+          onClick={() => setHelpOpen(true)}
+          className="flex items-center gap-2.5 w-full rounded-lg px-2 py-1.5 hover:bg-accent/60 transition-colors text-left"
+        >
+          <HelpCircle className="h-[15px] w-[15px] opacity-60 shrink-0" />
+          {!collapsed && <span className="text-[12.5px] text-foreground">Help — What is ERP?</span>}
+        </button>
+
         {!collapsed && (
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[11px] font-semibold">
@@ -244,6 +258,14 @@ export function AppSidebar() {
           </div>
         )}
       </SidebarFooter>
+
+      <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>About ERP & MRP</DialogTitle></DialogHeader>
+          <ErpHelpContent />
+        </DialogContent>
+      </Dialog>
     </Sidebar>
   );
 }
+
