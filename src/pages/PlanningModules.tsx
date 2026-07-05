@@ -380,9 +380,13 @@ export default function PlanningModules() {
   return (
     <div className="p-4 md:p-6 space-y-4 max-w-[1400px] mx-auto">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Planning Modules</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold text-foreground">Planning Modules</h1>
+          <ErpHelpButton />
+        </div>
         <p className="text-xs text-muted-foreground">Overview of Cutting, Sewing & Finishing production plans</p>
       </div>
+
 
       <Tabs defaultValue="cutting" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 max-w-md">
