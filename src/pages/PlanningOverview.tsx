@@ -4,13 +4,18 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ErpHelpContent } from "@/components/help/ErpHelpContent";
 import { getAll, CrudRecord } from "@/lib/crud-storage";
 import {
   Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock,
-  AlertTriangle, BarChart3, Layers
+  AlertTriangle, BarChart3, Layers, Info, ChevronDown, HelpCircle
 } from "lucide-react";
 import { format, parseISO, differenceInDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval, addMonths, subMonths } from "date-fns";
 import { EfficiencyByLineChart, EfficiencyTrendChart } from "@/components/EfficiencyCharts";
+
 
 // ── Types ──────────────────────────────────
 type Department = "cutting" | "sewing" | "finishing";

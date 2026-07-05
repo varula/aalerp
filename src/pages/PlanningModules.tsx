@@ -11,7 +11,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle, FlaskConical, ArrowUpDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Download, Search, Scissors, Factory, Package, CalendarDays, Target, TrendingUp, Clock, AlertTriangle, FlaskConical, ArrowUpDown, Info } from "lucide-react";
+import { Button as UIButton } from "@/components/ui/button";
+import { ErpHelpContent } from "@/components/help/ErpHelpContent";
+
+function ErpHelpButton() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <UIButton variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-primary" onClick={() => setOpen(true)} aria-label="About ERP & MRP">
+        <Info className="h-4 w-4" />
+      </UIButton>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>About ERP & MRP</DialogTitle></DialogHeader>
+          <ErpHelpContent />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 import { getAll, create, update, remove, exportToCsv, generateId, CrudRecord } from "@/lib/crud-storage";
 import { CapacityPanel, SewingCapacityKPIs } from "@/components/CapacityCalculator";
 import { WhatIfSimulator } from "@/components/WhatIfSimulator";
