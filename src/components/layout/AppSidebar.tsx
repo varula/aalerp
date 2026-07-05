@@ -5,15 +5,19 @@ import {
   Scissors, Truck, Settings, Database, ChevronDown, ChevronRight,
   Sparkles, Camera, FlaskConical, MapPin, UserCog, CalendarCheck,
   ClipboardCheck, ShieldCheck, Building, Warehouse, FileText, CalendarRange,
+  HelpCircle,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAlertRules } from "@/hooks/use-alert-rules";
 import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ErpHelpContent } from "@/components/help/ErpHelpContent";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
+
 
 type AppRole = "admin" | "manager" | "supervisor" | "operator";
 
